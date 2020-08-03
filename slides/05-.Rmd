@@ -1,0 +1,432 @@
+---
+title: "R para Ciência de Dados"
+subtitle: "Parte II - Aula 5"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '20%'>"
+date: "`r stringr::str_to_title(format(Sys.Date(), '%B, %Y'))`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: "css/xaringan-themer.css"
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(comment = "#>", 
+                      echo=TRUE, fig.align='center',
+                      dpi = 300, out.width = "90%")
+```
+
+# Submissão de exercícios
+
+1. Utilização do Google Classroom
+
+2. Exercícios envolvem upload de arquivos
+
+3. Vamos checar os resultados durante a aula sempre que possível
+
+4. Ao final de cada exercício, o gabarito será disponibilizado
+
+---
+# Última vez
+
+- Ambientação ao Git e Github
+
+- Manipulação avançada de dados
+
+- __Introdução à programação funcional__
+
+- Visualização avançada de dados
+
+- Criação de pacotes
+
+- Comunicação de resultados com dashboards (Shiny)
+
+---
+# Hoje
+
+- Ambientação ao Git e Github
+
+- Manipulação avançada de dados
+
+- Introdução à programação funcional
+
+- __Visualização avançada de dados__
+
+- Criação de pacotes
+
+- Comunicação de resultados com dashboards (Shiny)
+
+---
+# Material do curso
+
+- Baixe o arquivo zip que está no Mural do Classroom e dezipe
+
+```{r, echo=FALSE, out.width="70%"}
+knitr::include_graphics("img/material_aula.png")
+```
+
+- Se estiver confiante, você pode clonar / dar pull no repositório do GitHub
+
+- Abra o projeto (arquivo `.Rproj`) no RStudio
+
+---
+# Base de dados
+
+Base do estadual SINESP: Sistema Nacional de Informações de Segurança Pública
+(já disponível no material do curso)
+
+- `uf`
+
+- `tipo_crime`
+
+- `ano`
+
+- `mes`
+
+- `ocorrencias`
+
+---
+class: inverse, center, middle
+# ggplot2
+
+---
+# Motivação
+
+- Visualização é um dos passos mais importantes do ciclo da ciência de dados
+
+- Muitas características de uma base só podem ser compreendidas visualmente
+
+- Diversos modelos são mais facilmente interpretáveis com visualizações
+
+- Além de ajudar os leigos, gráficos normalmente impressionam o público
+
+---
+# Introdução
+
+- O R `{base}` tem diversas funcionalidades para gerar gráficos, mas elas acabam
+sendo um pouco limitadas
+
+  - Apesar de ser extremamente eficiente, as funções padrões de gráficos são
+  rígidas e pouco intuitivas
+
+- Para solucionar este problema, Hadley Wickham implementou a **gramática dos
+gráficos** no R com o pacote `{ggplot}`
+
+  - A gramática é um sistema coerente para descrever e construir gráficos
+  
+  - A segunda iteração do pacote é o `{ggplot2}`, um dos pacotes mais famosos e
+  impressionantes do R
+
+```{r}
+library(ggplot2)
+```
+
+
+---
+# Base, estética e geometria
+
+- Existem três componentes principais na gramática dos gráficos:
+
+  - A **base** não passa da tabela utilizada para gerar aquele gráfico
+  
+  - A **estética** é o conjunto de descrições que vai permitir que o gráfico
+  seja gerado (eixo x, eixo y, agrupamentos, etc.)
+  
+  - A **geometria** diz respeito à forma geométrica da visualização (gráfico de
+  barras, gráfico de pontos, gráfico de linhas, etc.)
+  
+- Um gráfico deve ser composto por uma base, uma ou mais geometrias e uma
+estética para cada geometria
+
+- Elementos extras como temas, facetas, estatísticas, dentre outros, não são
+essenciais
+
+---
+# Base
+
+- Para criar a base do gráfico, basta passar o data frame que irá gerar o
+gráfico para função `ggplot2::ggplot()`
+
+```{r, fig.height=2.3}
+ggplot(mtcars)
+```
+
+---
+# Estética
+
+- A estética pode ser especificada na base (para valer em todas as geometrias)
+ou diretamente em uma geometria
+
+```{r, fig.height=2.3}
+ggplot(mtcars, aes(x = disp, y = mpg))
+```
+
+---
+# Geometria
+
+- Um gráfico pode ter mais de uma geometria e, para conhecer todas, recomendamos
+consultar a [referência completa](https://ggplot2.tidyverse.org/reference/#section-layer-geoms)
+
+```{r, fig.height=2.3}
+ggplot(mtcars, aes(x = disp, y = mpg)) + geom_point()
+```
+
+---
+# Mais de uma geometria
+
+```{r, fig.height=2.3}
+housing <- filter(txhousing, city %in% c("Dallas", "Austin"))
+housing %>%
+  ggplot(aes(x = date, y = sales)) +
+  geom_point()
+```
+
+---
+# Mais de uma geometria (cont.)
+
+```{r, fig.height=2.3}
+housing %>%
+  ggplot(aes(x = date, y = sales, color = city)) +
+  geom_point() +
+  geom_line()
+```
+
+---
+# Mais de uma geometria (cont.)
+
+```{r, fig.height=2.3}
+housing %>%
+  ggplot(aes(x = date, y = sales)) +
+  geom_point(aes(shape = city)) +
+  geom_line(aes(linetype = city))
+```
+
+---
+# Fatores
+
+- Fatores são a forma do R de lidar com variáveis **categóricas** e podem ser
+**ordenados** ou **não ordenados**
+
+- No R padrão, muitas funções trabalham com fatores por default, o que pode
+dificultar muito o trabalho (vide aula 4)
+
+- É essencial saber quando fatores são necessários: normalmente categóricas
+ordenadas pedem fatores
+
+- Para trabalhar com fatores, utilizaremos o pacote `{forcats}`
+
+```{r}
+library(forcats)
+levels(gss_cat$marital)
+```
+
+---
+# Reordenação
+
+```{r, echo=FALSE}
+relig <- gss_cat %>%
+  mutate(relig = fct_lump(relig, 7)) %>%
+  group_by(relig) %>%
+  summarise(
+    age = mean(age, na.rm = TRUE),
+    tvhours = mean(tvhours, na.rm = TRUE),
+    n = n()
+  )
+```
+
+- Provavelmente a função mais importante do `{forcats}` é a que reordena os
+níveis de um fator com base em outra coluna
+
+```{r, fig.height=2.3}
+ggplot(relig, aes(tvhours, relig)) + geom_point()
+```
+
+---
+# Reordenação (cont.)
+
+- Para criar o _"Other"_, podemos utilizar a função `fct_lump()`, que junta os
+fatores menos comuns em uma classe só
+
+```{r, fig.height=2.3}
+ggplot(relig, aes(tvhours, fct_reorder(relig, tvhours))) + geom_point()
+```
+
+---
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/gato.gif")
+```
+
+---
+class: inverse, center, middle
+# htmlwidgets
+
+---
+# Motivação
+
+- Talvez o gráfico mais poderoso seja o interativo: permite ver cada ponto
+
+- Para um cientista de dado comum, talvez não valha à pena aprender a mexer
+direto no JS
+
+- Visualizações interativas são mais flexíveis e customizáveis
+
+- Honestamente: impressionam bastante
+
+---
+# Introdução
+
+- Visualizações interativas são baseadas em **JavaScript**, o que significa que
+elas podem ser integradas em documentos **HTML** sem problemas
+
+- Bibliotecas para o R costumam "empacotar" os comandos JavaScript que geram as
+visualizações
+
+- O pacote `{htmlwidgets}` é capaz de integrar essas visualizações interativas
+em documentos RMarkdown e Shiny
+
+- Nesta aula falaremos sobre 4 bibliotecas muito úteis: `{plotly}`,
+`{highcharter}`, `{DT}` e `{reactable}`
+
+```{r, message=FALSE, warning=FALSE}
+library(plotly)
+library(highcharter)
+library(DT)
+library(reactable)
+```
+
+---
+# Plotly
+
+- Plotly é uma ferramenta open source para criar gráficos interativos cuja
+biblioteca no R também se chama `{plotly}`
+
+- A sua função básica `plot_ly()` tenta adivinhar a geometria do gráfico com os
+tipos dos dados
+
+  - Aqui podemos usar os mesmos argumentos do `{ggplot2}` (como `x`, `y`,
+  `color`, etc.) apenas adicionando um til antes do nome da coluna
+
+- Permite customizar os gráficos tanto quanto se queira, mas também oferece a
+possibilidade de converter um ggplot com um comando só: `ggplotly()`
+
+- Para mais informações, consulte a [documentação completa](https://plotly.com/r/)
+
+---
+# Plotly (cont.)
+
+```{r, warning=FALSE, message=FALSE, fig.height=1.3}
+plot_ly(iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species)
+```
+
+---
+# Plotly (cont.)
+
+```{r, echo = FALSE}
+pl <- housing %>%
+  ggplot(aes(x = date, y = sales, color = city)) +
+  geom_point() +
+  geom_line()
+```
+
+
+```{r, fig.height=1.3}
+ggplotly(pl)
+```
+
+---
+# Highcharter
+
+- Highcharts é uma biblioteca JavaScript para criar gráficos leves e ao mesmo
+tempo bastante modernos cujo port para o R chama-se `{highcharter}`
+
+- Altamente customizável, tem atalhos que geram gráficos consideravelmente mais
+elegantes que os da `{plotly}`
+
+- A sua principal função é a `hchart()`, que recebe uma base, um tipo de gráfico
+e uma estética
+
+  - A estética é declarada da mesma forma que no `{ggplot2}`, mas deve ser feita
+  com `hcaes()` e `group` ao invés da especificação do agrupamento
+  
+- Permite que o usuário passe código JavaScript explicitamente para executar no
+gráfico
+
+- Para mais informações, consulte a [documentação completa](http://jkunst.com/highcharter/index.html)
+
+---
+# Highcharter (cont.)
+
+```{r, warning=FALSE, message=FALSE, fig.height=1, fig.width=4}
+hchart(mpg, "scatter", hcaes(x = displ, y = hwy, group = class))
+```
+
+---
+# DT
+
+- `{DT}` é uma interface para a biblioteca JavaScript DataTables, cuja função é
+exibir tabelas de forma eficaz em documentos HTML
+
+- A sua principal função é a `datatable()`, que recebe uma tabela e exibe ela
+em formato HTML
+
+- A biblioteca tem mais opções do que pode-se aprender em uma vida, mas também
+permite que o usuário passe JavaScript e CSS arbitrários para customizar a
+tabela
+
+- Para mais informações, consulte a [documentação completa](https://rstudio.github.io/DT/)
+
+---
+# DT (cont.)
+
+```{r}
+datatable(iris)
+```
+
+---
+# DT (cont.)
+
+```{r}
+datatable(iris, filter = 'top', options = list(
+  pageLength = 5, autoWidth = TRUE
+))
+```
+
+---
+# Reactable
+
+- A `{reactable}` é uma interface para a biblioteca React Table (feita em React)
+que permite criar tabelas altamente interativas
+
+- A sua principal função é a `reactable()`, que recebe uma tabela e exibe ela em
+formato HTML
+
+- Apesar de funcionar de forma parecida com a `{DT}`, assim como a maior parte
+das coisas em React, essa biblioteca tem um foco muito forte no design
+
+- Para mais informações, consulte a [documentação completa](https://glin.github.io/reactable/)
+
+---
+# Reactable (cont.)
+
+```{r}
+reactable(iris)
+```
+
+---
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/gato.gif")
+```
+
+---
+class: inverse, center, middle
+# Obrigado!

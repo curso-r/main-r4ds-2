@@ -1,0 +1,200 @@
+---
+title: "R para Ciência de Dados"
+subtitle: "Parte II - Aula 6"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '20%'>"
+date: "`r stringr::str_to_title(format(Sys.Date(), '%B, %Y'))`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: "css/xaringan-themer.css"
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(comment = "#>", 
+                      echo=TRUE, fig.align='center',
+                      dpi = 300, out.width = "90%")
+```
+
+# Submissão de exercícios
+
+1. Utilização do Google Classroom
+
+2. Exercícios envolvem upload de arquivos
+
+3. Vamos checar os resultados durante a aula sempre que possível
+
+4. Ao final de cada exercício, o gabarito será disponibilizado
+
+---
+# Última vez
+
+- Ambientação ao Git e Github
+
+- Manipulação avançada de dados
+
+- Introdução à programação funcional
+
+- __Visualização avançada de dados__
+
+- Criação de pacotes
+
+- Comunicação de resultados com dashboards (Shiny)
+
+---
+# Hoje
+
+- Ambientação ao Git e Github
+
+- Manipulação avançada de dados
+
+- Introdução à programação funcional
+
+- Visualização avançada de dados
+
+- Criação de pacotes
+
+- __Comunicação de resultados com dashboards (Shiny)__
+
+---
+
+# Material do curso
+
+- Baixe o arquivo zip que está no Mural do Classroom e dezipe
+
+```{r, echo=FALSE, out.width="70%"}
+knitr::include_graphics("img/material_aula.png")
+```
+
+- Se estiver confiante, você pode clonar / dar pull no repositório do GitHub
+
+- Abra o projeto (arquivo `.Rproj`) no RStudio
+
+---
+
+# Bases de dados
+
+Base do SINESP: Sistema Nacional de Informações de Segurança Pública
+
+- `município`
+- `sigla_uf`
+- `regiao`
+- `mes_ano`
+- `vitima`
+
+--
+
+Para o exercício de joins, vamos considerar a base Estadual também:
+
+- `uf`
+- `tipo_crime`
+- `ano`
+- `mes`
+- `ocorrencias`
+
+### As bases já estão no repositório
+
+---
+class: inverse, center, middle
+
+# Dashboards
+
+---
+
+# Motivação
+
+- A etapa de comunicação é uma das mais importantes da ciência de dados.
+- A comunicação depende do *interlocutor*.
+- Dashboards são úteis para transferir o conhecimento gerado pelos dados através de visualizações atrativas e interativas.
+
+---
+
+# Tipos de dashboard
+
+## Dashboards estáticos
+
+- Não precisa do R rodando por trás
+- Tudo fica no navegador
+- Interação é limitada
+- Possível com pacote `{flexdashboard}`
+
+--
+
+## Dashboards dinâmicos
+
+- Exige instalação em servidor remoto rodando R
+- Mais robusto e escalável
+- Possível com `{shiny}`
+- Dá para integrar com `{flexdashboard}`
+
+---
+
+# flexdashboard
+
+- Gera um dashboard a partir de um arquivo RMarkdown.
+- Bastante customizável
+- Possui algumas limitações de layout
+- Rodar com `runtime: shiny` para funcionalidades de shiny
+
+---
+
+# shiny
+
+- precisa de um objeto `ui` e outro `server`.
+- `ui` é responsável pelo que você _vê_, e `server` pelo que o aplicativo _faz_.
+- utiliza o conceito de reatividade, que é uma forma de trabalhar com eventos dentro do R.
+
+---
+
+# Materiais úteis
+
+- [Cheatsheet](http://shiny.rstudio.com/articles/cheatsheet.html)
+- [Galeria de widgets](http://shiny.rstudio.com/gallery/widget-gallery.html)
+- [Galeria de shiny's](http://shiny.rstudio.com/gallery/)
+- [Mais apps](https://www.rstudio.com/products/shiny/shiny-user-showcase/)
+- [Como entender reatividade no R](http://shiny.rstudio.com/articles/understanding-reactivity.html)
+- [Muito mais](http://shiny.rstudio.com/articles/)
+- [Golem](https://github.com/ThinkR-open/golem): framework para densenvolver shiny's complexos.
+- [Centenas de exemplos de shiny](https://github.com/rstudio/shiny-examples)
+
+---
+
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/gato.gif")
+```
+
+---
+
+# Slides
+
+https://curso-r.github.io/201911-dashboards/slides_shiny/slides_shiny.html
+
+---
+# Resumo
+
+- No curso, vimos diversas ferramentas que facilitam a vida da/o cientista de dados.
+- Passamos por quase todas as etapas do ciclo da ciência de dados! Importação, arrumação, transformação, visualização e comunicação.
+- Usamos e abusamos do `{tidyverse}`
+- Aprendemos um pouco sobre Shiny.
+- Aprendemos algumas práticas de organização de projetos, com pacotes e o GitHub
+- **É muito importante praticar para fixar os conceitos e acostumar com a linguagem**
+
+---
+class: center, middle
+
+# Formulário de feedback
+
+https://bit.ly/feedback-r4ds2
+
+---
+class: inverse, center, middle
+
+# Obrigado!
