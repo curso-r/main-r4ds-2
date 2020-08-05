@@ -1,0 +1,123 @@
+---
+title: "R para Ciência de Dados 2"
+subtitle: "Manipulando datas (lubridate)"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "css/custom-intro.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "4:3"
+---
+
+```{r setup, include=FALSE}
+`%>%` <- magrittr::`%>%`
+
+blue <- function(x) {
+  glue::glue(
+    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+colorido <- function(x, cor) {
+  glue::glue(
+    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+options(width = 85)
+```
+
+class: inverse, center, middle
+# Datas
+
+---
+# Motivação
+
+- Datas e horas são provavelmente os dados mais delicados
+
+- Realizar operações com tempo é algo bastante difícil
+
+- Diversas fontes de dados contém datas mal formatadas
+
+- Entender como o tempo funciona em programação é muito valioso
+
+---
+# Introdução
+
+- O problema das datas e data-horas é que elas são valores numéricos (segundos
+desde o início do universo) expressos com strings
+
+```{r, message=FALSE}
+library(lubridate)
+now()
+as.numeric(now())
+```
+
+- O formato utilizado pelas linguagens de programação para data-horas se chama
+ISO 8601 e é o _único_ que sempre funciona
+
+---
+# O pacote {lubridate}
+
+- O pacote `lubridate` vai nos possibilitar trabalhar com datas e data-horas
+fora do ISO 8601
+
+- O formato brasileiro é `dia/mês/ano hora:minuto:segundo`
+
+```{r}
+dmy_hms("06/05/2020 02:25:00")
+```
+
+- Possível também trabalhar só com datas ou horas
+
+```{r}
+dmy("06/05/2020")
+```
+
+---
+# Componentes
+
+- Extrair os componentes de uma data pode ser importante para uma análise
+
+```{r}
+month("2020-05-06")
+```
+
+- Podemos também somar dias, horas, minutos, etc.
+
+```{r}
+today() + 2
+now() + days(5)
+```
+
+---
+# Operações
+
+- Com os operadores matemáticos normais também somos capazes de calcular
+distâncias entre datas e horas
+
+```{r}
+dif <- dmy("06/05/2020") - dmy("04/05/2020")
+```
+
+- Podemos transformar um objeto de diferença temporal em qualquer unidade que
+queiramos
+
+```{r}
+dif
+as.period(dif) / minutes(1)
+```
+
+---
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/gato.gif")
+```

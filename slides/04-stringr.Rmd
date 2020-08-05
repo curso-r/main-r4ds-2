@@ -1,0 +1,173 @@
+---
+title: "R para Ciência de Dados 2"
+subtitle: "Manipulando texto (stingr)"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "css/custom-intro.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "4:3"
+---
+
+```{r setup, include=FALSE}
+`%>%` <- magrittr::`%>%`
+
+blue <- function(x) {
+  glue::glue(
+    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+colorido <- function(x, cor) {
+  glue::glue(
+    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+options(width = 85)
+```
+
+# Material do curso
+
+- Baixe o arquivo zip que está no Mural do Classroom e dezipe
+
+```{r, echo=FALSE, out.width="70%"}
+knitr::include_graphics("img/material_aula.png")
+```
+
+- Se estiver confiante, você pode clonar / dar pull no repositório do GitHub
+
+- Abra o projeto (arquivo `.Rproj`) no RStudio
+
+---
+# Base de dados
+
+Base do estadual SINESP: Sistema Nacional de Informações de Segurança Pública
+(já disponível no material do curso)
+
+- `uf`
+
+- `tipo_crime`
+
+- `ano`
+
+- `mes`
+
+- `ocorrencias`
+
+---
+class: inverse, center, middle
+# Strings
+
+---
+# Motivação
+
+- Bases com colunas em texto já são _extremamente_ comuns hoje em dia
+
+- Além de ajudar em análise de dados, tratar strings ajuda com programação
+
+- O conhecimento de expressões regulares vale para a vida
+
+- Normalmente os textos são bagunçados, então precisamos arrumá-los
+
+---
+# Introdução
+
+- String não passa de uma sequência de caracteres ("cadeia" em português)
+
+- No R podemos criar uma string com um par de aspas (simples ou duplas)
+
+```{r}
+cat("こんにちは! Está 10\u00BAC na lá fora")
+```
+
+- Para colocar aspas dentro de uma string, podemos __escapar__ o caractere
+
+```{r}
+cat("Ele disse \"escapar\"")
+```
+
+---
+# O pacote {stringr}
+
+- O pacote `{stringr}` é a forma mais simples de trabalhar com strings no R
+
+```{r}
+library(stringr)
+
+abc <- c("a", "b", "c")
+str_c("prefixo-", abc, "-sufixo")
+```
+
+- Todas as funções relevantes começam com `str_` e funcionam bem juntas
+
+```{r}
+abc %>%
+  str_c("-sufixo") %>%
+  str_length()
+```
+
+---
+# Regex
+
+- __Expressões regulares__ são "programação para strings", permitindo extrair
+padrões bastante complexos com comandos simples
+
+```{r}
+frutas <- c("banana", "TANGERINA", "maçã", "lima")
+str_subset(frutas, pattern = "na")
+```
+
+- Símbolos como `.` (qualquer caractere), `^` (início da string) e `$` (fim da
+string) ajudam a criar padrões mais complexos
+
+```{r}
+str_subset(frutas, pattern = "^ma")
+```
+
+---
+# Mais regex
+
+- Podemos contar as ocorrências de um padrão: `+` (1 ou mais vezes), `*` (0 ou
+mais vezes), `{m,n}` (entre `m` e `n` vezes)
+
+```{r}
+ois <- c("oi", "oii", "oiii!")
+str_extract(ois, pattern = "i+")
+```
+
+- Para determinar um conjunto de caracteres válidos, usamos `[]`
+
+```{r}
+str_extract(ois, pattern = "[i!]$")
+```
+
+---
+# Ainda mais regex
+
+- Se de fato precisarmos encontrar um dos __caracteres reservados__, precisamos
+escapá-los da mesma forma como vimos antes
+
+```{r}
+str_replace("Bom dia.", pattern = "\\.", replacement = "!")
+```
+
+- Não esquecer que algumas funções do `{stringr}` possuem variações
+
+```{r}
+str_replace_all("Bom. Dia.", pattern = "\\.", replacement = "!")
+```
+
+---
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/gato.gif")
+```

@@ -1,68 +1,39 @@
 ---
-title: "R para Ciência de Dados"
-subtitle: "Parte II - Aula 5"
-author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '20%'>"
-date: "`r stringr::str_to_title(format(Sys.Date(), '%B, %Y'))`"
+title: "R para Ciência de Dados 2"
+subtitle: "ggplot2 ++"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
   xaringan::moon_reader:
+    css: ["default", "default-fonts", "css/custom-intro.css"]
     lib_dir: libs
-    css: "css/xaringan-themer.css"
     nature:
-      ratio: '16:9'
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+      ratio: "4:3"
 ---
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
-library(tidyverse)
-options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(comment = "#>", 
-                      echo=TRUE, fig.align='center',
-                      dpi = 300, out.width = "90%")
+```{r setup, include=FALSE}
+`%>%` <- magrittr::`%>%`
+
+blue <- function(x) {
+  glue::glue(
+    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+colorido <- function(x, cor) {
+  glue::glue(
+    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+options(width = 85)
 ```
 
-# Submissão de exercícios
-
-1. Utilização do Google Classroom
-
-2. Exercícios envolvem upload de arquivos
-
-3. Vamos checar os resultados durante a aula sempre que possível
-
-4. Ao final de cada exercício, o gabarito será disponibilizado
-
----
-# Última vez
-
-- Ambientação ao Git e Github
-
-- Manipulação avançada de dados
-
-- __Introdução à programação funcional__
-
-- Visualização avançada de dados
-
-- Criação de pacotes
-
-- Comunicação de resultados com dashboards (Shiny)
-
----
-# Hoje
-
-- Ambientação ao Git e Github
-
-- Manipulação avançada de dados
-
-- Introdução à programação funcional
-
-- __Visualização avançada de dados__
-
-- Criação de pacotes
-
-- Comunicação de resultados com dashboards (Shiny)
-
----
 # Material do curso
 
 - Baixe o arquivo zip que está no Mural do Classroom e dezipe
@@ -426,7 +397,3 @@ reactable(iris)
 ```{r echo=FALSE, fig.align='center', out.width="80%"}
 knitr::include_graphics("img/gato.gif")
 ```
-
----
-class: inverse, center, middle
-# Obrigado!

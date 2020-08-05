@@ -1,0 +1,209 @@
+---
+title: "R para Ciência de Dados 2"
+subtitle: "Iterações e pacote purrr"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "css/custom-intro.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "4:3"
+---
+
+```{r setup, include=FALSE}
+`%>%` <- magrittr::`%>%`
+
+blue <- function(x) {
+  glue::glue(
+    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+colorido <- function(x, cor) {
+  glue::glue(
+    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+options(width = 85)
+```
+
+class: inverse, center, middle
+# Iterações
+
+---
+# Motivação
+
+- A iteração é um dos padrões mais comuns em qualquer tarefa de programação
+
+- Entender bem como uma iteração funciona pode facilitar a vida
+
+- Padrões mais seguros de iteração podem deixar o código mais limpo
+
+- É comum precisar repetir uma tarefa várias vezes na ciência de dados
+
+---
+# Introdução
+
+- __Iteração__ não é nada mais do que a repetição de um trecho de código várias
+vezes
+
+```{r}
+vec <- 1:10
+for (i in seq_along(vec)) {
+  vec[i] <- vec[i] + 10
+}
+vec
+```
+
+- Note como a única coisa que fazemos é aplicar uma operação em cada elemento do
+vetor
+
+- Identificamos algumas estruturas: entrada (vetor de 1 a 10), função (somar 10),
+formato da saída (um vetor numérico)
+
+---
+# O pacote {purrr}
+
+- O pacote `{purrr}` nos permite simplificar iterações e integrá-las a pipelines
+do `{tidyverse}`
+
+```{r}
+library(purrr)
+
+soma_dez <- function(x) x + 10
+map_dbl(vec, soma_dez)
+```
+
+- `map_` denota a iteração, `vec` é a entrada, `soma_dez()` é a função e `dbl`
+é o formato da saída (_double_)
+
+- Note que o `map()` passa os elementos do vetor para o __primeiro__ argumento
+da função `soma_dez()`
+
+---
+# Funções
+
+- Para passar outros arugmentos (fixos) a uma função, basta adicioná-los ao
+`map()`
+
+```{r}
+soma_n <- function(x, n) x + n
+map_dbl(vec, soma_n, n = 3)
+```
+
+- Para simplificar funções simples, podemos usar uma notação __lambda__ na qual
+`.x` representa onde deve ir o elemento do vetor
+
+```{r}
+map_dbl(vec, ~3+.x)
+```
+
+---
+# Extras
+
+- Se for necessário iterar em duas listas, basta usar `map2()`
+
+```{r}
+strings <- c("oiii", "como vai", "tchau")
+padroes <- c("i+",   "(.o){2}",  "[au]+$")
+map2_chr(strings, padroes, str_extract)
+```
+
+- E, se for mais útil não especificar o formato de saída, basta usar as versões
+puras dos `map()`s
+
+```{r}
+map2(strings, padroes, str_extract)
+```
+
+---
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/gato.gif")
+```
+
+---
+class: inverse, middle, center
+# Programando com dplyr
+
+---
+# Motivação
+
+- O `{dplyr}` facilita a nossa vida ao permitir colocar os nomes das variáveis
+sem aspas nos argumentos das funções principais
+
+- Isso só é possível por conta de um recurso quase exclusivo do R, chamado de
+*non standard evaluation* (NSE)
+
+- No entanto, quando queremos criar funções, isso pode atrapalhar
+
+```{r eval=FALSE, echo=TRUE}
+selecionar <- function(da, coluna) {
+  da %>% 
+    select(coluna)
+}
+
+da_sinesp_muni %>% 
+  selecionar(regiao)
+```
+    
+    #> Error: object 'regiao' not found
+
+---
+# Programando com R
+
+- Para isso, existe o curly-curly `{{ }}`
+
+- Basta colocá-lo ao redor do argumento que você quer passar
+
+```{r eval=FALSE, echo=TRUE}
+selecionar <- function(da, coluna) {
+  da %>% 
+    select({{coluna}})
+}
+
+da_sinesp_muni %>% 
+  selecionar(regiao)
+```
+
+    # A tibble: 124,246 x 1
+       regiao
+       <chr> 
+     1 NORTE 
+     2 NORTE 
+     3 NORTE 
+     4 NORTE 
+     5 NORTE 
+     6 NORTE 
+     7 NORTE 
+     8 NORTE 
+     9 NORTE 
+    10 NORTE 
+    # … with 124,236 more rows
+
+---
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/gato.gif")
+```
+
+---
+# Resumindo
+
+- Use `{{variavel}}` quando não quiser colocar aspas no argumento da função.
+
+- Use `.data[["variavel"]]` quando quiser colocar aspas no argumento da função.
+
+- Use `{{nome}} := ...` quando quiser criar colunas com nomes que estão no argumento da função.
+
+__Referência__: https://www.curso-r.com/blog/2019-08-21-nse/
+
