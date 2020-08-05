@@ -1,38 +1,26 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/custom-intro.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R para Ciência de Dados 2
+## Organização de projetos
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+### Agosto de 2020
+
 ---
-title: "R para Ciência de Dados 2"
-subtitle: "Organização de projetos"
-author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
-date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
-output:
-  xaringan::moon_reader:
-    css: ["default", "default-fonts", "css/custom-intro.css"]
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: "4:3"
----
 
-```{r setup, include=FALSE}
-`%>%` <- magrittr::`%>%`
 
-blue <- function(x) {
-  glue::glue(
-    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
 
-colorido <- function(x, cor) {
-  glue::glue(
-    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
-
-options(width = 85)
-```
 
 # Introdução
 
@@ -42,9 +30,7 @@ options(width = 85)
 
 - Na prática, tudo fica bagunçado e confuso.
 
-```{r echo=FALSE, fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/condused.gif")
-```
+&lt;img src="img/02-organizacao-de-projetos/condused.gif" style="display: block; margin: auto;" /&gt;
 
 ---
 # O maior problema: coesão
@@ -75,9 +61,7 @@ Um pacote do R nada mais é do que uma forma específica de organizar seus códi
 
 Utilizaremos os pacotes `usethis` e `devtools` para nos ajudar.
 
-```{r echo=FALSE, fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/pacote.gif")
-```
+&lt;img src="img/02-organizacao-de-projetos/pacote.gif" style="display: block; margin: auto;" /&gt;
 
 ---
 # Vantagens e desvantagens
@@ -129,9 +113,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/pacote.gif")
 ---
 # Vamos ao R!
 
-```{r echo=FALSE, fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/gato.gif")
-```
+&lt;img src="img/02-organizacao-de-projetos/gato.gif" style="display: block; margin: auto;" /&gt;
 
 ---
 # Estrutura básica de um pacote
@@ -200,7 +182,8 @@ knitr::include_graphics("img/02-organizacao-de-projetos/gato.gif")
 ---
 # Documentação da função
 
-```{r eval=FALSE}
+
+```r
 #' Título da função
 #'
 #' Descrição da função
@@ -211,7 +194,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/gato.gif")
 #' @return descrição do resultado
 #' 
 #' @export
-fun <- function(a, b) { 
+fun &lt;- function(a, b) { 
   a + b
 }
 ```
@@ -250,9 +233,7 @@ Seguiremos o excelente livro [Happy Git with R](https://happygitwithr.com/), fei
 ---
 # Por quê Git?
 
-```{r echo=FALSE, out.width="40%", fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/git.png")
-```
+&lt;img src="img/02-organizacao-de-projetos/git.png" width="40%" style="display: block; margin: auto;" /&gt;
 
 
 - Git é um **sistema de versionamento**.
@@ -267,9 +248,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/git.png")
 
 # Por quê GitHub?
 
-```{r echo=FALSE, out.width="40%", fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/github.png")
-```
+&lt;img src="img/02-organizacao-de-projetos/github.png" width="40%" style="display: block; margin: auto;" /&gt;
 
 
 - GitHub é um site onde você coloca e compartilha repositórios Git.
@@ -301,23 +280,20 @@ knitr::include_graphics("img/02-organizacao-de-projetos/github.png")
 
 - Ele pode ajudar com criar projetos, repositórios no GitHub e muito mais
 
-```{r echo=FALSE, out.width="15%", fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/usethis.png")
-```
+&lt;img src="img/02-organizacao-de-projetos/usethis.png" width="15%" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Fluxo de trabalho
 
-```{r echo=FALSE, fig.align='center', out.width="70%"}
-knitr::include_graphics("img/02-organizacao-de-projetos/fluxo_github_rstudio.png")
-```
+&lt;img src="img/02-organizacao-de-projetos/fluxo_github_rstudio.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Passo 1: Crie e configure seu pacote
 
-```{r eval=FALSE}
+
+```r
 usethis::create_package("meuPacote")
 ```
 
@@ -334,7 +310,8 @@ Lembrando que nomes de pacotes
 - Depois que o seu projeto estiver pronto, transforme ele em uma pasta com
 controle de versão
 
-```{r, eval=FALSE}
+
+```r
 use_git()
 ```
 
@@ -349,7 +326,8 @@ apareceu) você adiciona controle de versão
 
 Configure seu usuário do Git:
 
-```{r eval=FALSE}
+
+```r
 usethis::use_git_config(
   # Pode ser seu nome mesmo, não precisa ser o nickname
   user.name = "NOME", 
@@ -362,7 +340,8 @@ usethis::use_git_config(
 
 # Passo 3: Adicione o GitHub
 
-```{r, eval=FALSE}
+
+```r
 use_github()
 ```
 
@@ -387,11 +366,9 @@ use_github()
 
 ---
 
-# Passo 4: Stage & Commit
+# Passo 4: Stage &amp; Commit
 
-```{r echo=FALSE, out.width="60%", fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/passo_3_commit_1.gif")
-```
+&lt;img src="img/02-organizacao-de-projetos/passo_3_commit_1.gif" width="60%" style="display: block; margin: auto;" /&gt;
 
 __Observação__: O ato de clicar no item é o passo de Stage.
 
@@ -399,17 +376,13 @@ __Observação__: O ato de clicar no item é o passo de Stage.
 
 # Passo 5: Push
 
-```{r, echo=FALSE, out.width="60%", fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/passo_4_push.gif")
-```
+&lt;img src="img/02-organizacao-de-projetos/passo_4_push.gif" width="60%" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Passo Extra: Pull
 
-```{r, echo=FALSE, out.width="60%", fig.align='center'}
-knitr::include_graphics("img/02-organizacao-de-projetos/passo_5_pull.gif")
-```
+&lt;img src="img/02-organizacao-de-projetos/passo_5_pull.gif" width="60%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -462,4 +435,127 @@ knitr::include_graphics("img/02-organizacao-de-projetos/passo_5_pull.gif")
 - [Zen do R](https://curso-r.github.io/zen-do-r/), livro em desenvolvimento pela Curso-R.
 
 - [Apresentação da Bea Milz](https://beatrizmilz.github.io/RLadies-Git-RStudio-2019).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "4:3"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
 
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

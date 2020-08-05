@@ -1,0 +1,19 @@
+# Seu primeiro pacote
+
+1. Utilize `usethis::create_package()` para criar seu primeiro pacote.
+2. Crie uma função chamada `colar`, que recebe os parâmetros `x` e `y` e retorna eles colados, com um espaço de separação. 
+3. Documente a função e adicione `@export`.
+4. Rode `devtools::document()` e `devtools::load_all()`
+5. Rode `?colar`
+6. Rode com seu nome: `colar("Jane", "Doe")`
+7. Tire um print screen de seu RStudio, mostrando i) o código que define a função, ii) o Help da função `colar` e iii) o resultado da operação `colar()` com o seu nome.
+8. Submeta a imagem no Google Classroom.
+
+# Github
+
+Siga os passos e não se esqueça de configurar seu usuário com `use_git_config()`!
+
+1. Crie um pacote e adicione Git e o GitHub
+2. Crie um script em R e adicione a função `colar()`, criada no exercício 1.
+3. Commit & Push
+4. Submeta o link de seu repositório no Google Classroom

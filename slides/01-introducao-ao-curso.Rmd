@@ -67,16 +67,18 @@ class: middle, center
 
 - As aulas serão (quase totalmente) expositivas.
 
-- Teremos diversos exercícios para serem feitos "em casa".
+- Teremos diversos exercícios e uma entrega final para serem feitos "em casa".
 
-- Os exercícios não serão avaliações, portanto não terão prazo nem nota. O objetivo deles será gerar dúvidas em vocês, para que os professores possam melhor orientá-las(los) durante o curso.
+- Os exercícios não serão avaliações, isto é, não terão prazo nem nota. O objetivo deles será gerar dúvidas, para que possamos melhor orientá-las(los) durante o curso. Portanto, **não é preciso entregar os exercícios**.
 
-- O certificado será emitido mediante uma **entrega final**. A entrega final será uma composição de todos os exercícios. O prazo da entrega final será de 7 dias após o fim do curso.
+- A entrega final será um pequeno projeto englobando diversos conceitos abordados durante o curso. O prazo da entrega final será de 2 semanas após a última aula.
+
+- O certificado será emitido para os alunos que fizerem **entrega final**. A entrega final será uma composição de todos os exercícios. 
 
 ---
 ## Extras
 
-- Teremos monitoria duas vezes pode semana, sempre 1 hora antes do início das aulas (seg e qua, das 18h às 19h)
+- Teremos monitoria duas vezes pode semana, sempre 1 hora antes do início das aulas (ter e qui, das 18h às 19h).
 
 - Além das aulas, teremos alguns conteúdos extras, tanto em texto quanto em vídeo.
 
