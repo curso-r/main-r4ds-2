@@ -102,13 +102,15 @@ Inicialmente, vamos tirar do RStudio o melhor que ele pode oferecer no que se tr
 ---
 ## Simplificando tudo: usethis
 
-O pacote `usethis` ajuda com todo o fluxo de desenvolvimento em R.
+O pacote `{usethis}` ajuda com todo o fluxo de desenvolvimento em R.
 
 Ele ajuda a criar arquivos, projetos, usar o Git, criar repositórios no GitHub e muito mais.
 
 ```{r echo=FALSE, out.width="15%", fig.align='center'}
 knitr::include_graphics("img/02-organizacao-de-projetos/usethis.png")
 ```
+
+Apresentaremos várias funções do `{usethis}` ao longo deste tópico.
 
 ---
 class: center, middle
@@ -139,7 +141,7 @@ Ao reabrir o RStudio, o conteúdo armazenados nestes arquivos será carregado no
 - O R trata todos os objetos guardados na memória igualmente, sem levar em conta sua utilidade ou tamanho. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão (não importando quão grande sejam). Assim, `r blue("o")` `.RData` `r blue("pode ser um arquivo de múltiplos gigabytes")`.
 
 ---
-    class: center, middle
+class: center, middle
 # `r blue("Rproj e diretórios")`
 
 ---
@@ -192,7 +194,7 @@ Para isso, vamos introduzir mais alguns assuntos.
 - **Pacotes**: como e por que transformar um projeto em um pacote e como documentá-lo.
 
 ---
-    class: center, middle
+class: center, middle
 # `r blue("Funções e dependências")`
 
 ---
@@ -356,6 +358,8 @@ Você pode usar a função `usethis::use_vignette()` para criar *vignettes*.
 ---
 ## Documentação
 
+A documentação de uma função deve seguir a estrutura a seguir:
+
 ```{r eval=FALSE}
 #' Título da função
 #'
@@ -371,6 +375,10 @@ fun <- function(a, b) {
   a + b
 }
 ```
+
+Veja que usamos o símbolo `#'` para documentar uma função. 
+
+O parâmetro `@export` indica que a função ficará disponível quando rodarmos `library(MeuProjeto)`.
 
 ---
 ## Utilizando seu pacote durante a análise
@@ -444,7 +452,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/hug.gif")
 
 <br>
 
-O grande cupido dessa amizade é o `usethis`.
+O grande cupido dessa amizade é o `{usethis}`.
 
 ---
 ## Fluxo de trabalho
@@ -571,9 +579,9 @@ knitr::include_graphics("img/02-organizacao-de-projetos/passo_5_pull.gif")
 ---
 # Referências
 
-- [R Packages](https://r-pkgs.org), livro aprofundado sobre desenvolvimento de pacotes.
-
 - [Zen do R](https://curso-r.github.io/zen-do-r/), livro em desenvolvimento pela Curso-R.
+
+- [R Packages](https://r-pkgs.org), livro aprofundado sobre desenvolvimento de pacotes.
 
 - [Apresentação da Bea Milz](https://beatrizmilz.github.io/RLadies-Git-RStudio-2019).
 
