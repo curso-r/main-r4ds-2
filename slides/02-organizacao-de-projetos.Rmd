@@ -17,14 +17,7 @@ output:
 ```{r setup, include=FALSE}
 `%>%` <- magrittr::`%>%`
 
-blue <- function(x) {
-  glue::glue(
-    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
-
-colorido <- function(x, cor) {
+colorido <- function(x, cor = "#6495ed") {
   glue::glue(
     '<span style="color:{cor}; font-weight: bold;">{x}</span>'
   ) %>% 
@@ -34,8 +27,8 @@ colorido <- function(x, cor) {
 options(width = 85)
 ```
 
-class: center, middle
-# `r blue("Introdução")`
+class: titulo
+# Introdução
 
 ---
 ## Organizando projetos
@@ -113,8 +106,8 @@ knitr::include_graphics("img/02-organizacao-de-projetos/usethis.png")
 Apresentaremos várias funções do `{usethis}` ao longo deste tópico.
 
 ---
-class: center, middle
-# `r blue(".RData e .Rhistory")`
+class: titulo
+# .RData e .Rhistory
 
 ---
 ## Os arquivos .RData e .Rhistory 
@@ -130,19 +123,19 @@ Ao reabrir o RStudio, o conteúdo armazenados nestes arquivos será carregado no
 ---
 ## Por que desistir do .RData e .Rhistory 
 
-- Se todos os resultados parciais de uma análise estiverem disponíveis a qualquer momento, `r blue("diminui o incentivo para a escrita de código reprodutível")`.
+- Se todos os resultados parciais de uma análise estiverem disponíveis a qualquer momento, `r colorido("diminui o incentivo para a escrita de código reprodutível")`.
 
-- Se todo o histórico de comandos for acessível, `r blue("acaba a necessidade de experimentos controlados")`.
+- Se todo o histórico de comandos for acessível, `r colorido("acaba a necessidade de experimentos controlados")`.
 
-- Ao dependermos ativamente do `.Rdata`, `r blue("se acidentalmente sobrescrevemos um objeto")` relevante e o código para recriá-lo não estiver mais acessível, `r blue("não haverá nenhuma forma confiável de recuperá-lo")`.
+- Ao dependermos ativamente do `.Rdata`, `r colorido("se acidentalmente sobrescrevemos um objeto")` relevante e o código para recriá-lo não estiver mais acessível, `r colorido("não haverá nenhuma forma confiável de recuperá-lo")`.
 
-- A menos que pretendamos sentar com colegas para explicar como utilizar os objetos do `.RData` e do `.Rhistory`, `r blue("não pode-se esperar que outra pessoa seja capaz de reproduzir uma análise")`.
+- A menos que pretendamos sentar com colegas para explicar como utilizar os objetos do `.RData` e do `.Rhistory`, `r colorido("não pode-se esperar que outra pessoa seja capaz de reproduzir uma análise")`.
 
-- O R trata todos os objetos guardados na memória igualmente, sem levar em conta sua utilidade ou tamanho. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão (não importando quão grande sejam). Assim, `r blue("o")` `.RData` `r blue("pode ser um arquivo de múltiplos gigabytes")`.
+- O R trata todos os objetos guardados na memória igualmente, sem levar em conta sua utilidade ou tamanho. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão (não importando quão grande sejam). Assim, `r colorido("o")` `.RData` `r colorido("pode ser um arquivo de múltiplos gigabytes")`.
 
 ---
-class: center, middle
-# `r blue("Rproj e diretórios")`
+class: titulo
+# Rproj e diretórios
 
 ---
 ## Projetos
@@ -151,7 +144,7 @@ Um programador iniciante corre o risco de não gerenciar seus projetos.
 
 Muitas vezes seus arquivos de código ficarão espalhados pelos infinitos diretórios de seu computador, esperando a primeira oportunidade de sumir para sempre.
 
-`r blue("Felizmente o RStudio possui uma ferramenta incrível que auxilia na tarefa de consolidar todos os recursos necessários para uma análise.")` 
+`r colorido("Felizmente o RStudio possui uma ferramenta incrível que auxilia na tarefa de consolidar todos os recursos necessários para uma análise.")` 
 
 Denominados "projetos", eles não passam de pastas comuns com um arquivo `.Rproj`.
 
@@ -194,8 +187,8 @@ Para isso, vamos introduzir mais alguns assuntos.
 - **Pacotes**: como e por que transformar um projeto em um pacote e como documentá-lo.
 
 ---
-class: center, middle
-# `r blue("Funções e dependências")`
+class: titulo
+# Funções e dependências
 
 ---
 ## Funções
@@ -204,7 +197,7 @@ Quando uma tarefa de análise de dados aumenta em complexidade, o número de fun
 
 Um arquivo para ler os dados, outro para limpar os nomes das colunas, mais um para fazer joins… Cada um deles com incontáveis blocos de código que rapidamente se transformam em uma [macarronada](https://pt.wikipedia.org/wiki/C%C3%B3digo_espaguete).
 
-`r blue("O primeiro passo para sair dessa situação é transformar tudo em funções")`.
+`r colorido("O primeiro passo para sair dessa situação é transformar tudo em funções")`.
 
 Funções têm argumentos e saídas, enquanto código solto pode modificar globais e criar resultados tardios que são impossíveis de acompanhar sem conhecer profundamente a tarefa sendo realizada.
 
@@ -228,7 +221,7 @@ Por isso, é a primeira coisa que escrevemos nos nossos *scripts* quase sempre �
 
 No entanto, conforme nosso código vai crescendo, acabamos utilizando cada vez mais pacotes e, conforme nosso código vai mudando, fica impossível saber se um pacote listado no começo do *script* ainda está sendo utilizado ou não.
 
-`r blue("Qual a melhor maneira de se ter controle sobre os pacotes utilizados na nossa análise?")`
+`r colorido("Qual a melhor maneira de se ter controle sobre os pacotes utilizados na nossa análise?")`
 
 ---
 ## Quatro pontos
@@ -255,8 +248,8 @@ Para escrever `dplyr::`, por exemplo, basta digitar `d`, `p`, `l` e apertar TAB 
 - O uso do `::` será fundamental na criação e organização de pacotes.
 
 ---
-class: center, middle
-# `r blue("Pacotes")`
+class: titulo
+# Pacotes
 
 ---
 ## Pacotes
@@ -394,8 +387,8 @@ Algumas dicas e boas práticas.
 - Se você precisar instalar o seu pacote (equivalente ao que fazemos com pacotes do CRAN quando rodamos `install_packages()`), use a função `devtools::install()`. Ela deve ser utilizada quando o seu pacote estiver pronto (ou pelo menos alguma versão dele).
 
 ---
-class: center, middle
-# `r blue("Git e GitHub")`
+class: titulo
+# Git e Github
 
 ---
 ## Git
@@ -410,7 +403,7 @@ class: center, middle
 
 - Torna-se importante à medida que seu trabalho é __colaborativo__.
 
-- `r blue("Git é um software que você instala no computador.")`
+- `r colorido("Git é um software que você instala no computador.")`
 
 <br>
 
@@ -431,7 +424,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/git.png")
 
 - Existem alternativas, como [GitLab](https://about.gitlab.com/) e [BitBucket](https://bitbucket.org/product).
 
-- `r blue("GitHub é um site que você acessa na internet.")`
+- `r colorido("GitHub é um site que você acessa na internet.")`
 
 <br>
 
@@ -444,7 +437,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/github.png")
 
 No nosso caso, pacote e repositório serão termos equivalentes.
 
-`r blue("Pacotes do R e repositórios do GitHub são melhores amigos.")`
+`r colorido("Pacotes do R e repositórios do GitHub são melhores amigos.")`
 
 ```{r echo=FALSE, out.width="40%", fig.align='center'}
 knitr::include_graphics("img/02-organizacao-de-projetos/hug.gif")
