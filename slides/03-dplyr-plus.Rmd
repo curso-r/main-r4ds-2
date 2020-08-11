@@ -15,404 +15,218 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-`%>%` <- magrittr::`%>%`
+library(dplyr)
 
-blue <- function(x) {
-  glue::glue(
-    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
-
-colorido <- function(x, cor) {
+colorido <- function(x, cor = "#6495ed") {
   glue::glue(
     '<span style="color:{cor}; font-weight: bold;">{x}</span>'
   ) %>% 
     htmltools::HTML()
 }
 
-options(width = 85)
+options(width = 80)
 ```
 
-# Base de dados
-
-Base do SINESP: Sistema Nacional de Informações de Segurança Pública
-
-- `município`
-- `sigla_uf`
-- `regiao`
-- `mes_ano`
-- `vitima`
+class: titulo
+# Motivação
 
 ---
+## Base do SINESP
 
-## Manipulação
+Nos exemplos a seguir, vamos utilizar a base do Sistema Nacional de Informações de Segurança Pública (SINESP).
+
+Ela possui as seguintes variáveis:
+
+- Nome do município: `município`
+
+- UF (sliga): `sigla_uf`
+
+- Região do Brasil: `regiao`
+
+- Mês/ano: `mes_ano`
+
+- Número de vítimas: `vitima`
+
+---
+class: titulo
+# O pacote dplyr
+
+---
+## Verbos principais
+
+Já vimos que com os principais verbos do `{dplyr}` já conseguimos fazer diversas operações de manipulação de bases de dados.
 
 .pull-left[
+- Selecionar colunas: `select()`
+
+- Ordenar linhas: `arrange()`
+
+- Filtrar linhas: `filter()`
+
+- Criar ou modificar colunas: `mutate()`
+
+- Agrupar e sumarizar: `group_by()` + `summarise()`
+]
+
+.pull-right[
+```{r, out.width="100%", echo = FALSE}
+knitr::include_graphics("img/03-dplyr-plus/arte_dplyr.png")
+```
+]
+
+<center>
+`r colorido("Mas o dplyr tem muito mais para oferecer. MUITO MAIS!")`
+</center>
+
+---
+## Miscelânea de funções úteis
+
+Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos conhecidas do `{dplyr}`.
+
+- `bind_rows()` e `bind_cols()`
+
+- `case_when()`
+
+- `coalesce()`: para substituir os `NAs` de uma coluna pelos valores equivalentes de uma segunda coluna.
+
+---
+## bind_rows()
+
+Vamos usar a função `bind_rows()` para juntarmos duas bases com as mesmas colunas.
+
+```{r}
+# Juntando duas bases
+imdb_2015 <- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2015.rds")
+imdb_2016 <- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2016.rds")
+
+bind_rows(imdb_2015, imdb_2016) %>% head()
+```
+
+---
+##  
+
+Neste caso, a função `bind_rows()` é equivalente à função `rbind()`.
+
+```{r}
+# Juntando duas bases
+imdb_2015 <- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2015.rds")
+imdb_2016 <- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2016.rds")
+
+rbind(imdb_2015, imdb_2016) %>% head()
+```
+
 <br>
-- Selecionar colunas
 
-- Filtrar linhas
-
-- Criar ou modificar colunas
-
-- Agrupar e sumarizar
-
-- Juntar tabelas
-]
-
-.pull-right[
-
-```{r, out.width="100%"}
-knitr::include_graphics("img/arte_dplyr.png")
-```
-
-]
+**Observação**: tanto para a `bind_rows()` quanto para a `rbind()`, a ordem das colunas em ambas as bases pode ser diferente. As colunas são empilhadas pelo nome.
 
 ---
-## Visualização
+## 
 
-```{r, out.width="60%", fig.align='center'}
-knitr::include_graphics("img/arte_ggplot2.png")
+Podemos também usar a função `bind_rows()` para juntar várias tabelas. Aqui, todas as tabelas continuam tendo as mesmas colunas.
+
+```{r}
+arquivos <- list.files("../data-raw/rds/imdb_por_ano/", full.names = TRUE)
+
+arquivos %>%
+  purrr::map(readr::read_rds) %>%
+  bind_rows() %>% 
+  head()
 ```
 
+**Observação**: a função `purrr::map()` está aplicando a função `readr::read_rds()` a todos os elementos do vetor `arquivos` e devolvendo uma lista de tibbles, uma para cada ano da base IMDB. Aprenderemos mais sobre essa função na aula de `purrr`.
+
 ---
-## Comunicação
+## 
 
-- Relatórios automatizados
-- Dashboards estáticos
+Como a função `map()` devolve uma lista, a função `rbind()` não funcionaria.
 
-```{r, out.width="60%", fig.align='center'}
-knitr::include_graphics("img/arte_rmarkdown.png")
+```{r}
+arquivos <- list.files("../data-raw/rds/imdb_por_ano/", full.names = TRUE)
+
+arquivos %>%
+  purrr::map(readr::read_rds) %>%
+  rbind()
 ```
 
 ---
+## 
 
-## O ciclo da ciência de dados com o R
+Além disso, a função `bind_rows()` pode ser utilizada para empilhar bases com colunas diferentes.
 
-```{r, out.width="80%"}
-knitr::include_graphics("img/ciclo-ciencia-de-dados-pacotes.png")
+```{r}
+tab1 <- tibble::tibble(
+  var1 = c(1, 2, 3),
+  var2 = c("a", "b", "c"),
+  var3 = c(10, 20, 30)
+)
+
+tab2 <- tibble::tibble(
+  var2 = c("d", "e", "f"),
+  var1 = c(4, 5, 6)
+)
+
+bind_rows(tab1, tab2)
 ```
 
 ---
-class: inverse, middle, center
-
-# Importação
-
----
-
-# O que é importação
-
-### Carregar uma base de dados numa `tibble` dentro do R.
-
-```{r, out.width="80%"}
-knitr::include_graphics("img/importacao.png")
-```
-
----
-
-# O que é importação
-
-### Carregar uma base de dados numa `tibble` dentro do R.
-
---
-
-- Pode ser um arquivo `.csv` ou `.xlsx`.
-
---
-
-- Pode ser um banco de dados local ou na nuvem.
-
---
-
-- Pode ser um conjunto de arquivos `.html` brutos.
-
---
-
-...e muito mais
-
----
-
-# Tibble
-
-- É o mesmo que um `data.frame()`
-- Possui propriedades mais legais e imprime mais bonito.
-
-```{r, echo=TRUE}
-{{tibble::as_tibble(mtcars)}}
-```
-
----
-
-# Glimpse
-
-- É o mesmo que `str()`, mas mais bonito e informativo.
-
-```{r, echo=TRUE}
-{{tibble::glimpse(mtcars)}}
-```
-
----
-
-# Pacotes de importação de dados
-
-- Arquivos de texto: `{readr}`, `data.table::fread()`, `vroom::vroom()`
-
---
-
-- Arquivos estruturados, como `xlsx` e `json`: `{readxl}`, `{jsonlite}`
-
---
-
-- Banco de dados: `{DBI}`, `{odbc}` e pacotes específicos
-
---
-
-- HTML e XML: `{xml2}`
-
----
-class: center
-
-# Vamos ao R!
-
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
-```
-
----
-
-# Exercício
-
-1. Vá até a página [dados.gov.br](https://dados.gov.br) e pesquise pela base do SINESP.
-2. Baixe o arquivo do SINESP, como vimos, salvando no local apropriado.
-3. Leia todas as bases numa lista.
-    - __Dica__: utilize `purrr::map()` e `readxl::excel_sheets()`
-4. Empilhe a base.
-    - __Dica__: utilize a função `dplyr::bind_rows()`
-
----
-
-# Extra: pacote {vroom}
-
-.pull-left[
-
-- Se precisar carregar bases maiores, considere o pacote `{vroom}`.
-- Ele carrega tudo num piscar de olhos, pois processa os somente somente quando você usa.
-
-]
-
-.pull-right[
-
-```{r, echo=FALSE, out.width="100%"}
-knitr::include_graphics("img/vroom.png")
-```
-
-]
-
----
-
-# Extra: pacote {ckanr}
-
-- O pacote `{ckanr}` permite baixar dados de sites do tipo CKAN direto para o R.
-
-Exemplo:
-
-```{r, eval=FALSE, echo=TRUE}
-library(ckanr)
-ckanr_setup("http://dados.gov.br")
-pacote <- ckanr::package_search("SINESP")$results[[1]]
-pacote
-```
-
-    <CKAN Package> 210b9ae2-21fc-4986-89c6-2006eb4db247 
-      Title: Ocorrências Criminais - Sinesp
-      Creator/Modified: 2019-01-26T00:30:09.272398 / 2020-04-16T13:24:22.446329
-      Resources (up to 5): Dicionário de Dados, Dados Nacionais de 
-      Segurança Pública - Municípios, Dados Nacionais de Segurança Pública - UF
-      Tags (up to 5): DGI, DNSP, Dados Nacionais de Segurança Pública, 
-      Dados Oficiais, senasp
-      Groups (up to 5):
-
----
-
-# Extra: pacote {ckanr}
-
-```{r, eval=FALSE, echo=TRUE}
-download.file(pacote$resources[[2]]$url, "sinesp.xlsx")
-readxl::read_excel("sinesp.xlsx")
-```
-
-    # A tibble: 258 x 5                                                                            
-       Município        `Sigla UF` Região `Mês/Ano`           Vítima
-       <chr>            <chr>      <chr>  <dttm>               <dbl>
-     1 Bujari           AC         NORTE  2018-01-01 00:00:00      1
-     2 Cruzeiro do Sul  AC         NORTE  2018-01-01 00:00:00      8
-     3 Feijó            AC         NORTE  2018-01-01 00:00:00      3
-     4 Jordão           AC         NORTE  2018-01-01 00:00:00      1
-     5 Mâncio Lima      AC         NORTE  2018-01-01 00:00:00      1
-     6 Rio Branco       AC         NORTE  2018-01-01 00:00:00     31
-     7 Rodrigues Alves  AC         NORTE  2018-01-01 00:00:00      2
-     8 Sena Madureira   AC         NORTE  2018-01-01 00:00:00      1
-     9 Senador Guiomard AC         NORTE  2018-01-01 00:00:00      1
-    10 Tarauacá         AC         NORTE  2018-01-01 00:00:00      1
-    # … with 248 more rows
-
----
-class: inverse, middle, center
-
-# Pausa
-
-<!-- Parte 2---------------------------------------------------------------- -->
-
----
-class: inverse, middle, center
-
-# Revisão {dplyr}
-
----
-class: middle
-
-# Tidy data
-
-> "Happy families are all alike; every unhappy family is unhappy in its own way." –– Leo Tolstoy
-
-> "Tidy datasets are all alike, but every messy dataset is messy in its own way." –– Hadley Wickham
-
-
----
-
-# O que é tidy data?
-
-É uma base que une os conceitos da estatística (amostra, variável) e da informática (linhas, colunas)
-
-### As observações estão nas linhas
-
---
-
-### As variáveis estão nas colunas
-
---
-
-### Os valores estão nas células
-
----
-
-## Os 5 verbos do dplyr
-
-`filter()`: selecionar observações (linhas) da base de dados
-
---
-
-`arrange()`: ordenar de acordo com alguma variável (coluna)
-
---
-
-`select()`: selecionar variáveis (colunas)
-
---
-
-`mutate()`: modificar/criar variáveis do banco de dados
-
---
-
-`summarise()`: sumarizar/agregar variáveis de uma base de dados
-
----
-
-## 3 regras
-
-* o primeiro argumento é sempre uma `tibble()`
-* os outros argumentos descrevem o que você quer fazer
-* todos os verbos retornam sempre um `tibble()`
-
-Essas três regras fazem o uso do pipe (`%>%`) ser muito intuitivo.
-
-OBS: Para quem não lembra do `%>%`:
-
-```{r eval=FALSE, echo=TRUE}
-# equivalente
-funcao(param_a, param_b)
-objeto %>% funcao(param_b)
+## 
+
+Ao contrário da função `rbind()`.
+
+```{r, error=TRUE}
+tab1 <- tibble::tibble(
+  var1 = c(1, 2, 3),
+  var2 = c("a", "b", "c"),
+  var3 = c(10, 20, 30)
+)
+
+tab2 <- tibble::tibble(
+  var2 = c("d", "e", "f"),
+  var1 = c(4, 5, 6)
+)
+
+rbind(tab1, tab2)
 ```
 
 
 ---
-class: center
+## coalesce()
 
-# Vamos ao R!
+No exemplo abaixo, substituimos os `NAs` da coluna `var1` pelos valores equivalentes da coluna `var2` (criamos uma nova coluna `var3` com o resultado para visualizarmos melhor). No caso em que as duas colunas apresentavam `NA`, a coluna `var3` continuou com o `NA`.
 
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+```{r}
+tab <- tibble::tibble(
+  var1 = c(1, 2, NA, 2, 10, NA, NA),
+  var2 = c(NA, 2, 2, 10, 3, 0, NA)
+)
+
+tab %>%
+  mutate(var3 = coalesce(var1, var2))
 ```
 
 ---
+# Across
 
-# select()
+across() makes it possible to compute useful summaries that were previously impossible. For example, it’s now easy to summarise numeric vectors with one function, factors with another, and still compute the number of rows in each group:
 
-Outras funções úteis de seleção
+  
+```{r, eval = FALSE}
 
-* `starts_with("abc")`: seleciona nomes que começam com "abc"
-
-* `ends_with("xyz")`: seleciona nomes que terminam com "xyz"
-
-* `contains("ijk")`: seleciona nomes que contêm "ijk"
-
-* `matches("(.)\\1")`: seleciona nomes usando Expressões Regulares
-
-* `num_range("x", 1:3)`: seleciona x1, x2 e x3
-
-
----
-class: center
-
-# Vamos ao R!
-
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+df %>%
+  group_by(g1, g2) %>% 
+  summarise(
+    across(where(is.numeric), mean), 
+    across(where(is.factor), nlevels),
+    n = n(), 
+  )
 ```
+  
+across() reduces the number of functions that dplyr needs to provide. This makes dplyr easier for you to use (because there are fewer functions to remember) and easier for us to develop (since we only need to implement one function for each new verb, not four).
 
-<!-- Parte 3---------------------------------------------------------------- -->
+With the where() helper, across() unifies _if and _at semantics, allowing combinations that used to be impossible. For example, you can now transform all numeric columns whose name begins with “x”: across(where(is.numeric) & starts_with("x")).
 
----
-class: inverse, middle, center
+across() doesn’t need vars(). The _at() functions are the only place in dplyr where you have to use vars(), which makes them unusual, and hence harder to learn and remember.
 
-# Bancos de dados
-
-
----
-
-# Bancos de dados e R
-
-No passado, a conexão com bancos de dados eram complicadas. Mas hoje em dia, graças ao `{tidyverse}`, tudo está facilitado. 
-
-Basicamente, temos dois componentes para bancos de dados:
-
-- __Componente de conexão/interação__: Cuida da conexão com a base de dados e das operações principais, como leitura, escrita e aplicação de queries SQL. Coordenada pelo pacote `{DBI}` e implementada internamente por diversos pacotes, um para cada tecnologia de banco de dados, como `{odbc}`, `{RPostgres}`, entre outros.
-
---
-
-- __Componente de tradução__: Traduz operações feitas com o `{dplyr}` em queries do SQL, para que os seus códigos rodem no servidor de banco de dados. Coordenado pelo `{dbplyr}`.
-
----
-
-# Referência principal
-
-## [db.rstudio.com](https://db.rstudio.com)
-
-- Contém tutoriais para praticamente qualquer banco de dados.
-- Informações completas sobre todos os pacotes.
-- A partir desse site, você pode pesquisar pelos pacotes específicos.
-
----
-class: center
-
-# Vamos ao R!
-
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
-```
-
-<!-- Parte 4---------------------------------------------------------------- -->
 
 ---
 class: inverse, middle, center
@@ -424,7 +238,7 @@ class: inverse, middle, center
 # pivot_wider()
 
 ```{r}
-knitr::include_graphics("img/wider.png")
+knitr::include_graphics("img/03-dplyr-plus/wider.png")
 ```
 
 (retirado do livro [r4ds](https://r4ds.had.co.nz))
@@ -434,7 +248,7 @@ knitr::include_graphics("img/wider.png")
 # pivot_longer()
 
 ```{r}
-knitr::include_graphics("img/longer.png")
+knitr::include_graphics("img/03-dplyr-plus/longer.png")
 ```
 
 (retirado do livro [r4ds](https://r4ds.had.co.nz))
@@ -445,7 +259,7 @@ class: center
 # Vamos ao R!
 
 ```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
 ```
 
 <!-- Finalizando ----------------------------------------------------------- -->
@@ -577,7 +391,7 @@ class: center
 # Vamos ao R!
 
 ```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
 ```
 
 <!-- Parte 2---------------------------------------------------------------- -->
@@ -600,7 +414,7 @@ class: inverse, middle, center
 # pivot_wider()
 
 ```{r, out.width="90%"}
-knitr::include_graphics("img/wider.png")
+knitr::include_graphics("img/03-dplyr-plus/wider.png")
 ```
 
 (retirado do livro [r4ds](https://r4ds.had.co.nz))
@@ -610,7 +424,7 @@ knitr::include_graphics("img/wider.png")
 # pivot_longer()
 
 ```{r, out.width="90%"}
-knitr::include_graphics("img/longer.png")
+knitr::include_graphics("img/03-dplyr-plus/longer.png")
 ```
 
 (retirado do livro [r4ds](https://r4ds.had.co.nz))
@@ -621,7 +435,7 @@ class: center
 # Vamos ao R!
 
 ```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
 ```
 
 ---
@@ -656,44 +470,12 @@ class: inverse, middle, center
 - Melhor material: [livro r4ds](https://r4ds.had.co.nz/relational-data.html)
 
 ---
-
-# Tipos de join
-
-```{r, out.width="90%"}
-knitr::include_graphics("img/join-venn.png")
-```
-
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
-
----
-
-# `inner_join()`
-
-```{r, out.width="90%"}
-knitr::include_graphics("img/join-inner.png")
-```
-
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
-
-
----
-
-# "outer" `_join()`
-
-```{r, out.width="30%"}
-knitr::include_graphics("img/join-outer.png")
-```
-
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
-
-
----
 class: center
 
 # Vamos ao R!
 
 ```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
 ```
 
 ---
@@ -736,7 +518,7 @@ class: center
 # Vamos ao R!
 
 ```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
 ```
 
 <!-- Parte 5---------------------------------------------------------------- -->
@@ -804,7 +586,7 @@ class: center
 # Vamos ao R!
 
 ```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
 ```
 
 ---

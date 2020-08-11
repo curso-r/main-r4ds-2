@@ -28,11 +28,11 @@ Com o Shiny, podemos produzir aplicativos web em HTML, CSS e JavaScript sem sabe
 
 &lt;br&gt;&lt;br&gt;
 
-&lt;img src="img/hex-shiny.png" style="position: fixed; top: 235px; left: 430px; z-index: 1;" width="6%"&gt;
+&lt;img src="img/08-shiny/hex-shiny.png" style="position: fixed; top: 235px; left: 430px; z-index: 1;" width="6%"&gt;
 
 &lt;center&gt;
-&lt;img src="img/shiny.png" width = "50%"&gt;
-&lt;img src="img/shiny2.png" width = "50%"&gt;
+&lt;img src="img/08-shiny/shiny.png" width = "50%"&gt;
+&lt;img src="img/08-shiny/shiny2.png" width = "50%"&gt;
 &lt;br&gt;
 Fonte: &lt;a href = http://www.rstudio.com/shiny/&gt;rstudio.com/shiny/&lt;/a&gt;
 &lt;/center&gt;
@@ -42,7 +42,7 @@ Fonte: &lt;a href = http://www.rstudio.com/shiny/&gt;rstudio.com/shiny/&lt;/a&gt
 ## Dashboards dinâmicos
 
 &lt;center&gt;
-&lt;img src="img/como-funciona.png", width = "80%"&gt;
+&lt;img src="img/08-shiny/como-funciona.png", width = "80%"&gt;
 &lt;br&gt;
 Fonte: &lt;a href = http://www.rstudio.com/shiny/&gt;rstudio.com/shiny/&lt;/a&gt;
 &lt;/center&gt;
@@ -131,7 +131,7 @@ Vamos criar e rodar o exemplo minimal do slide anterior.
 Fazer um shiny app tem duas grandes tarefas: a construção do layout (veremos mais a frente) e a construção dos inputs e outputs.
 
 &lt;center&gt;
-&lt;img src="img/inputs_outputs.png" width = "100%"&gt;
+&lt;img src="img/08-shiny/inputs_outputs.png" width = "100%"&gt;
 &lt;/center&gt;
 
 ---
@@ -250,7 +250,7 @@ shinyApp(ui, server)
 Inputs permitem que o usuário interaja com o seu aplicativo. Eles são criados no UI com funções (geralmente) do tipo `_Input()` e são utilizados dentro do server para alterar as visualizações. O Shiny já vem com um diversos tipos de input prontos para usar:
 
 &lt;center&gt;
-&lt;img src="img/inputs.png", width = "85%"&gt;
+&lt;img src="img/08-shiny/inputs.png", width = "85%"&gt;
 &lt;br&gt;
 Fonte: &lt;a href = http://www.rstudio.com/shiny/&gt;rstudio.com/shiny/&lt;/a&gt;
 &lt;/center&gt;
@@ -275,11 +275,11 @@ Vamos colocar um seletor de variáveis no exemplo anterior para permitir que o u
 Para acessar os inputs dentro da função server, utilizamos a lista `input`. Essa lista guardará todos os inputs criados no UI.
 
 .pull-left[
-&lt;img src="img/inputvalues.png" width= "100%"&gt;
+&lt;img src="img/08-shiny/inputvalues.png" width= "100%"&gt;
 ]
 
 .pull-right[
-&lt;img src="img/sliderinputexample.png" width= "80%"&gt;
+&lt;img src="img/08-shiny/sliderinputexample.png" width= "80%"&gt;
 - `input$num` pode ser usado no server para deixar as visualizações dinâmicas.
 ]
 &lt;center&gt;

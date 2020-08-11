@@ -17,14 +17,7 @@ output:
 ```{r setup, include=FALSE}
 `%>%` <- magrittr::`%>%`
 
-blue <- function(x) {
-  glue::glue(
-    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
-
-colorido <- function(x, cor) {
+colorido <- function(x, cor = "#6495ed") {
   glue::glue(
     '<span style="color:{cor}; font-weight: bold;">{x}</span>'
   ) %>% 
@@ -40,11 +33,11 @@ Com o Shiny, podemos produzir aplicativos web em HTML, CSS e JavaScript sem sabe
 
 <br><br>
 
-<img src="img/hex-shiny.png" style="position: fixed; top: 235px; left: 430px; z-index: 1;" width="6%">
+<img src="img/08-shiny/hex-shiny.png" style="position: fixed; top: 235px; left: 430px; z-index: 1;" width="6%">
 
 <center>
-<img src="img/shiny.png" width = "50%">
-<img src="img/shiny2.png" width = "50%">
+<img src="img/08-shiny/shiny.png" width = "50%">
+<img src="img/08-shiny/shiny2.png" width = "50%">
 <br>
 Fonte: <a href = http://www.rstudio.com/shiny/>rstudio.com/shiny/</a>
 </center>
@@ -54,7 +47,7 @@ Fonte: <a href = http://www.rstudio.com/shiny/>rstudio.com/shiny/</a>
 ## Dashboards dinâmicos
 
 <center>
-<img src="img/como-funciona.png", width = "80%">
+<img src="img/08-shiny/como-funciona.png", width = "80%">
 <br>
 Fonte: <a href = http://www.rstudio.com/shiny/>rstudio.com/shiny/</a>
 </center>
@@ -98,7 +91,7 @@ No objeto `ui`, construímos o que será mostrado na tela para o usuário. Nele,
 
 - Definir quais visualizações serão mostradas (tabelas, gráficos, mapas etc).
 
-- Definir elementos de CSS e JavaScript. **`r blue('[avançado]')`**
+- Definir elementos de CSS e JavaScript. **`r colorido('[avançado]')`**
 
 Todas as funções que utilizarmos para criar o `ui` retornarão código HTML. O objeto `ui`, portanto, será um grande código HTML.
 
@@ -132,7 +125,7 @@ Vamos criar e rodar o exemplo minimal do slide anterior.
 <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width = "300" height = "300">
 <br>
 <br>
-`r blue('Ao RStudio: 01-ola-mundo.R')`
+`r colorido('Ao RStudio: 01-ola-mundo.R')`
 <center>
 
 ---
@@ -141,7 +134,7 @@ Vamos criar e rodar o exemplo minimal do slide anterior.
 Fazer um shiny app tem duas grandes tarefas: a construção do layout (veremos mais a frente) e a construção dos inputs e outputs.
 
 <center>
-<img src="img/inputs_outputs.png" width = "100%">
+<img src="img/08-shiny/inputs_outputs.png" width = "100%">
 </center>
 
 ---
@@ -189,7 +182,7 @@ Vamos criar e rodar um shiny app com um gráfico como output.
 <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width = "300" height = "300">
 <br>
 <br>
-`r blue('Ao RStudio: 02-output.R')`
+`r colorido('Ao RStudio: 02-output.R')`
 <center>
 
 ---
@@ -223,7 +216,7 @@ shinyApp(ui, server)
 Inputs permitem que o usuário interaja com o seu aplicativo. Eles são criados no UI com funções (geralmente) do tipo `_Input()` e são utilizados dentro do server para alterar as visualizações. O Shiny já vem com um diversos tipos de input prontos para usar:
 
 <center>
-<img src="img/inputs.png", width = "85%">
+<img src="img/08-shiny/inputs.png", width = "85%">
 <br>
 Fonte: <a href = http://www.rstudio.com/shiny/>rstudio.com/shiny/</a>
 </center>
@@ -239,7 +232,7 @@ Vamos colocar um seletor de variáveis no exemplo anterior para permitir que o u
 <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width = "300" height = "300">
 <br>
 <br>
-`r blue('Ao RStudio: 03-output-input.R')`
+`r colorido('Ao RStudio: 03-output-input.R')`
 </center>
 
 ---
@@ -248,11 +241,11 @@ Vamos colocar um seletor de variáveis no exemplo anterior para permitir que o u
 Para acessar os inputs dentro da função server, utilizamos a lista `input`. Essa lista guardará todos os inputs criados no UI.
 
 .pull-left[
-<img src="img/inputvalues.png" width= "100%">
+<img src="img/08-shiny/inputvalues.png" width= "100%">
 ]
 
 .pull-right[
-<img src="img/sliderinputexample.png" width= "80%">
+<img src="img/08-shiny/sliderinputexample.png" width= "80%">
 - `input$num` pode ser usado no server para deixar as visualizações dinâmicas.
 ]
 <center>
@@ -285,7 +278,7 @@ Vamos conectar o nosso RStudio com o shinyapps.io e subir um app para lá.
 <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width = "300" height = "300">
 <br>
 <br>
-`r blue('Ao RStudio: shinyapps/03-output-input.R')`
+`r colorido('Ao RStudio: shinyapps/03-output-input.R')`
 </center>
 
 ---

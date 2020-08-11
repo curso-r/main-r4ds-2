@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/custom-intro.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R para Ciência de Dados 2
+## dplyr ++
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+### Agosto de 2020
+
+---
+
+
+
+
+class: titulo
+# Motivação
+
+---
+## Base do SINESP
+
+Nos exemplos a seguir, vamos utilizar a base do Sistema Nacional de Informações de Segurança Pública (SINESP).
+
+Ela possui as seguintes variáveis:
+
+- Nome do município: `município`
+
+- UF (sliga): `sigla_uf`
+
+- Região do Brasil: `regiao`
+
+- Mês/ano: `mes_ano`
+
+- Número de vítimas: `vitima`
+
+---
+class: titulo
+# O pacote dplyr
+
+---
+## Verbos principais
+
+Já vimos que com os principais verbos do `{dplyr}` já conseguimos fazer diversas operações de manipulação de bases de dados.
+
+.pull-left[
+- Selecionar colunas: `select()`
+
+- Ordenar linhas: `arrange()`
+
+- Filtrar linhas: `filter()`
+
+- Criar ou modificar colunas: `mutate()`
+
+- Agrupar e sumarizar: `group_by()` + `summarise()`
+]
+
+.pull-right[
+&lt;img src="img/03-dplyr-plus/arte_dplyr.png" width="100%" /&gt;
+]
+
+&lt;center&gt;
+<span style="color:#6495ed; font-weight: bold;">Mas o dplyr tem muito mais para oferecer. MUITO MAIS!</span>
+&lt;/center&gt;
+
+---
+## Miscelânea de funções úteis
+
+Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos conhecidas do `{dplyr}`.
+
+- `bind_rows()` e `bind_cols()`
+
+- `case_when()`
+
+- `coalesce()`: para substituir os `NAs` de uma coluna pelos valores equivalentes de uma segunda coluna.
+
+---
+## bind_rows()
+
+Vamos usar a função `bind_rows()` para juntarmos duas bases com as mesmas colunas.
+
+
+```r
+# Juntando duas bases
+imdb_2015 &lt;- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2015.rds")
+imdb_2016 &lt;- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2016.rds")
+
+bind_rows(imdb_2015, imdb_2016) %&gt;% head()
+```
+
+```
+## # A tibble: 6 x 15
+##   titulo   ano diretor duracao cor   generos pais  classificacao orcamento
+##   &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
+## 1 Aveng…  2015 Joss W…     141 Color Action… USA   A partir de … 250000000
+## 2 Juras…  2015 Colin …     124 Color Action… USA   A partir de … 150000000
+## 3 Furio…  2015 James …     140 Color Action… USA   A partir de … 190000000
+## 4 The G…  2015 Peter …      93 Color Advent… USA   Livre                NA
+## 5 Jupit…  2015 Lana W…     127 Color Action… USA   A partir de … 176000000
+## 6 Insid…  2015 Pete D…      95 Color Advent… USA   Livre         175000000
+## # … with 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
+## #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
+```
+
+---
+##  
+
+Neste caso, a função `bind_rows()` é equivalente à função `rbind()`.
+
+
+```r
+# Juntando duas bases
+imdb_2015 &lt;- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2015.rds")
+imdb_2016 &lt;- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2016.rds")
+
+rbind(imdb_2015, imdb_2016) %&gt;% head()
+```
+
+```
+## # A tibble: 6 x 15
+##   titulo   ano diretor duracao cor   generos pais  classificacao orcamento
+##   &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
+## 1 Aveng…  2015 Joss W…     141 Color Action… USA   A partir de … 250000000
+## 2 Juras…  2015 Colin …     124 Color Action… USA   A partir de … 150000000
+## 3 Furio…  2015 James …     140 Color Action… USA   A partir de … 190000000
+## 4 The G…  2015 Peter …      93 Color Advent… USA   Livre                NA
+## 5 Jupit…  2015 Lana W…     127 Color Action… USA   A partir de … 176000000
+## 6 Insid…  2015 Pete D…      95 Color Advent… USA   Livre         175000000
+## # … with 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
+## #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
+```
+
+&lt;br&gt;
+
+**Observação**: tanto para a `bind_rows()` quanto para a `rbind()`, a ordem das colunas em ambas as bases pode ser diferente. As colunas são empilhadas pelo nome.
+
+---
+## 
+
+Podemos também usar a função `bind_rows()` para juntar várias tabelas. Aqui, todas as tabelas continuam tendo as mesmas colunas.
+
+
+```r
+arquivos &lt;- list.files("../data-raw/rds/imdb_por_ano/", full.names = TRUE)
+
+arquivos %&gt;%
+  purrr::map(readr::read_rds) %&gt;%
+  bind_rows() %&gt;% 
+  head()
+```
+
+```
+## # A tibble: 6 x 15
+##   titulo   ano diretor duracao cor   generos pais  classificacao orcamento
+##   &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
+## 1 Intol…  1916 D.W. G…     123 Blac… Drama|… USA   Outros           385907
+## 2 Over …  1920 Harry …     110 Blac… Crime|… USA   Outros           100000
+## 3 The B…  1925 King V…     151 Blac… Drama|… USA   Outros           245000
+## 4 The B…  1929 Harry …     100 Blac… Musica… USA   Outros           379000
+## 5 Hell'…  1930 Howard…      96 Blac… Drama|… USA   Outros          3950000
+## 6 A Far…  1932 Frank …      79 Blac… Drama|… USA   Outros           800000
+## # … with 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
+## #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
+```
+
+**Observação**: a função `purrr::map()` está aplicando a função `readr::read_rds()` a todos os elementos do vetor `arquivos` e devolvendo uma lista de tibbles, uma para cada ano da base IMDB. Aprenderemos mais sobre essa função na aula de `purrr`.
+
+---
+## 
+
+Como a função `map()` devolve uma lista, a função `rbind()` não funcionaria.
+
+
+```r
+arquivos &lt;- list.files("../data-raw/rds/imdb_por_ano/", full.names = TRUE)
+
+arquivos %&gt;%
+  purrr::map(readr::read_rds) %&gt;%
+  rbind()
+```
+
+```
+##   [,1]    [,2]    [,3]    [,4]    [,5]    [,6]    [,7]    [,8]    [,9]   
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,10]   [,11]   [,12]   [,13]   [,14]   [,15]   [,16]   [,17]   [,18]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,19]   [,20]   [,21]   [,22]   [,23]   [,24]   [,25]   [,26]   [,27]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,28]   [,29]   [,30]   [,31]   [,32]   [,33]   [,34]   [,35]   [,36]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,37]   [,38]   [,39]   [,40]   [,41]   [,42]   [,43]   [,44]   [,45]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,46]   [,47]   [,48]   [,49]   [,50]   [,51]   [,52]   [,53]   [,54]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,55]   [,56]   [,57]   [,58]   [,59]   [,60]   [,61]   [,62]   [,63]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,64]   [,65]   [,66]   [,67]   [,68]   [,69]   [,70]   [,71]   [,72]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,73]   [,74]   [,75]   [,76]   [,77]   [,78]   [,79]   [,80]   [,81]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+##   [,82]   [,83]   [,84]   [,85]   [,86]   [,87]   [,88]   [,89]   [,90]  
+## . List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15 List,15
+```
+
+---
+## 
+
+Além disso, a função `bind_rows()` pode ser utilizada para empilhar bases com colunas diferentes.
+
+
+```r
+tab1 &lt;- tibble::tibble(
+  var1 = c(1, 2, 3),
+  var2 = c("a", "b", "c"),
+  var3 = c(10, 20, 30)
+)
+
+tab2 &lt;- tibble::tibble(
+  var2 = c("d", "e", "f"),
+  var1 = c(4, 5, 6)
+)
+
+bind_rows(tab1, tab2)
+```
+
+```
+## # A tibble: 6 x 3
+##    var1 var2   var3
+##   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+## 1     1 a        10
+## 2     2 b        20
+## 3     3 c        30
+## 4     4 d        NA
+## 5     5 e        NA
+## 6     6 f        NA
+```
+
+---
+## 
+
+Ao contrário da função `rbind()`.
+
+
+```r
+tab1 &lt;- tibble::tibble(
+  var1 = c(1, 2, 3),
+  var2 = c("a", "b", "c"),
+  var3 = c(10, 20, 30)
+)
+
+tab2 &lt;- tibble::tibble(
+  var2 = c("d", "e", "f"),
+  var1 = c(4, 5, 6)
+)
+
+rbind(tab1, tab2)
+```
+
+```
+## Error in rbind(deparse.level, ...): numbers of columns of arguments do not match
+```
+
+
+---
+## coalesce()
+
+No exemplo abaixo, substituimos os `NAs` da coluna `var1` pelos valores equivalentes da coluna `var2` (criamos uma nova coluna `var3` com o resultado para visualizarmos melhor). No caso em que as duas colunas apresentavam `NA`, a coluna `var3` continuou com o `NA`.
+
+
+```r
+tab &lt;- tibble::tibble(
+  var1 = c(1, 2, NA, 2, 10, NA, NA),
+  var2 = c(NA, 2, 2, 10, 3, 0, NA)
+)
+
+tab %&gt;%
+  mutate(var3 = coalesce(var1, var2))
+```
+
+```
+## # A tibble: 7 x 3
+##    var1  var2  var3
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1    NA     1
+## 2     2     2     2
+## 3    NA     2     2
+## 4     2    10     2
+## 5    10     3    10
+## 6    NA     0     0
+## 7    NA    NA    NA
+```
+
+
+---
+class: inverse, middle, center
+
+# Pivotagem
+
+---
+
+# pivot_wider()
+
+
+```r
+knitr::include_graphics("img/03-dplyr-plus/wider.png")
+```
+
+&lt;img src="img/03-dplyr-plus/wider.png" width="2560" /&gt;
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+
+# pivot_longer()
+
+
+```r
+knitr::include_graphics("img/03-dplyr-plus/longer.png")
+```
+
+&lt;img src="img/03-dplyr-plus/longer.png" width="2560" /&gt;
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+class: center
+
+# Vamos ao R!
+
+&lt;img src="img/03-dplyr-plus/gato.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+&lt;!-- Finalizando ----------------------------------------------------------- --&gt;
+
+---
+class: inverse, middle, center
+
+# Resumo
+
+---
+
+# Resumo
+
+Hoje vimos alguns conceitos de
+
+- Importação de dados com `{readxl}` e `{readr}`, e uma palhinha do `{purrr}`
+- Os cinco verbos do `{dplyr}`
+- Conexão com banco de dados e a função `collect()`
+- Pivotagem com as funções `pivot_wider()` e `pivot_longer()`
+
+---
+
+# Algumas referências
+
+- [Material de tidyverse da UFPR](http://www.leg.ufpr.br/~walmes/ensino/dsbd-linprog/slides/02-r-tidyverse.html#1)
+- [Material da Curso-R](https://www.curso-r.com/material/)
+- [Apresentação Garret Grolemund](https://github.com/rstudio/webinars/blob/master/05-Data-Wrangling-with-R-and-RStudio/wrangling-webinar.pdf)
+
+---
+
+### Joins com `{dplyr}`
+
+--
+
+Exemplos sem exercício:
+
+### `nest()`/`unnest()` com `{tidyr}`
+
+### Fazendo funções que usam `dplyr` com `{{ }}`
+
+---
+
+# Bases de dados
+
+Base do SINESP: Sistema Nacional de Informações de Segurança Pública
+
+- `município`
+- `sigla_uf`
+- `regiao`
+- `mes_ano`
+- `vitima`
+
+--
+
+Para o exercício de joins, vamos considerar a base Estadual também:
+
+- `uf`
+- `tipo_crime`
+- `ano`
+- `mes`
+- `ocorrencias`
+
+### As bases já estão no repositório
+
+---
+
+# Taxonomia
+
+## ↪️ `{pacote}`
+
+--
+
+## ↪️ `pacote::funcao()` ou `funcao()`
+
+--
+
+## ↪️ `da_` para bases de dados
+
+&lt;!-- Parte 1---------------------------------------------------------------- --&gt;
+
+---
+class: inverse, middle, center
+
+# separate() e unite()
+
+---
+
+# Revisando tidy data
+
+É uma base que une os conceitos da estatística (amostra, variável) e da informática (linhas, colunas)
+
+### As observações estão nas linhas
+
+### As variáveis estão nas colunas
+
+### Os valores estão nas células
+
+---
+
+# Motivação
+
+- Muitas vezes nossas células não são valores.
+- Podemos querer juntar as categorias de duas variáveis em uma só.
+- Ou então separar as categorias de uma variável em várias.
+- Para isso usamos `tidyr::separate()` e `tidyr::unite()`
+
+---
+
+# Notação
+
+### `unite()`
+
+
+```r
+dados %&gt;% 
+*  unite(coluna_nova, colunas, para, colar, sep = "separador")
+```
+
+### `separate()`
+
+
+
+```r
+dados %&gt;% 
+*  separate(coluna_velha, c("colunas", "novas"), sep = "separador")
+```
+
+---
+class: center
+
+# Vamos ao R!
+
+&lt;img src="img/03-dplyr-plus/gato.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+&lt;!-- Parte 2---------------------------------------------------------------- --&gt;
+
+---
+class: inverse, middle, center
+
+# Pivotagem
+
+---
+
+# Motivação
+
+- Quando nossas linhas não são unidades obsevacionais ou nossas colunas não são variáveis, precisamos fazer pivotagem.
+- É similar à pivotagem do Excel, mas mais completa.
+- O ato de pivotar envolve "espalhar" ou "derreter" as informações de uma tabela.
+
+---
+
+# pivot_wider()
+
+
+```r
+knitr::include_graphics("img/03-dplyr-plus/wider.png")
+```
+
+&lt;img src="img/03-dplyr-plus/wider.png" width="90%" /&gt;
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+
+# pivot_longer()
+
+
+```r
+knitr::include_graphics("img/03-dplyr-plus/longer.png")
+```
+
+&lt;img src="img/03-dplyr-plus/longer.png" width="90%" /&gt;
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+class: center
+
+# Vamos ao R!
+
+&lt;img src="img/03-dplyr-plus/gato.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Observação
+
+- `pivot_longer()` e `pivot_wider()` são novas versões das funções `spread()` e `gather()`, respectivamente.
+- As funções foram refatoradas por conta de reiteradas reclamações da comunidade sobre a dificuldade de ensinar essas funções.
+- No entanto, as funções antigas não deixaram de existir. Elas só deixarão de ser atualizadas. Uma função assim é chamada de "aposentada" (ver ?spread).
+- `pivot_longer()` e `pivot_wider()` ainda estão em desenvolvimento e podem mudar no futuro.
+
+&lt;!-- Parte 3---------------------------------------------------------------- --&gt;
+
+---
+class: inverse, middle, center
+
+# Pausa
+
+
+---
+class: inverse, middle, center
+
+# Joins
+
+---
+
+# Motivação
+
+- Join é o que precisamos fazer quando temos duas tabela e precisamos pegar a informação de uma a partir das variáveis de outra.
+- A teoria de joins é completamente desenvolvida dentro da área de banco de dados.
+- Claro que `{dplyr}` não poderia nos deixar na mão para isso 😃 
+- Melhor material: [livro r4ds](https://r4ds.had.co.nz/relational-data.html)
+
+---
+class: center
+
+# Vamos ao R!
+
+&lt;img src="img/03-dplyr-plus/gato.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Outros tipos de join
+
+- `anti_join()`: mostra as linhas da base da esquerda que não batem com a base da direita. É útil para fazer de-paras. 
+- `semi_join()`: é parecido com `inner_join()`, mas não copia as colunas da base da direita.
+
+--
+
+## Joins aproximados
+
+- É possível fazer joins quando as variáveis não batem exatamente, mas têm valores muito próximos.
+- Também é possível fazer joins por similaridade de textos e até por expressões regulares.
+- Dê uma olhada no pacote `{fuzzyjoin}`!
+
+&lt;!-- Parte 4---------------------------------------------------------------- --&gt;
+
+---
+class: inverse, middle, center
+
+# nest() / unnest()
+
+---
+
+# Motivação
+
+- Nem sempre queremos trabalhar com valores nas células
+- Às vezes, pode ser útil guardar, em cada elemento, uma outra base de dados.
+- Tabelas aninhadas podem facilitar visualização e diminuem a quantidade de tabelas a serem consideradas no estudo.
+
+--
+
+- O tema é polêmico e nem todos concordam...
+
+---
+class: center
+
+# Vamos ao R!
+
+&lt;img src="img/03-dplyr-plus/gato.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+&lt;!-- Parte 5---------------------------------------------------------------- --&gt;
+
+---
+class: inverse, middle, center
+
+# Programando com dplyr
+
+---
+
+# Motivação
+
+- O `{dplyr}` facilita a nossa vida ao permitir colocar os nomes das variáveis sem aspas nos argumentos das funções principais.
+- Isso só é possível por conta de um recurso quase exclusivo do R, chamado de *non standard evaluation* (NSE).
+- No entanto, quando queremos criar funções, isso pode atrapalhar
+
+
+```r
+selecionar &lt;- function(da, coluna) {
+  da %&gt;% 
+    select(coluna)
+}
+
+da_sinesp_muni %&gt;% 
+  selecionar(regiao)
+```
+    
+    #&gt; Error: object 'regiao' not found
+
+---
+
+# Programando com R
+
+- Para isso, existe o curly-curly `{{ }}`
+- Basta colocá-lo ao redor do argumento que você quer passar
+
+
+```r
+selecionar &lt;- function(da, coluna) {
+  da %&gt;% 
+    select({{coluna}})
+}
+
+da_sinesp_muni %&gt;% 
+  selecionar(regiao)
+```
+
+    # A tibble: 124,246 x 1
+       regiao
+       &lt;chr&gt; 
+     1 NORTE 
+     2 NORTE 
+     3 NORTE 
+     4 NORTE 
+     5 NORTE 
+     6 NORTE 
+     7 NORTE 
+     8 NORTE 
+     9 NORTE 
+    10 NORTE 
+    # … with 124,236 more rows
+
+---
+class: center
+
+# Vamos ao R!
+
+&lt;img src="img/03-dplyr-plus/gato.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Resumindo
+
+- Use `{{variavel}}` quando não quiser colocar aspas no argumento da função.
+- Use `.data[["variavel"]]` quando quiser colocar aspas no argumento da função.
+- Use `{{nome}} := ...` quando quiser criar colunas com nomes que estão no argumento da função.
+
+--
+
+__Referência__: https://www.curso-r.com/blog/2019-08-21-nse/
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "4:3"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

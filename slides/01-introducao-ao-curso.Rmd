@@ -26,14 +26,14 @@ class: middle, center
 
 ## Curso-R
 
-<img src="img/professores.png" style=" display: block; margin-left: auto; margin-right: auto;"></img>
+<img src="img/01-introducao-ao-curso/professores.png" style=" display: block; margin-left: auto; margin-right: auto;"></img>
 
 ---
 
 ## Linha do tempo
 
 <center>
-<img src="img/linha_do_tempo.png" width = 45%></img>
+<img src="img/01-introducao-ao-curso/linha_do_tempo.png" width = 45%></img>
 </center>
 
 ---
