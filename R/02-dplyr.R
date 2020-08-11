@@ -45,6 +45,11 @@ rbind(tab1, tab2)
 # A função bind_cols() possui propriedades equivalentes
 # para a tarefa de juntar colunas.
 
+
+# case_when ---------------------------------------------------------------
+
+
+
 # coalesce ----------------------------------------------------------------
 
 tab <- tibble::tibble(
@@ -142,63 +147,116 @@ sample_frac(mtcars, 0.5)
 # dplyr 1.0 ---------------------------------------------------------------
 # -------------------------------------------------------------------------
 
+# Vamos utilizar a base ames
+
+ames <- readr::read_rds("data/ames.rds")
+
+glimpse(ames)
+
+# Documentação
+
+# remotes::install_github("curso-r/basesCursoR")
+help(ames, package = "basesCursoR")
 
 # across ------------------------------------------------------------------
 
-# Antigamente fazíamos
-starwars %>%
-  group_by(homeworld) %>%
+# A função across substitui a família de verbos
+# _all_, _if, _at
+
+# Para sumarizar a base para mais de uma variável,
+# antigamente fazíamos
+ames %>%
+  group_by(geral_qualidade) %>%
   summarise(
-    altura_media = mean(height, na.rm = TRUE),
-    peso_medio = mean(mass, na.rm = TRUE),
+    lote_area_media = mean(lote_area, na.rm = TRUE),
+    venda_valor_medio = mean(venda_valor, na.rm = TRUE)
   )
 
-# Ou
-starwars %>%
-  group_by(homeworld) %>%
+# ou
+ames %>%
+  group_by(geral_qualidade) %>%
   summarise_at(
-    .vars = vars(height, mass),
+    .vars = vars(lote_area, venda_valor),
     ~mean(.x, na.rm = TRUE)
   )
 
 # Agora, usamos a função across
 starwars %>%
   group_by(homeworld) %>%
-  summarise(across(.cols = c(height, mass), .fns = mean, na.rm = TRUE))
+  summarise(across(
+    .cols = c(lote_area, venda_valor),
+    .fns = mean, na.rm = TRUE
+  ))
 
 # Podemos aplicar facilmente uma função a todas
 # as colunas de uma base
-starwars %>%
-  mutate(across(.fns = na_if, y = "unknown"))
+ames %>%
+  summarise(across(.fns = n_distinct))
 
 # Antes usávamos o sufixo "_all"
-starwars %>%
-  mutate_all(.funs = ~na_if(.x, "unknown"))
+ames %>%
+  summarise_all(.funs = ~n_distinct(.x))
 
 # where -------------------------------------------------------------------
 
-# Também podemos aplicar uma função a todas as colunas de um tipo
-starwars %>%
+# o where é uma nova opção do framework "tidyselect"
+# para seleção de colunas
+
+# Com ele, podemos aplicar uma função a todas as
+# colunas de um tipo
+ames %>%
   summarise(across(where(is.character), n_distinct))
 
+ames %>%
+  summarise(across(where(is.numeric), mean, na.rm = TRUE))
+
 # Antes fazíamos
-starwars %>%
+ames %>%
   summarise_if(is.character, n_distinct)
 
+ames %>%
+  summarise_if(is.numeric, ~mean(.x, na.rm = TRUE))
+
 # Agora, podemos fazer sumarizações complexas
-starwars %>%
-  group_by(sex) %>%
+ames %>%
+  group_by(fundacao_tipo) %>%
   summarise(
-    across(where(is.numeric), mean, na.rm = TRUE),
-    across(where(is.character), n_distinct),
+    across(contains("area"), mean, na.rm = TRUE),
+    across(where(is.character), ~sum(is.na(.x))),
     n_obs = n(),
   ) %>%
   View()
 
 # Isso não era possível com as funções antigas!
 
-# Podemos usar também com o select (neste caso, não precisamos do across)
-starwars %>%
+# Também podemos usar across/where com os outros
+# verbos do dplyr
+
+# mutate()
+
+# Vamos transformar todas as colunas de área
+# para obtermos medidas em metros quadrados
+# em vez de pés quadrados.
+ames %>%
+  mutate(across(
+    contains("area"),
+    ~ .x / 10.764
+  ))
+
+# filter()
+# Pegar todas as casas com varanda aberta,
+# cerca e lareira
+ames %>%
+  filter(across(
+    c(varanda_aberta_area, cerca_qualidade, lareira_qualidade),
+    ~!is.na(.x)
+  )) %>%
+  # select(c(varanda_aberta_area, cerca_qualidade, lareira_qualidade)) %>%
+  View()
+
+
+# Para selecionar colunas, não usamos across!
+ames %>%
   select(where(is.numeric))
 
 # -------------------------------------------------------------------------
