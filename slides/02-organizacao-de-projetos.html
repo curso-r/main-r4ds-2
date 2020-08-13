@@ -4,9 +4,8 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/custom-intro.css" type="text/css" />
+    <script src="libs/header-attrs-2.3/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -15,14 +14,14 @@ class: center, middle, inverse, title-slide
 # R para Ciência de Dados 2
 ## Organização de projetos
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### Agosto de 2020
+### agosto de 2020
 
 ---
 
 
 
 
-class: titulo
+class: middle, center, inverse
 # Introdução
 
 ---
@@ -93,7 +92,7 @@ Ele ajuda a criar arquivos, projetos, usar o Git, criar repositórios no GitHub 
 Apresentaremos várias funções do `{usethis}` ao longo deste tópico.
 
 ---
-class: titulo
+class: middle, center, inverse
 # .RData e .Rhistory
 
 ---
@@ -118,10 +117,10 @@ Ao reabrir o RStudio, o conteúdo armazenados nestes arquivos será carregado no
 
 - A menos que pretendamos sentar com colegas para explicar como utilizar os objetos do `.RData` e do `.Rhistory`, <span style="color:#6495ed; font-weight: bold;">não pode-se esperar que outra pessoa seja capaz de reproduzir uma análise</span>.
 
-- O R trata todos os objetos guardados na memória igualmente, sem levar em conta sua utilidade ou tamanho. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão (não importando quão grande sejam). Assim, <span style="color:#6495ed; font-weight: bold;">o</span> `.RData` <span style="color:#6495ed; font-weight: bold;">pode ser um arquivo de múltiplos gigabytes</span>.
+- O R trata todos os objetos guardados na memória igualmente. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão. Assim, <span style="color:#6495ed; font-weight: bold;">o</span> `.RData` <span style="color:#6495ed; font-weight: bold;">pode ser um arquivo de múltiplos gigabytes</span>.
 
 ---
-class: titulo
+class: middle, center, inverse
 # Rproj e diretórios
 
 ---
@@ -175,7 +174,7 @@ Para isso, vamos introduzir mais alguns assuntos.
 - **Pacotes**: como e por que transformar um projeto em um pacote e como documentá-lo.
 
 ---
-class: titulo
+class: middle, center, inverse
 # Funções e dependências
 
 ---
@@ -236,7 +235,7 @@ Para escrever `dplyr::`, por exemplo, basta digitar `d`, `p`, `l` e apertar TAB 
 - O uso do `::` será fundamental na criação e organização de pacotes.
 
 ---
-class: titulo
+class: middle, center, inverse
 # Pacotes
 
 ---
@@ -311,13 +310,13 @@ Para isso, utilize a função `usethis::data_raw("meus_dados")`. Ela criará uma
 ---
 ## Qual a diferença entre R/ e data-raw/?
 
-### data-raw
+`data-raw`
 
 - A pasta `data-raw/` é sua caixa de areia.
 
 - Apesar de existirem formas razoáveis de organizar seus pacotes aqui, nessa parte você será livre.
 
-### R/
+`R/`
 
 - Já a pasta `R/` conterá funções bem organizadas e documentadas.
 
@@ -337,7 +336,7 @@ Você pode usar a função `usethis::use_vignette()` para criar *vignettes*.
 ---
 ## Documentação
 
-A documentação de uma função deve seguir a estrutura a seguir:
+A documentação de uma função deve seguir a estrutura a seguir, usando usamos o símbolo `#'`:
 
 
 ```r
@@ -356,8 +355,6 @@ fun &lt;- function(a, b) {
 }
 ```
 
-Veja que usamos o símbolo `#'` para documentar uma função. 
-
 O parâmetro `@export` indica que a função ficará disponível quando rodarmos `library(MeuProjeto)`.
 
 ---
@@ -374,15 +371,13 @@ Algumas dicas e boas práticas.
 - Se você precisar instalar o seu pacote (equivalente ao que fazemos com pacotes do CRAN quando rodamos `install_packages()`), use a função `devtools::install()`. Ela deve ser utilizada quando o seu pacote estiver pronto (ou pelo menos alguma versão dele).
 
 ---
-class: titulo
+class: middle, center, inverse
 # Git e Github
 
 ---
 ## Git
 
-- Git é um **sistema de versionamento**.
-
-- Foi criado em 2005 por Linus Torvalds, autor do sistema Linux.
+- Git é um **sistema de versionamento**, criado por Linus Torvalds, autor do Linux.
 
 - É capaz de guardar o histórico de alterações de todos os arquivos dentro de uma pasta, que chamamos de repositório.
 
@@ -404,8 +399,6 @@ class: titulo
 - Utilizado por milhões de pessoas em projetos de código aberto ou fechado.
 
 - Útil para colaborar com outros programadores em projetos de ciência de dados.
-
-- Forma segura de guardar os códigos que você desenvolve.
 
 - Existem alternativas, como [GitLab](https://about.gitlab.com/) e [BitBucket](https://bitbucket.org/product).
 
@@ -506,7 +499,7 @@ use_github()
 ---
 ## Passo 4: Stage &amp; Commit
 
-&lt;img src="img/02-organizacao-de-projetos/passo_3_commit_1.gif" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="img/02-organizacao-de-projetos/passo_3_commit_1.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
 - Nesta etapa, você estará descrevendo as modificações que fez nos arquivos selecionados.
 
@@ -516,7 +509,7 @@ use_github()
 
 ## Passo 5: Push
 
-&lt;img src="img/02-organizacao-de-projetos/passo_4_push.gif" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="img/02-organizacao-de-projetos/passo_4_push.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
 - *Push* (ou *dar push*) significa atualizar o seu repositório remoto (GitHub) com os arquivos que você *commitou* no passo anterior.
 
@@ -524,7 +517,7 @@ use_github()
 
 ## Passo Extra: Pull
 
-&lt;img src="img/02-organizacao-de-projetos/passo_5_pull.gif" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="img/02-organizacao-de-projetos/passo_5_pull.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
 - *Pull* é a ação inversa do *Push*: você trará a versão mais recente dos arquivos do seu repositório remoto (GitHub) para a sua máquina (caso você tenha subido uma versão de um outro computador ou uma outra pessoa tenha subido uma atualização).
 
@@ -554,14 +547,15 @@ use_github()
 - [R Packages](https://r-pkgs.org), livro aprofundado sobre desenvolvimento de pacotes.
 
 - [Apresentação da Bea Milz](https://beatrizmilz.github.io/RLadies-Git-RStudio-2019).
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
+"ratio": "16:9",
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false,
-"ratio": "4:3"
+"countIncrementalSlides": false
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

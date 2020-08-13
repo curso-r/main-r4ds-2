@@ -5,13 +5,13 @@ author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5
 date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
   xaringan::moon_reader:
-    css: ["default", "default-fonts", "css/custom-intro.css"]
     lib_dir: libs
+    css: "css/xaringan-themer.css"
     nature:
+      ratio: '16:9'
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
-      ratio: "4:3"
 ---
 
 ```{r setup, include=FALSE}
@@ -27,7 +27,7 @@ colorido <- function(x, cor = "#6495ed") {
 options(width = 85)
 ```
 
-class: titulo
+class: middle, center, inverse
 # Introdução
 
 ---
@@ -106,7 +106,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/usethis.png")
 Apresentaremos várias funções do `{usethis}` ao longo deste tópico.
 
 ---
-class: titulo
+class: middle, center, inverse
 # .RData e .Rhistory
 
 ---
@@ -131,10 +131,10 @@ Ao reabrir o RStudio, o conteúdo armazenados nestes arquivos será carregado no
 
 - A menos que pretendamos sentar com colegas para explicar como utilizar os objetos do `.RData` e do `.Rhistory`, `r colorido("não pode-se esperar que outra pessoa seja capaz de reproduzir uma análise")`.
 
-- O R trata todos os objetos guardados na memória igualmente, sem levar em conta sua utilidade ou tamanho. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão (não importando quão grande sejam). Assim, `r colorido("o")` `.RData` `r colorido("pode ser um arquivo de múltiplos gigabytes")`.
+- O R trata todos os objetos guardados na memória igualmente. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão. Assim, `r colorido("o")` `.RData` `r colorido("pode ser um arquivo de múltiplos gigabytes")`.
 
 ---
-class: titulo
+class: middle, center, inverse
 # Rproj e diretórios
 
 ---
@@ -187,7 +187,7 @@ Para isso, vamos introduzir mais alguns assuntos.
 - **Pacotes**: como e por que transformar um projeto em um pacote e como documentá-lo.
 
 ---
-class: titulo
+class: middle, center, inverse
 # Funções e dependências
 
 ---
@@ -248,7 +248,7 @@ Para escrever `dplyr::`, por exemplo, basta digitar `d`, `p`, `l` e apertar TAB 
 - O uso do `::` será fundamental na criação e organização de pacotes.
 
 ---
-class: titulo
+class: middle, center, inverse
 # Pacotes
 
 ---
@@ -325,13 +325,13 @@ Para isso, utilize a função `usethis::data_raw("meus_dados")`. Ela criará uma
 ---
 ## Qual a diferença entre R/ e data-raw/?
 
-### data-raw
+`data-raw`
 
 - A pasta `data-raw/` é sua caixa de areia.
 
 - Apesar de existirem formas razoáveis de organizar seus pacotes aqui, nessa parte você será livre.
 
-### R/
+`R/`
 
 - Já a pasta `R/` conterá funções bem organizadas e documentadas.
 
@@ -351,7 +351,7 @@ Você pode usar a função `usethis::use_vignette()` para criar *vignettes*.
 ---
 ## Documentação
 
-A documentação de uma função deve seguir a estrutura a seguir:
+A documentação de uma função deve seguir a estrutura a seguir, usando usamos o símbolo `#'`:
 
 ```{r eval=FALSE}
 #' Título da função
@@ -369,8 +369,6 @@ fun <- function(a, b) {
 }
 ```
 
-Veja que usamos o símbolo `#'` para documentar uma função. 
-
 O parâmetro `@export` indica que a função ficará disponível quando rodarmos `library(MeuProjeto)`.
 
 ---
@@ -387,15 +385,13 @@ Algumas dicas e boas práticas.
 - Se você precisar instalar o seu pacote (equivalente ao que fazemos com pacotes do CRAN quando rodamos `install_packages()`), use a função `devtools::install()`. Ela deve ser utilizada quando o seu pacote estiver pronto (ou pelo menos alguma versão dele).
 
 ---
-class: titulo
+class: middle, center, inverse
 # Git e Github
 
 ---
 ## Git
 
-- Git é um **sistema de versionamento**.
-
-- Foi criado em 2005 por Linus Torvalds, autor do sistema Linux.
+- Git é um **sistema de versionamento**, criado por Linus Torvalds, autor do Linux.
 
 - É capaz de guardar o histórico de alterações de todos os arquivos dentro de uma pasta, que chamamos de repositório.
 
@@ -419,8 +415,6 @@ knitr::include_graphics("img/02-organizacao-de-projetos/git.png")
 - Utilizado por milhões de pessoas em projetos de código aberto ou fechado.
 
 - Útil para colaborar com outros programadores em projetos de ciência de dados.
-
-- Forma segura de guardar os códigos que você desenvolve.
 
 - Existem alternativas, como [GitLab](https://about.gitlab.com/) e [BitBucket](https://bitbucket.org/product).
 
@@ -523,7 +517,7 @@ use_github()
 ---
 ## Passo 4: Stage & Commit
 
-```{r echo=FALSE, out.width="60%", fig.align='center'}
+```{r echo=FALSE, out.width="50%", fig.align='center'}
 knitr::include_graphics("img/02-organizacao-de-projetos/passo_3_commit_1.gif")
 ```
 
@@ -535,7 +529,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/passo_3_commit_1.gif")
 
 ## Passo 5: Push
 
-```{r, echo=FALSE, out.width="60%", fig.align='center'}
+```{r, echo=FALSE, out.width="50%", fig.align='center'}
 knitr::include_graphics("img/02-organizacao-de-projetos/passo_4_push.gif")
 ```
 
@@ -545,7 +539,7 @@ knitr::include_graphics("img/02-organizacao-de-projetos/passo_4_push.gif")
 
 ## Passo Extra: Pull
 
-```{r, echo=FALSE, out.width="60%", fig.align='center'}
+```{r, echo=FALSE, out.width="50%", fig.align='center'}
 knitr::include_graphics("img/02-organizacao-de-projetos/passo_5_pull.gif")
 ```
 

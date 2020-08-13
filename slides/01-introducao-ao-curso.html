@@ -4,9 +4,8 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <link href="libs/remark-css/default.css" rel="stylesheet" />
-    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/custom-intro.css" type="text/css" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -15,101 +14,95 @@ class: center, middle, inverse, title-slide
 # R para Ciência de Dados 2
 ## Introdução ao curso
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### Agosto de 2020
+### agosto de 2020
 
 ---
 
 
 
 
-class: middle, center
-
+class: middle, center, inverse
 # Sobre a Curso-R
 
 ---
-
 ## Curso-R
 
-&lt;img src="img/01-introducao-ao-curso/professores.png" style=" display: block; margin-left: auto; margin-right: auto;"&gt;&lt;/img&gt;
+&lt;img src="img/01-introducao-ao-curso/professores.png" width="812" style="display: block; margin: auto;" /&gt;
 
 ---
-
 ## Linha do tempo
 
-&lt;center&gt;
-&lt;img src="img/01-introducao-ao-curso/linha_do_tempo.png" width = 45%&gt;&lt;/img&gt;
-&lt;/center&gt;
+&lt;img src="img/01-introducao-ao-curso/linha_do_tempo.png" width="406" style="display: block; margin: auto;" /&gt;
 
 ---
 ## Nossos cursos
 
-<div>
-<div class="pull-left">
-<div class="container center">
-<div class="card">
-<h2>Programação em R</h2>
-<hr style="background-color:#3bb44a;"/>
-<p>
-<a href="https://www.curso-r.com/cursos/r4ds-1/">R para Ciência de Dados I</a>
-</p>
-<p>
-<a href="https://www.curso-r.com/cursos/r4ds-2/">R para Ciência de Dados II</a>
-</p>
-<p>
-<a href="https://www.curso-r.com/cursos/rcpp/">Introdução ao R com C++</a>
-</p>
-</div>
-</div>
-<br/>
-<div class="container center">
-<div class="card">
-<h2>Modelagem</h2>
-<hr style="background-color:#996699;"/>
-<p>
-<a href="https://www.curso-r.com/cursos/regressao-linear/">Regressão linear</a>
-</p>
-<p>
-<a href="https://www.curso-r.com/cursos/intro-machine-learning/">Machine Learning</a>
-</p>
-<p>
-<a href="https://www.curso-r.com/cursos/xgboost/">XGBoost</a>
-</p>
-<p>
-<a href="https://www.curso-r.com/cursos/deep-learning/">Deep Learning</a>
-</p>
-</div>
-</div>
-</div>
-<div class="pull-right">
-<div class="container center">
-<div class="card">
-<h2>Extração de dados</h2>
-<hr style="background-color:#eeba30;"/>
-<p>
-<a href="https://www.curso-r.com/cursos/web-scraping/">Web scraping</a>
-</p>
-</div>
-</div>
-<br/>
-<br/>
-<div class="container center">
-<div class="card">
-<h2>Comunicação e automação</h2>
-<hr style="background-color:#ff6699;"/>
-<p>
-<a href="https://www.curso-r.com/cursos/dashboards/">Dashboards</a>
-</p>
-<p>
-<a href="https://www.curso-r.com/cursos/deploy/">Deploy</a>
-</p>
-</div>
-</div>
-</div>
-</div>
+&lt;div&gt;
+  &lt;div class="pull-left"&gt;
+    &lt;div class="container center"&gt;
+      &lt;div class="card"&gt;
+        &lt;h4&gt;Programação em R&lt;/h4&gt;
+        &lt;hr style="background-color:#3bb44a;"/&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/r4ds-1/"&gt;R para Ciência de Dados I&lt;/a&gt;
+        &lt;/p&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/r4ds-2/"&gt;R para Ciência de Dados II&lt;/a&gt;
+        &lt;/p&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/rcpp/"&gt;Introdução ao R com C++&lt;/a&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;br/&gt;
+    &lt;div class="container center"&gt;
+      &lt;div class="card"&gt;
+        &lt;h4&gt;Modelagem&lt;/h4&gt;
+        &lt;hr style="background-color:#996699;"/&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/regressao-linear/"&gt;Regressão linear&lt;/a&gt;
+        &lt;/p&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/intro-machine-learning/"&gt;Machine Learning&lt;/a&gt;
+        &lt;/p&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/xgboost/"&gt;XGBoost&lt;/a&gt;
+        &lt;/p&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/deep-learning/"&gt;Deep Learning&lt;/a&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="pull-right"&gt;
+    &lt;div class="container center"&gt;
+      &lt;div class="card"&gt;
+        &lt;h4&gt;Extração de dados&lt;/h4&gt;
+        &lt;hr style="background-color:#eeba30;"/&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/web-scraping/"&gt;Web scraping&lt;/a&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;br/&gt;
+    &lt;br/&gt;
+    &lt;div class="container center"&gt;
+      &lt;div class="card"&gt;
+        &lt;h4&gt;Comunicação e automação&lt;/h4&gt;
+        &lt;hr style="background-color:#ff6699;"/&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/dashboards/"&gt;Dashboards&lt;/a&gt;
+        &lt;/p&gt;
+        &lt;p style='font-size:16px'&gt;
+          &lt;a href="https://www.curso-r.com/cursos/deploy/"&gt;Deploy&lt;/a&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
 
 ---
-class: middle, center
-
+class: middle, center, inverse
 # Sobre o curso
 
 ---
@@ -133,14 +126,15 @@ class: middle, center
 - Além das aulas, teremos alguns conteúdos extras, tanto em texto quanto em vídeo.
 
 - A gravação das aulas ficará disponível no Google Classroom por 1 ano após o final do curso.
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
+"ratio": "16:9",
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false,
-"ratio": "4:3"
+"countIncrementalSlides": false
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
