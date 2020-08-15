@@ -226,8 +226,8 @@ ames %>%
   )
 
 # Agora, usamos a função across
-starwars %>%
-  group_by(homeworld) %>%
+ames %>%
+  group_by(geral_qualidade) %>%
   summarise(across(
     .cols = c(lote_area, venda_valor),
     .fns = mean, na.rm = TRUE

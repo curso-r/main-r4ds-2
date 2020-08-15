@@ -15,6 +15,8 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
 library(dplyr)
 
 colorido <- function(x, cor = "#6495ed") {
@@ -378,6 +380,97 @@ Agora, pegamos 50% da base mtcars.
 ```{r}
 slice_sample(mtcars, prop = 0.5)
 ```
+
+---
+class: titulo
+# dplyr 1.0
+
+---
+# Novo dplyr
+
+A versão 1.0 do pacote `dplyr` foi oficialmente lançada em junho de 2020 e contou com diversas novidades Vamos falar das principais mudanças:
+
+- A nova função `across()`, que facilita aplicar uma mesma operação em várias colunas.
+
+- A repaginada função `rowwise()`, para fazer operações por linha.
+
+- Novas funcionalidades das funções `select()` e `rename()` e a nova função `relocate()`.
+
+---
+## Motivação
+
+Base de dados de venda de casas na cidade de Ames, nos Estados Unidos.
+
+- 2930 linhas e 77 colunas.
+
+- Cada linha corresponde a uma casa vendida e cada coluna a uma característica da casa ou da venda.
+
+- Versão traduzida: faça o download [clicando aqui](https://github.com/curso-r/main-r4ds2/raw/master/data/ames.rds).
+
+- Base original:
+
+```{r, eval = FALSE}
+install.packages("AmesHousing")
+
+data(ames_raw, package = "AmesHousing")
+```
+
+```{r, include=FALSE}
+ames <- readr::read_rds("../data/ames.rds")
+```
+
+---
+## across()
+
+A função `across()` substitui a família de verbos `verbo_all()`, `verbo_if` e `verbo_at()`. A ideia é facilitar a aplicação de uma operação a diversas colunas da base. Para sumarizar a base para mais de uma variável, antigamente fazíamos
+
+```{r}
+ames %>%
+  group_by(geral_qualidade) %>%
+  summarise(
+    lote_area_media = mean(lote_area, na.rm = TRUE),
+    venda_valor_medio = mean(venda_valor, na.rm = TRUE)
+  )
+```
+
+---
+## 
+
+Ou então
+
+```{r}
+ames %>%
+  group_by(geral_qualidade) %>%
+  summarise_at(
+    .vars = vars(lote_area, venda_valor),
+    ~mean(.x, na.rm = TRUE)
+  )
+```
+
+---
+## 
+
+Com a nova função `across()`, fazemos
+
+```{r}
+ames %>%
+  group_by(geral_qualidade) %>%
+  summarise(across(
+    .cols = c(lote_area, venda_valor),
+    .fns = mean, na.rm = TRUE
+  ))
+```
+
+A sintaxe é parecida com a função `summarise_at()`, mas agora não precisamos mais usar a função `vars()` e nem usar `list(nome_da_funcao)` ou `~nome_da_funcao(.x)` para definir a função aplicada nas colunas.
+
+---
+## rowwise()
+
+---
+## select(), rename()
+
+---
+## relocate()
 
 ---
 ## Across
