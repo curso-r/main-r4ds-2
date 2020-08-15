@@ -28,27 +28,6 @@ options(width = 80)
 ```
 
 class: titulo
-# Motivação
-
----
-## Base do SINESP
-
-Nos exemplos a seguir, vamos utilizar a base do Sistema Nacional de Informações de Segurança Pública (SINESP).
-
-Ela possui as seguintes variáveis:
-
-- Nome do município: `município`
-
-- UF (sliga): `sigla_uf`
-
-- Região do Brasil: `regiao`
-
-- Mês/ano: `mes_ano`
-
-- Número de vítimas: `vitima`
-
----
-class: titulo
 # O pacote dplyr
 
 ---
@@ -83,11 +62,21 @@ knitr::include_graphics("img/03-dplyr-plus/arte_dplyr.png")
 
 Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos conhecidas do `{dplyr}`.
 
-- `bind_rows()` e `bind_cols()`
+- `bind_rows()`: para empilhar duas bases.
 
-- `case_when()`
+- `case_when()`: generalização da `ifelse()` para várias condições.
+
+- `first()`, `last()`: para pegar o primeiro ou último valor de um vetor/coluna.
+
+- `na_if()`: para transformar um determinado valor de um vetor/coluna em `NA`.
 
 - `coalesce()`: para substituir os `NAs` de uma coluna pelos valores equivalentes de uma segunda coluna.
+
+- `lag()`, `lead()`: para gerar colunas defasadas.
+
+- `pull()`: para transformar uma coluna da base em um vetor.
+
+- `slice_sample`: para gerar amostras da base.
 
 ---
 ## bind_rows()
@@ -96,8 +85,8 @@ Vamos usar a função `bind_rows()` para juntarmos duas bases com as mesmas colu
 
 ```{r}
 # Juntando duas bases
-imdb_2015 <- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2015.rds")
-imdb_2016 <- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2016.rds")
+imdb_2015 <- readr::read_rds("../data/imdb_por_ano/imdb_2015.rds")
+imdb_2016 <- readr::read_rds("../data/imdb_por_ano/imdb_2016.rds")
 
 bind_rows(imdb_2015, imdb_2016) %>% head()
 ```
@@ -109,8 +98,8 @@ Neste caso, a função `bind_rows()` é equivalente à função `rbind()`.
 
 ```{r}
 # Juntando duas bases
-imdb_2015 <- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2015.rds")
-imdb_2016 <- readr::read_rds("../data-raw/rds/imdb_por_ano/imdb_2016.rds")
+imdb_2015 <- readr::read_rds("../data/imdb_por_ano/imdb_2015.rds")
+imdb_2016 <- readr::read_rds("../data/imdb_por_ano/imdb_2016.rds")
 
 rbind(imdb_2015, imdb_2016) %>% head()
 ```
@@ -125,7 +114,7 @@ rbind(imdb_2015, imdb_2016) %>% head()
 Podemos também usar a função `bind_rows()` para juntar várias tabelas. Aqui, todas as tabelas continuam tendo as mesmas colunas.
 
 ```{r}
-arquivos <- list.files("../data-raw/rds/imdb_por_ano/", full.names = TRUE)
+arquivos <- list.files("../data/imdb_por_ano/", full.names = TRUE)
 
 arquivos %>%
   purrr::map(readr::read_rds) %>%
@@ -141,7 +130,7 @@ arquivos %>%
 Como a função `map()` devolve uma lista, a função `rbind()` não funcionaria.
 
 ```{r}
-arquivos <- list.files("../data-raw/rds/imdb_por_ano/", full.names = TRUE)
+arquivos <- list.files("../data/imdb_por_ano/", full.names = TRUE)
 
 arquivos %>%
   purrr::map(readr::read_rds) %>%
@@ -189,23 +178,209 @@ rbind(tab1, tab2)
 ```
 
 
----
-## coalesce()
+**Extra**: o `{dplyr}` também possui a função `bind_cols()`, para juntar duas bases colocando suas colunas lado-a-lado.
 
-No exemplo abaixo, substituimos os `NAs` da coluna `var1` pelos valores equivalentes da coluna `var2` (criamos uma nova coluna `var3` com o resultado para visualizarmos melhor). No caso em que as duas colunas apresentavam `NA`, a coluna `var3` continuou com o `NA`.
+---
+## case_when()
+
+A função `case_when()` generaliza a função `ifelse()`, permitindo colocar quantas condições quisermos.
 
 ```{r}
-tab <- tibble::tibble(
-  var1 = c(1, 2, NA, 2, 10, NA, NA),
-  var2 = c(NA, 2, 2, 10, 3, 0, NA)
-)
+x <- sample(-10:10, 10)
 
-tab %>%
-  mutate(var3 = coalesce(var1, var2))
+case_when(
+  x < 0 ~ "negativo",
+  x == 0 ~ "zero",
+  x > 0 ~ "positivo"
+)
+```
+
+Com `ifelse()`, precisaríamos usar a função duas vezes:
+
+```{r}
+ifelse(x < 0, "negativo", ifelse(x == 0, "zero", "positivo"))
 ```
 
 ---
-# Across
+## 
+
+A ordem das condições é importante no `case_when()`, pois os testes são realizados na ordem em que eles aparecem.
+
+```{r}
+mtcars %>%
+  mutate(
+    mpg_cat = case_when(
+      mpg < 15 ~ "economico",
+      mpg < 22 ~ "regular",
+      mpg >= 22 ~ "bebe bem"
+    )
+  ) %>% 
+  head(8)
+```
+
+Repare que os carros com `mpg < 15` entram na primeira condição, a segunda condição pega os carros com `15 <= mpg < 25`. 
+
+---
+## 
+
+Como a última condição é complementar, isto é, as observações que não entrarm nas condições anteriores com certeza entrarão na última condição, podemos substituí-la por um simples `TRUE`.
+
+```{r}
+mtcars %>%
+  mutate(
+    mpg_cat = case_when(
+      mpg < 15 ~ "economico",
+      mpg < 22 ~ "regular",
+      TRUE ~ "bebe bem"
+    )
+  ) %>% 
+  head(8)
+```
+
+
+---
+## 
+
+O `case_when()` é muito útil dentro do `mutate()`.
+
+```{r}
+mtcars %>%
+  mutate(
+    mpg_cat = case_when(
+      mpg < 15 ~ "economico",
+      mpg < 22 ~ "regular",
+      TRUE ~ "bebe bem"
+    )
+  ) %>% 
+  head(14)
+```
+
+
+---
+## first(), last()
+
+Essas funções retornam o primeiro e último valor de um vetor.
+
+```{r}
+x <- c(1, 12, 30, 41, 15)
+
+first(x)
+last(x)
+```
+
+---
+## 
+
+São funções úteis quando temos algum tipo de ordem:
+
+```{r}
+tab <- tibble::tibble(
+  tempo = c(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4),
+  var = c(1, 4, 10, 33, 1, 3, 0, 21, 12, 7, 9, 17),
+  grupo = c(rep("a", 4), rep("b", 4), rep("c", 4))
+)
+
+tab %>%
+  group_by(grupo) %>%
+  arrange(tempo, .by_group = TRUE) %>%
+  mutate(inicio = first(var), fim = last(var))
+```
+
+
+---
+## na_if()
+
+Transforma um valor especificado em `NA`.
+
+```{r}
+tab <- tibble::tibble(
+  var = c(1, 10, 2, -99, 10, -99)
+)
+
+tab %>% mutate(var = na_if(var, -99))
+```
+
+
+---
+## coalesce()
+
+A função `coalesce()` substitui os `NA`s de uma coluna pelos valores equivalentes de uma segunda coluna. No exemplo abaixo, substituimos os `NAs` da coluna `var1` pelos valores equivalentes da coluna `var2` (criamos uma nova coluna `var3` com o resultado para visualizarmos melhor). No caso em que as duas colunas apresentavam `NA`, a coluna `var3` continuou com o `NA`.
+
+```{r}
+tab <- tibble::tibble(
+  var1 = c(1, 2, NA, 10, NA, NA),
+  var2 = c(NA, 2, 2, 3, 0, NA)
+)
+
+tab %>% mutate(var3 = coalesce(var1, var2))
+```
+
+---
+## 
+
+Você também pode usar para substituir `NA`s de uma variável por um único valor.
+
+```{r}
+tab %>% mutate(var3 = coalesce(var1, 33))
+```
+
+Ou simplesmente usar a função `tidyr::replace_na()`.
+
+```{r}
+tab %>% tidyr::replace_na(replace = list(var1 = 33, var2 = 66))
+```
+
+---
+## lag(), lead()
+
+Essas funções devolvem o valor defasado e valor futuro.
+
+```{r}
+tab <- tibble::tibble(
+  tempo = c(1, 2, 3, 4, 5),
+  var = c(1, 4, 10, 33, 20)
+)
+
+tab %>% 
+  dplyr::mutate(
+    var_lag = lag(var),
+    var_lead = lead(var)
+  )
+```
+
+
+---
+## pull()
+
+Devolve uma coluna da base como vetor.
+
+```{r}
+mtcars %>% pull(mpg)
+```
+
+
+---
+## slice_sample()
+
+Essa função pode ser utilizada para pegarmos uma amostra de linhas da nossa base.
+
+No exemplo abaixo, pegamos uma amostra de tamanho 10 da base mtcars.
+
+```{r}
+slice_sample(mtcars, n = 10)
+```
+
+---
+## 
+
+Agora, pegamos 50% da base mtcars.
+
+```{r}
+slice_sample(mtcars, prop = 0.5)
+```
+
+---
+## Across
 
 across() makes it possible to compute useful summaries that were previously impossible. For example, it’s now easy to summarise numeric vectors with one function, factors with another, and still compute the number of rows in each group:
 

@@ -59,6 +59,11 @@ case_when(
   x > 0 ~ "positivo"
 )
 
+# Com ifelse(), precisaríamos usar a
+# função duas vezes
+
+ifelse(x < 0, "negativo", ifelse(x == 0, "zero", "positivo"))
+
 # O teste complementar pode ser substituído
 # por um TRUE
 
@@ -74,8 +79,8 @@ mtcars %>%
   mutate(
     mpg_cat = case_when(
       mpg < 15 ~ "economico",
-      mpg < 25 ~ "regular",
-      mpg > 25 ~ "bebe bem"
+      mpg < 22 ~ "regular",
+      mpg >= 22 ~ "bebe bem"
     )
   )
 
@@ -84,10 +89,45 @@ mtcars %>%
   mutate(
     mpg_cat = case_when(
       mpg < 15 ~ "economico",
-      mpg < 25 ~ "regular",
+      mpg < 22 ~ "regular",
       TRUE ~ "bebe bem"
     )
   )
+
+# first, last -------------------------------------------------------------
+
+# Retornam o primeiro e último valor de um vetor
+
+x <- c(1, 12, 30, 41, 15)
+
+first(x)
+last(x)
+
+# São funções úteis quando temos algum tipo de ordem
+tab <- tibble::tibble(
+  tempo = c(1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5),
+  var = c(1, 4, 10, 33, 20, 1, 3, 0, 3, 21, 12, 7, 9, 17, 2),
+  grupo = c(rep("a", 5), rep("b", 5), rep("c", 5))
+)
+
+tab %>%
+  group_by(grupo) %>%
+  arrange(tempo, .by_group = TRUE) %>%
+  mutate(
+    inicio = first(var),
+    fim = last(var)
+  )
+
+# na_if -------------------------------------------------------------------
+
+# Transforma um valor especificado em `NA`
+
+tab <- tibble::tibble(
+  var = c(1, 10, 2, -99, 10, -99)
+)
+
+tab %>%
+  mutate(var = na_if(var, -99))
 
 # coalesce ----------------------------------------------------------------
 
@@ -122,11 +162,11 @@ tab <- tibble::tibble(
 # Pegar valor defasado e valor futuro
 tab %>%
   dplyr::mutate(
-    var_lag1 = lag(var),
-    var_lead1 = lead(var)
+    var_lag = lag(var),
+    var_lead = lead(var)
   )
 
-# Muito útil para testes
+# Útil para testes
 tab %>%
   dplyr::mutate(
     teste = var > lead(var)
@@ -137,40 +177,6 @@ tab %>%
 # Devolve uma coluna da base (como vetor)
 mtcars %>%
   pull(mpg)
-
-# first, last -------------------------------------------------------------
-
-# Retornam o primeiro e último valor de um vetor
-
-x <- c(1, 12, 30, 41, 15)
-
-first(x)
-last(x)
-
-# São funções úteis quando temos algum tipo de ordem
-tab <- tibble::tibble(
-  tempo = c(1, 2, 3, 4, 5, 12, 2, 3, 4, 5, 1, 2, 3, 4, 5),
-  var = c(1, 4, 10, 33, 20, 1, 3, 0, 3, 21, 12, 7, 9, 17, 2),
-  grupo = c(rep("a", 5), rep("b", 5), rep("c", 5))
-)
-
-tab %>%
-  group_by(grupo) %>%
-  arrange(tempo, .by_group = TRUE) %>%
-  mutate(
-    inicio = first(var),
-    fim = last(var)
-  )
-
-
-# na_if -------------------------------------------------------------------
-
-tab <- tibble::tibble(
-  var = c(1, 10, 2, -99, 10, -99)
-)
-
-tab %>%
-  mutate(var = na_if(var, -99))
 
 
 # sample_n, sample_frac ---------------------------------------------------
