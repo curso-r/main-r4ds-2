@@ -307,17 +307,84 @@ ames %>%
   View()
 
 
+# select, rename ----------------------------------------------------------
+
 # Para selecionar colunas, não usamos across!
 ames %>%
   select(where(is.numeric))
 
+ames %>%
+  select(contains("qualidade") & where(is.character))
 
-# select, rename ----------------------------------------------------------
+# Para renomer várias colunas, utilizamos
+# a função rename_with()
 
+ames %>%
+  rename_with(toupper, contains("venda"))
 
 # relocate ----------------------------------------------------------------
 
+# Por padrão, traz uma coluna
+# para o começo da base
 
+ames %>%
+  relocate(venda_valor)
+
+
+# Os argumentos .before e .after
+# podem ser usados para fazer
+# mudanças mais complexas
+
+ames %>%
+  relocate(venda_ano, .after = construcao_ano)
+
+ames %>%
+  relocate(venda_ano, .before = construcao_ano)
+
+# rowwise -----------------------------------------------------------------
+
+tab_notas <- tibble(
+  student_id = 1:5,
+  prova1 = sample(0:10, 5),
+  prova2 = sample(0:10, 5),
+  prova3 = sample(0:10, 5),
+  prova4 = sample(0:10, 5)
+)
+
+# E se quisermos uma coluna com
+# a nota média de cada aluno?
+
+# Isso não vai funcionar
+
+tab_notas %>% mutate(media = mean(c(prova1, prova2, prova3, prova4)))
+
+# Podemos usar o group_by()
+
+tab_notas %>%
+  group_by(student_id) %>%
+  mutate(media = mean(c(prova1, prova2, prova3, prova4)))
+
+# E também a função c_across()
+
+tab_notas %>%
+  group_by(student_id) %>%
+  mutate(media = mean(c_across(starts_with("prova"))))
+
+# Podemos trocar o group_by() por rowwise()
+
+tab_notas %>%
+  rowwise(student_id) %>%
+  mutate(media = mean(c_across(starts_with("prova"))))
+
+# Não é preciso passar uma coluna id
+
+tab_notas %>%
+  rowwise() %>%
+  mutate(media = mean(c_across(starts_with("prova"))))
+
+
+# A função rowwise() vai ser útil quando estivermos
+# trabalhando com list-columns!
 
 # 3. tidyr ----------------------------------------------------------------
 

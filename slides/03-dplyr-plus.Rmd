@@ -578,394 +578,137 @@ ames %>%
   )) 
 ```
 
+---
+## select()
 
+Não precisamos do `across()` na hora de selecionar colunas. A função `select()` já usa naturalmente o mecanismo de seleção de colunas que o `across()` proporciona.
+
+```{r}
+# Pegando apenas 5 colunas por questão de espaço
+ames %>%
+  select(where(is.numeric)) %>% 
+  select(1:5)
+```
 
 ---
-## rowwise()
+## rename()
 
----
-## select(), rename()
+O mesmo vale para o `rename()`. Se quisermos renomer várias colunas, a partir de uma função, utilizamos o `rename_with()`.
+
+```{r}
+# Pegando apenas 5 colunas por questão de espaço
+ames %>%
+  rename_with(toupper, contains("venda")) %>% 
+  select(73:77)
+```
+
 
 ---
 ## relocate()
 
----
-## Across
-
-With the where() helper, across() unifies _if and _at semantics, allowing combinations that used to be impossible. For example, you can now transform all numeric columns whose name begins with “x”: across(where(is.numeric) & starts_with("x")).
-
-across() doesn’t need vars(). The _at() functions are the only place in dplyr where you have to use vars(), which makes them unusual, and hence harder to learn and remember.
-
-
----
-class: inverse, middle, center
-
-# Pivotagem
-
----
-
-# pivot_wider()
+O `{dplyr}` possui agora uma função própria para reorganizar colunas: `relocate()`. Por padrão, ela coloca uma ou mais colunas no começo da base.
 
 ```{r}
-knitr::include_graphics("img/03-dplyr-plus/wider.png")
+# Pegando apenas 5 colunas por questão de espaço
+ames %>%
+  relocate(venda_valor, venda_tipo) %>% 
+  select(1:5)
 ```
 
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
 
 ---
+## 
 
-# pivot_longer()
+Podemos usar os argumentos `.after` e `.before` para fazer mudanças mais complexas.
+
+O código baixo coloca a coluna `venda_ano` depois da coluna `construcao_ano`.
+
+```{r, eval = FALSE}
+ames %>%
+  relocate(venda_ano, .after = construcao_ano)
+```
+
+O código baixo coloca a coluna `venda_ano` antes da coluna `construcao_ano`.
+
+```{r, eval = FALSE}
+ames %>%
+  relocate(venda_ano, .before = construcao_ano)
+```
+
+---
+## rowwise()
+
+Por fim, vamos discutir operações feitas por linha. Tome como exemplo a tabela abaixo. Ela apresenta as notas de alunos em quatro provas.
 
 ```{r}
-knitr::include_graphics("img/03-dplyr-plus/longer.png")
+tab_notas <- tibble(
+  student_id = 1:5,
+  prova1 = sample(0:10, 5),
+  prova2 = sample(0:10, 5),
+  prova3 = sample(0:10, 5),
+  prova4 = sample(0:10, 5)
+)
+
+tab_notas
 ```
 
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
 
 ---
-class: center
+## 
 
-# Vamos ao R!
+Se quisermos gerar uma coluna com a nota média de cada aluno nas quatro provas, não poderíamos usar o `mutate()` diretamente.
 
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/03-dplyr-plus/gato.gif")
+```{r}
+tab_notas %>% mutate(media = mean(c(prova1, prova2, prova3, prova4)))
 ```
 
-<!-- Finalizando ----------------------------------------------------------- -->
+Neste caso, todas as colunas estão sendo empilhadas e gerando uma única média, passada a todas as linhas da coluna `media`.
 
 ---
-class: inverse, middle, center
+## 
 
-# Resumo
+Para fazermos a conta para cada aluno, podemos agrupar por aluno. Agora sim a média é calculada apenas nas notas de cada estudante.
 
----
-
-# Resumo
-
-Hoje vimos alguns conceitos de
-
-- Importação de dados com `{readxl}` e `{readr}`, e uma palhinha do `{purrr}`
-- Os cinco verbos do `{dplyr}`
-- Conexão com banco de dados e a função `collect()`
-- Pivotagem com as funções `pivot_wider()` e `pivot_longer()`
-
----
-
-# Algumas referências
-
-- [Material de tidyverse da UFPR](http://www.leg.ufpr.br/~walmes/ensino/dsbd-linprog/slides/02-r-tidyverse.html#1)
-- [Material da Curso-R](https://www.curso-r.com/material/)
-- [Apresentação Garret Grolemund](https://github.com/rstudio/webinars/blob/master/05-Data-Wrangling-with-R-and-RStudio/wrangling-webinar.pdf)
-
----
-
-### Joins com `{dplyr}`
-
---
-
-Exemplos sem exercício:
-
-### `nest()`/`unnest()` com `{tidyr}`
-
-### Fazendo funções que usam `dplyr` com `{{ }}`
-
----
-
-# Bases de dados
-
-Base do SINESP: Sistema Nacional de Informações de Segurança Pública
-
-- `município`
-- `sigla_uf`
-- `regiao`
-- `mes_ano`
-- `vitima`
-
---
-
-Para o exercício de joins, vamos considerar a base Estadual também:
-
-- `uf`
-- `tipo_crime`
-- `ano`
-- `mes`
-- `ocorrencias`
-
-### As bases já estão no repositório
-
----
-
-# Taxonomia
-
-## ↪️ `{pacote}`
-
---
-
-## ↪️ `pacote::funcao()` ou `funcao()`
-
---
-
-## ↪️ `da_` para bases de dados
-
-<!-- Parte 1---------------------------------------------------------------- -->
-
----
-class: inverse, middle, center
-
-# separate() e unite()
-
----
-
-# Revisando tidy data
-
-É uma base que une os conceitos da estatística (amostra, variável) e da informática (linhas, colunas)
-
-### As observações estão nas linhas
-
-### As variáveis estão nas colunas
-
-### Os valores estão nas células
-
----
-
-# Motivação
-
-- Muitas vezes nossas células não são valores.
-- Podemos querer juntar as categorias de duas variáveis em uma só.
-- Ou então separar as categorias de uma variável em várias.
-- Para isso usamos `tidyr::separate()` e `tidyr::unite()`
-
----
-
-# Notação
-
-### `unite()`
-
-```{r eval=FALSE, echo=TRUE}
-dados %>% 
-  {{unite(coluna_nova, colunas, para, colar, sep = "separador")}}
+```{r}
+tab_notas %>%
+  group_by(student_id) %>%
+  mutate(media = mean(c(prova1, prova2, prova3, prova4)))
 ```
 
-### `separate()`
 
+---
+## c_across()
 
-```{r eval=FALSE, echo=TRUE}
-dados %>% 
-  {{separate(coluna_velha, c("colunas", "novas"), sep = "separador")}}
+Também podemos nos aproveitar da sintaxe do `across()` neste caso. Para isso, precisamos substutir a função `c()` pela função `c_across()`.
+
+```{r}
+tab_notas %>%
+  group_by(student_id) %>%
+  mutate(media = mean(c_across(starts_with("prova"))))
 ```
 
+
 ---
-class: center
+## 
 
-# Vamos ao R!
+Equivalentemente ao `group_by()`, neste caso, podemos usar a função `rowwise()`.
 
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/03-dplyr-plus/gato.gif")
+```{r}
+tab_notas %>%
+  rowwise(student_id) %>%
+  mutate(media = mean(c_across(starts_with("prova"))))
 ```
 
-<!-- Parte 2---------------------------------------------------------------- -->
 
 ---
-class: inverse, middle, center
+## 
 
-# Pivotagem
+Ela é muito útil quando queremos fazer operação por linhas, mas não temos uma coluna de identificação. Por padrão, se não indicarmos nenhuma coluna, cada linha será um "grupo".
 
----
-
-# Motivação
-
-- Quando nossas linhas não são unidades obsevacionais ou nossas colunas não são variáveis, precisamos fazer pivotagem.
-- É similar à pivotagem do Excel, mas mais completa.
-- O ato de pivotar envolve "espalhar" ou "derreter" as informações de uma tabela.
-
----
-
-# pivot_wider()
-
-```{r, out.width="90%"}
-knitr::include_graphics("img/03-dplyr-plus/wider.png")
+```{r}
+tab_notas %>%
+  rowwise() %>%
+  mutate(media = mean(c_across(starts_with("prova"))))
 ```
 
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
-
----
-
-# pivot_longer()
-
-```{r, out.width="90%"}
-knitr::include_graphics("img/03-dplyr-plus/longer.png")
-```
-
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
-
----
-class: center
-
-# Vamos ao R!
-
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/03-dplyr-plus/gato.gif")
-```
-
----
-
-# Observação
-
-- `pivot_longer()` e `pivot_wider()` são novas versões das funções `spread()` e `gather()`, respectivamente.
-- As funções foram refatoradas por conta de reiteradas reclamações da comunidade sobre a dificuldade de ensinar essas funções.
-- No entanto, as funções antigas não deixaram de existir. Elas só deixarão de ser atualizadas. Uma função assim é chamada de "aposentada" (ver ?spread).
-- `pivot_longer()` e `pivot_wider()` ainda estão em desenvolvimento e podem mudar no futuro.
-
-<!-- Parte 3---------------------------------------------------------------- -->
-
----
-class: inverse, middle, center
-
-# Pausa
-
-
----
-class: inverse, middle, center
-
-# Joins
-
----
-
-# Motivação
-
-- Join é o que precisamos fazer quando temos duas tabela e precisamos pegar a informação de uma a partir das variáveis de outra.
-- A teoria de joins é completamente desenvolvida dentro da área de banco de dados.
-- Claro que `{dplyr}` não poderia nos deixar na mão para isso 😃 
-- Melhor material: [livro r4ds](https://r4ds.had.co.nz/relational-data.html)
-
----
-class: center
-
-# Vamos ao R!
-
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/03-dplyr-plus/gato.gif")
-```
-
----
-
-# Outros tipos de join
-
-- `anti_join()`: mostra as linhas da base da esquerda que não batem com a base da direita. É útil para fazer de-paras. 
-- `semi_join()`: é parecido com `inner_join()`, mas não copia as colunas da base da direita.
-
---
-
-## Joins aproximados
-
-- É possível fazer joins quando as variáveis não batem exatamente, mas têm valores muito próximos.
-- Também é possível fazer joins por similaridade de textos e até por expressões regulares.
-- Dê uma olhada no pacote `{fuzzyjoin}`!
-
-<!-- Parte 4---------------------------------------------------------------- -->
-
----
-class: inverse, middle, center
-
-# nest() / unnest()
-
----
-
-# Motivação
-
-- Nem sempre queremos trabalhar com valores nas células
-- Às vezes, pode ser útil guardar, em cada elemento, uma outra base de dados.
-- Tabelas aninhadas podem facilitar visualização e diminuem a quantidade de tabelas a serem consideradas no estudo.
-
---
-
-- O tema é polêmico e nem todos concordam...
-
----
-class: center
-
-# Vamos ao R!
-
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/03-dplyr-plus/gato.gif")
-```
-
-<!-- Parte 5---------------------------------------------------------------- -->
-
----
-class: inverse, middle, center
-
-# Programando com dplyr
-
----
-
-# Motivação
-
-- O `{dplyr}` facilita a nossa vida ao permitir colocar os nomes das variáveis sem aspas nos argumentos das funções principais.
-- Isso só é possível por conta de um recurso quase exclusivo do R, chamado de *non standard evaluation* (NSE).
-- No entanto, quando queremos criar funções, isso pode atrapalhar
-
-```{r eval=FALSE, echo=TRUE}
-selecionar <- function(da, coluna) {
-  da %>% 
-    select(coluna)
-}
-
-da_sinesp_muni %>% 
-  selecionar(regiao)
-```
-    
-    #> Error: object 'regiao' not found
-
----
-
-# Programando com R
-
-- Para isso, existe o curly-curly `{{ }}`
-- Basta colocá-lo ao redor do argumento que você quer passar
-
-```{r eval=FALSE, echo=TRUE}
-selecionar <- function(da, coluna) {
-  da %>% 
-    select({{coluna}})
-}
-
-da_sinesp_muni %>% 
-  selecionar(regiao)
-```
-
-    # A tibble: 124,246 x 1
-       regiao
-       <chr> 
-     1 NORTE 
-     2 NORTE 
-     3 NORTE 
-     4 NORTE 
-     5 NORTE 
-     6 NORTE 
-     7 NORTE 
-     8 NORTE 
-     9 NORTE 
-    10 NORTE 
-    # … with 124,236 more rows
-
----
-class: center
-
-# Vamos ao R!
-
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/03-dplyr-plus/gato.gif")
-```
-
----
-
-# Resumindo
-
-- Use `{{variavel}}` quando não quiser colocar aspas no argumento da função.
-- Use `.data[["variavel"]]` quando quiser colocar aspas no argumento da função.
-- Use `{{nome}} := ...` quando quiser criar colunas com nomes que estão no argumento da função.
-
---
-
-__Referência__: https://www.curso-r.com/blog/2019-08-21-nse/
+Veja que `student_id` não é passada para a função `rowwise()`. Não precisaríamos dessa coluna na base para reproduzir a geração da columa `media` neste caso.
