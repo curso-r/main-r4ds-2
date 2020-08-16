@@ -277,8 +277,8 @@ case_when(
 ```
 
 ```
-##  [1] "positivo" "positivo" "positivo" "zero"     "positivo" "negativo"
-##  [7] "positivo" "negativo" "negativo" "negativo"
+##  [1] "positivo" "negativo" "negativo" "negativo" "negativo" "positivo"
+##  [7] "negativo" "positivo" "positivo" "negativo"
 ```
 
 Com `ifelse()`, precisaríamos usar a função duas vezes:
@@ -289,8 +289,8 @@ ifelse(x &lt; 0, "negativo", ifelse(x == 0, "zero", "positivo"))
 ```
 
 ```
-##  [1] "positivo" "positivo" "positivo" "zero"     "positivo" "negativo"
-##  [7] "positivo" "negativo" "negativo" "negativo"
+##  [1] "positivo" "negativo" "negativo" "negativo" "negativo" "positivo"
+##  [7] "negativo" "positivo" "positivo" "negativo"
 ```
 
 ---
@@ -612,17 +612,17 @@ slice_sample(mtcars, n = 10)
 ```
 
 ```
-##                   mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-## Toyota Corolla   33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
-## AMC Javelin      15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
-## Merc 280         19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
-## Porsche 914-2    26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-## Datsun 710       22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-## Toyota Corona    21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
-## Merc 280C        17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
-## Fiat 128         32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
-## Lotus Europa     30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
-## Dodge Challenger 15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+##                mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Porsche 914-2 26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+## AMC Javelin   15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+## Volvo 142E    21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+## Merc 230      22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+## Mazda RX4     21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+## Merc 280      19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+## Merc 450SLC   15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+## Valiant       18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+## Datsun 710    22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+## Fiat X1-9     27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
 ```
 
 ---
@@ -636,23 +636,23 @@ slice_sample(mtcars, prop = 0.5)
 ```
 
 ```
-##                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-## Mazda RX4         21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-## Datsun 710        22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-## Dodge Challenger  15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
-## Toyota Corolla    33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
-## Ford Pantera L    15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
-## Merc 280C         17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
-## Fiat X1-9         27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
-## Merc 450SL        17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
-## Porsche 914-2     26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-## Mazda RX4 Wag     21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-## Merc 280          19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
-## Merc 230          22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-## Merc 240D         24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
-## Volvo 142E        21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
-## Chrysler Imperial 14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
-## Camaro Z28        13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+## Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+## Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+## Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+## Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+## Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+## Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+## Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+## Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+## Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+## Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+## Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+## Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+## Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
 ```
 
 ---
@@ -660,7 +660,7 @@ class: titulo
 # dplyr 1.0
 
 ---
-# Novo dplyr
+## O novo dplyr
 
 A versão 1.0 do pacote `dplyr` foi oficialmente lançada em junho de 2020 e contou com diversas novidades Vamos falar das principais mudanças:
 
@@ -788,6 +788,178 @@ ames %&gt;%
 A sintaxe é parecida com a função `summarise_at()`, mas agora não precisamos mais usar a função `vars()` e nem usar `list(nome_da_funcao)` ou `~nome_da_funcao(.x)` para definir a função aplicada nas colunas.
 
 ---
+## 
+
+Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. Abaixo, calculamos o número de valores distintos para todas as variáveis da base `ames`.
+
+
+```r
+# Pegando apenas 5 colunas por questão de espaço
+ames %&gt;% 
+  summarise(across(.fns = n_distinct)) %&gt;% 
+  select(1:5) 
+```
+
+```
+## # A tibble: 1 x 5
+##   lote_fachada lote_area lote_formato lote_config terreno_contorno
+##          &lt;int&gt;     &lt;int&gt;        &lt;int&gt;       &lt;int&gt;            &lt;int&gt;
+## 1          129      1960            4           5                4
+```
+
+O padrão do parâmetro `.cols` é `everithing()`, que representa "todas as colunas".
+
+---
+## 
+
+Anteriormente, utilizaríamos a função `summarise_all()`.
+
+
+```r
+# Pegando apenas 5 colunas por questão de espaço
+ames %&gt;% 
+  summarise_all(.funs = ~n_distinct(.x)) %&gt;% 
+  select(1:5) 
+```
+
+```
+## # A tibble: 1 x 5
+##   lote_fachada lote_area lote_formato lote_config terreno_contorno
+##          &lt;int&gt;     &lt;int&gt;        &lt;int&gt;       &lt;int&gt;            &lt;int&gt;
+## 1          129      1960            4           5                4
+```
+
+---
+## 
+
+Se quisermos selecionar as colunas a serem modificadas a partir de um teste lógico, utilizamos o ajudante `where()`.
+
+No exemplo abaixo, calculamos o número de valores distintos das colunas de texto.
+
+
+```r
+# Pegando apenas 5 colunas por questão de espaço
+ames %&gt;%
+  summarise(across(where(is.character), n_distinct)) %&gt;% 
+  select(1:5)
+```
+
+```
+## # A tibble: 1 x 5
+##   lote_formato lote_config terreno_contorno terreno_declive rua_tipo
+##          &lt;int&gt;       &lt;int&gt;            &lt;int&gt;           &lt;int&gt;    &lt;int&gt;
+## 1            4           5                4               3        2
+```
+
+Todas as colunas da base resultante eram colunas com classe `character` na base `ames`.
+
+---
+## 
+
+Antes, utilizávamos a função `summarise_if()`.
+
+
+```r
+# Pegando apenas 5 colunas por questão de espaço
+ames %&gt;%
+  summarise_if(is.character, n_distinct) %&gt;% 
+  select(1:5)
+```
+
+```
+## # A tibble: 1 x 5
+##   lote_formato lote_config terreno_contorno terreno_declive rua_tipo
+##          &lt;int&gt;       &lt;int&gt;            &lt;int&gt;           &lt;int&gt;    &lt;int&gt;
+## 1            4           5                4               3        2
+```
+
+Você também pode combinar as ações do `summarise_if()` e `summarise_at()` em um único `across()`. Calculamos as áreas médias, garantindo que pegamos apenas variáveis numéricas.
+
+
+```r
+# Pegando apenas 5 colunas por questão de espaço
+ames %&gt;%
+  summarise(across(where(is.numeric) &amp; contains("area"), mean, na.rm = TRUE)) %&gt;% 
+  select(1:5)
+```
+
+```
+## # A tibble: 1 x 5
+##   lote_area area_alvenaria porao_area_com_ac… porao_area_com_a… porao_area_sem_…
+##       &lt;dbl&gt;          &lt;dbl&gt;              &lt;dbl&gt;             &lt;dbl&gt;            &lt;dbl&gt;
+## 1    10148.           102.               443.              49.7             559.
+```
+
+
+---
+## 
+
+Com a função `across()`, podemos fazer sumarizações complexas.
+
+
+```r
+# Pegando apenas 5 colunas por questão de espaço
+ames %&gt;%
+  group_by(fundacao_tipo) %&gt;%
+  summarise(
+    across(contains("area"), mean, na.rm = TRUE),
+    across(where(is.character), ~sum(is.na(.x))),
+    n_obs = n(),
+  ) %&gt;% 
+  select(1:4, n_obs)
+```
+
+```
+## # A tibble: 6 x 5
+##   fundacao_tipo lote_area area_alvenaria porao_area_com_acabamento_1 n_obs
+##   &lt;chr&gt;             &lt;dbl&gt;          &lt;dbl&gt;                       &lt;dbl&gt; &lt;int&gt;
+## 1 BrkTil            8712.           10.2                       151.    311
+## 2 CBlock           10616.           85.0                       468.   1244
+## 3 PConc            10054.          144.                        506.   1310
+## 4 Slab             10250.           35.2                         0      49
+## 5 Stone             8659.            0                          43.9    11
+## 6 Wood              9838.           16                         812.      5
+```
+
+Isso não era possível utilizando apenas as funções `summarise()`, `summarise_if()` e `summarise_at()`.
+
+---
+## Across outros verbos
+
+Embora a nova sintaxe, usando `across()`, não seja muito diferente do que fazíamos antes, realizar sumarizações complexas não é a única vantagem desse novo *framework*.
+
+O `across()` pode ser utilizado em todos os verbos do `{dplyr}` (com exceção do `select()` e `rename()`, já que ele não trás vantagens com relação ao que já existe) e isso unifica o modo de fazermos essas operações no R. Em vez de termos uma família de funções para cada verbo, temos agora apenas o próprio verbo e o `across()`.
+
+Vamos ver um exemplo para o `mutate()` e para o `filter()`.
+
+---
+## 
+
+O código abaixo transforma todas as variáveis que possuem "area" no nome, passando os valores de pés quadrados para metros quadrados.
+
+
+```r
+ames %&gt;%
+  mutate(across(
+    contains("area"),
+    ~ .x / 10.764
+  ))
+```
+
+Já o código a seguir filtra apenas as casas que possuem varanda aberta, cerca e lareira.
+
+
+```r
+ames %&gt;%
+  filter(across(
+    c(varanda_aberta_area, cerca_qualidade, lareira_qualidade),
+    ~!is.na(.x)
+  )) 
+```
+
+
+
+---
 ## rowwise()
 
 ---
@@ -798,22 +970,6 @@ A sintaxe é parecida com a função `summarise_at()`, mas agora não precisamos
 
 ---
 ## Across
-
-across() makes it possible to compute useful summaries that were previously impossible. For example, it’s now easy to summarise numeric vectors with one function, factors with another, and still compute the number of rows in each group:
-
-  
-
-```r
-df %&gt;%
-  group_by(g1, g2) %&gt;% 
-  summarise(
-    across(where(is.numeric), mean), 
-    across(where(is.factor), nlevels),
-    n = n(), 
-  )
-```
-  
-across() reduces the number of functions that dplyr needs to provide. This makes dplyr easier for you to use (because there are fewer functions to remember) and easier for us to develop (since we only need to implement one function for each new verb, not four).
 
 With the where() helper, across() unifies _if and _at semantics, allowing combinations that used to be impossible. For example, you can now transform all numeric columns whose name begins with “x”: across(where(is.numeric) &amp; starts_with("x")).
 
