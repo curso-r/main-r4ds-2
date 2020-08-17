@@ -10,10 +10,10 @@ Inscreva-se no curso: <https://www.curso-r.com/cursos/r4ds-2/>
 **Acesse o material completo do curso escolhendo uma das turmas
 abaixo**.
 
-| Turma          | URL                                        |
-| :------------- | :----------------------------------------- |
-| Agosto de 2020 | <https://github.com/curso-r/202008-r4ds-2> |
-| Abril de 2020  | <https://github.com/curso-r/202004-r4ds-2> |
+| Turma          | Material                                  | Github                                     |
+| :------------- | :---------------------------------------- | :----------------------------------------- |
+| Agosto de 2020 | <https://curso-r.github.io/202008-r4ds-2> | <https://github.com/curso-r/202008-r4ds-2> |
+| Abril de 2020  | <https://curso-r.github.io/202004-r4ds-2> | <https://github.com/curso-r/202004-r4ds-2> |
 
 # Ementa
 
