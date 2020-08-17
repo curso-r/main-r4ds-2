@@ -5,6 +5,14 @@ Repositório principal do curso R para Ciência de Dados 2.
 
 Inscreva-se no curso: <https://www.curso-r.com/cursos/r4ds-2/>
 
+**Acesse o material completo do curso escolhendo uma das turmas
+abaixo**.
+
+| Turma          | URL                                        |
+| :------------- | :----------------------------------------- |
+| Agosto de 2020 | <https://github.com/curso-r/202008-r4ds-2> |
+| Abril de 2020  | <https://github.com/curso-r/202004-r4ds-2> |
+
 # Ementa
 
   - **Organização de projetos**
@@ -30,10 +38,3 @@ Inscreva-se no curso: <https://www.curso-r.com/cursos/r4ds-2/>
       - Inputs e outputs
       - Hospedando um aplicativo no
         [shinyapps.io](https://www.shinyapps.io/)
-
-# Turmas mais recentes:
-
-| Turma          | URL                          |
-| :------------- | :--------------------------- |
-| Abril de 2020  | <https://github.com/curso-r> |
-| Agosto de 2020 | <https://github.com/curso-r> |

@@ -15,6 +15,12 @@ Repositório principal do curso R para Ciência de Dados 2.
 
 Inscreva-se no curso: https://www.curso-r.com/cursos/r4ds-2/
 
+**Acesse o material completo do curso escolhendo uma das turmas abaixo**.
+
+```{r, echo = FALSE}
+knitr::kable(CursoR:::listar_turmas_recentes("r4ds-2"))
+```
+
 # Ementa
 
 - **Organização de projetos**
@@ -39,10 +45,4 @@ Inscreva-se no curso: https://www.curso-r.com/cursos/r4ds-2/
   - A lógica ui/server
   - Inputs e outputs
   - Hospedando um aplicativo no  [shinyapps.io](https://www.shinyapps.io/)
-  
-# Turmas mais recentes:
-
-```{r, echo = FALSE}
-knitr::kable(CursoR:::list_github_repos("r4ds-2"))
-```
 
