@@ -43,8 +43,6 @@ Inscreva-se no curso: https://www.curso-r.com/cursos/r4ds-2/
 # Turmas mais recentes:
 
 ```{r, echo = FALSE}
-
+knitr::kable(CursoR:::list_github_repos("r4ds-2"))
 ```
-
-  
 

@@ -32,3 +32,8 @@ Inscreva-se no curso: <https://www.curso-r.com/cursos/r4ds-2/>
         [shinyapps.io](https://www.shinyapps.io/)
 
 # Turmas mais recentes:
+
+| Turma          | URL                          |
+| :------------- | :--------------------------- |
+| Abril de 2020  | <https://github.com/curso-r> |
+| Agosto de 2020 | <https://github.com/curso-r> |
