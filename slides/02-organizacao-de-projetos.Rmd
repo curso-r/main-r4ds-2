@@ -320,7 +320,7 @@ Arquivos `.rda` são extremamente estáveis, compactos e podem ser carregados ra
 
 Se a base que você quiser colocar no pacote for o resultado de um processo de manipulação de uma base crua, você pode salvar o código desse processo na pasta `data-raw`. 
 
-Para isso, utilize a função `usethis::data_raw("meus_dados")`. Ela criará uma pasta `data-raw/` na raiz do seu pacote, caso ela não exista ainda, e um arquivo `meus_dados.R`, você colocará o código de manipulação da base crua.
+Para isso, utilize a função `usethis::data_raw("meus_dados")`. Ela criará uma pasta `data-raw/` na raiz do seu pacote, caso ela não exista ainda, e um arquivo `meus_dados.R` onde você colocará o código de manipulação da base crua.
 
 ---
 ## Qual a diferença entre R/ e data-raw/?
@@ -342,7 +342,7 @@ Para isso, utilize a função `usethis::data_raw("meus_dados")`. Ela criará uma
 ---
 ## Comunicação
 
-Se você precisar construir sites, relatórios, dashboards estáticos (flexdashboard) dentro do seu pacote, você pode criar uma chamada `docs/` na raiz do seu projeto para guardar esses arquivos.
+Se você precisar construir sites, relatórios, dashboards estáticos (flexdashboard) dentro do seu pacote, você pode criar uma pasta chamada `docs/` na raiz do seu projeto para guardar esses arquivos.
 
 É muito comum a construção de *vignettes* para documentar o pacote. Elas são documentos em HTML melhor formatados do que a tradicional documentação do R.
 
@@ -351,7 +351,7 @@ Você pode usar a função `usethis::use_vignette()` para criar *vignettes*.
 ---
 ## Documentação
 
-A documentação de uma função deve seguir a estrutura a seguir, usando usamos o símbolo `#'`:
+A documentação de funções deve seguir a estrutura a seguir usando o símbolo `#'`:
 
 ```{r eval=FALSE}
 #' Título da função
@@ -382,7 +382,7 @@ Algumas dicas e boas práticas.
 
 - Para deixar a documentação das suas funções acessível (no help do R), use a função `devtools::document()`.
 
-- Se você precisar instalar o seu pacote (equivalente ao que fazemos com pacotes do CRAN quando rodamos `install_packages()`), use a função `devtools::install()`. Ela deve ser utilizada quando o seu pacote estiver pronto (ou pelo menos alguma versão dele).
+- Se você precisar instalar o seu pacote (equivalente ao que fazemos com pacotes do CRAN quando rodamos `install.packages()`), use a função `devtools::install()`. Ela deve ser utilizada quando o seu pacote estiver pronto (ou pelo menos alguma versão dele).
 
 ---
 class: middle, center, inverse
@@ -469,7 +469,7 @@ Lembrando que nomes de pacotes
 ## Passo 2: adicione o Git
 
 ```{r, eval=FALSE}
-use_git()
+usethis::use_git()
 ```
 
 - Rodando o comando acima na pasta do projeto (a nova aba do RStudio que
@@ -482,8 +482,8 @@ apareceu) você adiciona controle de versão.
 
 ```{r eval=FALSE}
 usethis::use_git_config(
-  user.name = "NOME", 
-  user.email = "seu@email.com"
+  user.name = "SEU NOME NO GITHUB", 
+  user.email = "seu_email_no@github.com"
 )
 ```
 
@@ -495,7 +495,7 @@ usethis::use_git_config(
 ## Passo 3: Adicione o GitHub
 
 ```{r, eval=FALSE}
-use_github()
+usethis::use_github()
 ```
 
 - O comando acima sincroniza a pasta com o GitHub.
@@ -510,7 +510,7 @@ use_github()
 
 - O PAT serve para autenticar ao github, podendo ser utilizado como senha de acesso ou internamente para automatizar tarefas (como criar um repositório).
 
-- Para acessar seu PAT, rode `devtools::github_pat()`. 
+- Para acessar seu PAT, rode `usethis::github_token()`. 
 
 - Se quiser editá-lo, rode `usethis::edit_r_environ()` e lembre-se de reiniciar sua sessão do R.
 

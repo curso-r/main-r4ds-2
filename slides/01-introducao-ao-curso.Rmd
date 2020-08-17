@@ -122,7 +122,7 @@ class: middle, center, inverse
 ---
 ## Extras
 
-- Teremos monitoria duas vezes pode semana, sempre 1 hora antes do início das aulas (ter e qui, das 18h às 19h).
+- Teremos monitoria duas vezes pode semana, sempre 30 minutos antes do início das aulas (ter e qui, das 18:30h às 19h).
 
 - Além das aulas, teremos alguns conteúdos extras, tanto em texto quanto em vídeo.
 
