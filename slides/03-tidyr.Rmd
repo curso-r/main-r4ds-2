@@ -1,0 +1,404 @@
+---
+title: "R para Ciência de Dados 2"
+subtitle: "tidyr"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "css/custom-intro.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "4:3"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+library(dplyr)
+library(tidyr)
+
+colorido <- function(x, cor = "#6495ed") {
+  glue::glue(
+    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+options(width = 80)
+```
+
+---
+class: title
+
+# Pivotagem
+
+---
+
+# pivot_wider()
+
+```{r}
+knitr::include_graphics("img/03-dplyr-plus/wider.png")
+```
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+
+# pivot_longer()
+
+```{r}
+knitr::include_graphics("img/03-dplyr-plus/longer.png")
+```
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+class: center
+
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
+```
+
+<!-- Finalizando ----------------------------------------------------------- -->
+
+---
+class: inverse, middle, center
+
+# Resumo
+
+---
+
+# Resumo
+
+Hoje vimos alguns conceitos de
+
+- Importação de dados com `{readxl}` e `{readr}`, e uma palhinha do `{purrr}`
+- Os cinco verbos do `{dplyr}`
+- Conexão com banco de dados e a função `collect()`
+- Pivotagem com as funções `pivot_wider()` e `pivot_longer()`
+
+---
+
+# Algumas referências
+
+- [Material de tidyverse da UFPR](http://www.leg.ufpr.br/~walmes/ensino/dsbd-linprog/slides/02-r-tidyverse.html#1)
+- [Material da Curso-R](https://www.curso-r.com/material/)
+- [Apresentação Garret Grolemund](https://github.com/rstudio/webinars/blob/master/05-Data-Wrangling-with-R-and-RStudio/wrangling-webinar.pdf)
+
+---
+
+### Joins com `{dplyr}`
+
+--
+
+Exemplos sem exercício:
+
+### `nest()`/`unnest()` com `{tidyr}`
+
+### Fazendo funções que usam `dplyr` com `{{ }}`
+
+---
+
+# Bases de dados
+
+Base do SINESP: Sistema Nacional de Informações de Segurança Pública
+
+- `município`
+- `sigla_uf`
+- `regiao`
+- `mes_ano`
+- `vitima`
+
+--
+
+Para o exercício de joins, vamos considerar a base Estadual também:
+
+- `uf`
+- `tipo_crime`
+- `ano`
+- `mes`
+- `ocorrencias`
+
+### As bases já estão no repositório
+
+---
+
+# Taxonomia
+
+## ↪️ `{pacote}`
+
+--
+
+## ↪️ `pacote::funcao()` ou `funcao()`
+
+--
+
+## ↪️ `da_` para bases de dados
+
+<!-- Parte 1---------------------------------------------------------------- -->
+
+---
+class: inverse, middle, center
+
+# separate() e unite()
+
+---
+
+# Revisando tidy data
+
+É uma base que une os conceitos da estatística (amostra, variável) e da informática (linhas, colunas)
+
+### As observações estão nas linhas
+
+### As variáveis estão nas colunas
+
+### Os valores estão nas células
+
+---
+
+# Motivação
+
+- Muitas vezes nossas células não são valores.
+- Podemos querer juntar as categorias de duas variáveis em uma só.
+- Ou então separar as categorias de uma variável em várias.
+- Para isso usamos `tidyr::separate()` e `tidyr::unite()`
+
+---
+
+# Notação
+
+### `unite()`
+
+```{r eval=FALSE, echo=TRUE}
+dados %>% 
+  {{unite(coluna_nova, colunas, para, colar, sep = "separador")}}
+```
+
+### `separate()`
+
+
+```{r eval=FALSE, echo=TRUE}
+dados %>% 
+  {{separate(coluna_velha, c("colunas", "novas"), sep = "separador")}}
+```
+
+---
+class: center
+
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
+```
+
+<!-- Parte 2---------------------------------------------------------------- -->
+
+---
+class: inverse, middle, center
+
+# Pivotagem
+
+---
+
+# Motivação
+
+- Quando nossas linhas não são unidades obsevacionais ou nossas colunas não são variáveis, precisamos fazer pivotagem.
+- É similar à pivotagem do Excel, mas mais completa.
+- O ato de pivotar envolve "espalhar" ou "derreter" as informações de uma tabela.
+
+---
+
+# pivot_wider()
+
+```{r, out.width="90%"}
+knitr::include_graphics("img/03-dplyr-plus/wider.png")
+```
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+
+# pivot_longer()
+
+```{r, out.width="90%"}
+knitr::include_graphics("img/03-dplyr-plus/longer.png")
+```
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+class: center
+
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
+```
+
+---
+
+# Observação
+
+- `pivot_longer()` e `pivot_wider()` são novas versões das funções `spread()` e `gather()`, respectivamente.
+- As funções foram refatoradas por conta de reiteradas reclamações da comunidade sobre a dificuldade de ensinar essas funções.
+- No entanto, as funções antigas não deixaram de existir. Elas só deixarão de ser atualizadas. Uma função assim é chamada de "aposentada" (ver ?spread).
+- `pivot_longer()` e `pivot_wider()` ainda estão em desenvolvimento e podem mudar no futuro.
+
+<!-- Parte 3---------------------------------------------------------------- -->
+
+---
+class: inverse, middle, center
+
+# Pausa
+
+
+---
+class: inverse, middle, center
+
+# Joins
+
+---
+
+# Motivação
+
+- Join é o que precisamos fazer quando temos duas tabela e precisamos pegar a informação de uma a partir das variáveis de outra.
+- A teoria de joins é completamente desenvolvida dentro da área de banco de dados.
+- Claro que `{dplyr}` não poderia nos deixar na mão para isso 😃 
+- Melhor material: [livro r4ds](https://r4ds.had.co.nz/relational-data.html)
+
+---
+class: center
+
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
+```
+
+---
+
+# Outros tipos de join
+
+- `anti_join()`: mostra as linhas da base da esquerda que não batem com a base da direita. É útil para fazer de-paras. 
+- `semi_join()`: é parecido com `inner_join()`, mas não copia as colunas da base da direita.
+
+--
+
+## Joins aproximados
+
+- É possível fazer joins quando as variáveis não batem exatamente, mas têm valores muito próximos.
+- Também é possível fazer joins por similaridade de textos e até por expressões regulares.
+- Dê uma olhada no pacote `{fuzzyjoin}`!
+
+<!-- Parte 4---------------------------------------------------------------- -->
+
+---
+class: inverse, middle, center
+
+# nest() / unnest()
+
+---
+
+# Motivação
+
+- Nem sempre queremos trabalhar com valores nas células
+- Às vezes, pode ser útil guardar, em cada elemento, uma outra base de dados.
+- Tabelas aninhadas podem facilitar visualização e diminuem a quantidade de tabelas a serem consideradas no estudo.
+
+--
+
+- O tema é polêmico e nem todos concordam...
+
+---
+class: center
+
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
+```
+
+<!-- Parte 5---------------------------------------------------------------- -->
+
+---
+class: inverse, middle, center
+
+# Programando com dplyr
+
+---
+
+# Motivação
+
+- O `{dplyr}` facilita a nossa vida ao permitir colocar os nomes das variáveis sem aspas nos argumentos das funções principais.
+- Isso só é possível por conta de um recurso quase exclusivo do R, chamado de *non standard evaluation* (NSE).
+- No entanto, quando queremos criar funções, isso pode atrapalhar
+
+```{r eval=FALSE, echo=TRUE}
+selecionar <- function(da, coluna) {
+  da %>% 
+    select(coluna)
+}
+
+da_sinesp_muni %>% 
+  selecionar(regiao)
+```
+    
+    #> Error: object 'regiao' not found
+
+---
+
+# Programando com R
+
+- Para isso, existe o curly-curly `{{ }}`
+- Basta colocá-lo ao redor do argumento que você quer passar
+
+```{r eval=FALSE, echo=TRUE}
+selecionar <- function(da, coluna) {
+  da %>% 
+    select({{coluna}})
+}
+
+da_sinesp_muni %>% 
+  selecionar(regiao)
+```
+
+    # A tibble: 124,246 x 1
+       regiao
+       <chr> 
+     1 NORTE 
+     2 NORTE 
+     3 NORTE 
+     4 NORTE 
+     5 NORTE 
+     6 NORTE 
+     7 NORTE 
+     8 NORTE 
+     9 NORTE 
+    10 NORTE 
+    # … with 124,236 more rows
+
+---
+class: center
+
+# Vamos ao R!
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("img/03-dplyr-plus/gato.gif")
+```
+
+---
+
+# Resumindo
+
+- Use `{{variavel}}` quando não quiser colocar aspas no argumento da função.
+- Use `.data[["variavel"]]` quando quiser colocar aspas no argumento da função.
+- Use `{{nome}} := ...` quando quiser criar colunas com nomes que estão no argumento da função.
+
+--
+
+__Referência__: https://www.curso-r.com/blog/2019-08-21-nse/
