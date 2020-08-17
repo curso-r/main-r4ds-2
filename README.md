@@ -1,4 +1,6 @@
 
+# R para Ciência de Dados 2
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 Repositório principal do curso R para Ciência de Dados 2.
