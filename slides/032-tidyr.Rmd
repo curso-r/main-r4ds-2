@@ -1,0 +1,141 @@
+---
+title: "R para Ciência de Dados 2"
+subtitle: "tidyr"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "css/custom-intro.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "4:3"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+library(dplyr)
+library(tidyr)
+
+colorido <- function(x, cor = "#6495ed") {
+  glue::glue(
+    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
+  ) %>% 
+    htmltools::HTML()
+}
+
+options(width = 80)
+```
+
+## Dados arrumados
+
+Dentro do `tidyverse`, uma base *tidy* é uma base fácil de se trabalhar, isto é, fácil de se fazer manipulação de dados, fácil de se criar visualizações, fácil de se ajustar modelos e por aí vai.
+
+Na prática, uma base *tidy* é aquela que se encaixa bem no *framework* do `tidyverse`, pois os pacotes como o `dplyr` e o `ggplot2` foram desenvolvidos para funcionar bem com bases *tidy*. E assim como esses pacotes motivaram o uso de bases *tidy*, o conceito *tidy* motiva o surgimento de novos *frameworks*, como o `tidymodels` para modelagem.
+
+As duas propriedades mais importantes de uma base *tidy* são:
+
+- cada coluna é uma variável;
+
+- cada linha é uma observação.
+
+Essa definição proporciona uma maneira consistente de se referir a variáveis (nomes de colunas) e observações (índices das linhas).
+
+---
+## O pacote {tidyr}
+
+O pacote `{tidyr}` possui funções que nos ajudam a deixar uma base bagunçada em uma base *tidy*. Ou então, nos ajudam a bagunçar um pouquinho a nossa base quando isso nos ajudar a produzir o resultados que queremos.
+
+Vamos ver aqui algumas de suas principais funções:
+
+- `separate()` e `unite()`: para separar variáveis concatenadas em uma única coluna ou uni-las.
+
+- `pivot_wider()` e `pivot_longer()`: para pirvotar a base.
+
+- `nest()` e `unnest()`: para criar *list columns*.
+
+---
+## separate()
+
+```{r eval=FALSE}
+dados %>% 
+  separate( 
+    coluna_velha,  #<<
+    c("colunas", "novas"),  #<<
+    sep = "separador" #<<
+  )
+```
+
+---
+## unite()
+
+```{r eval=FALSE, echo=TRUE}
+dados %>% 
+  {{unite(coluna_nova, colunas, para, colar, sep = "separador")}}
+```
+
+
+
+
+---
+## Pivotagem
+
+- Quando nossas linhas não são unidades obsevacionais ou nossas colunas não são variáveis, precisamos fazer pivotagem.
+- É similar à pivotagem do Excel, mas mais completa.
+- O ato de pivotar envolve "espalhar" ou "derreter" as informações de uma tabela.
+
+
+---
+## pivot_wider()
+
+```{r}
+knitr::include_graphics("img/03-dplyr-plus/wider.png")
+```
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+## pivot_longer()
+
+```{r}
+knitr::include_graphics("img/03-dplyr-plus/longer.png")
+```
+
+(retirado do livro [r4ds](https://r4ds.had.co.nz))
+
+---
+## Observação
+
+- `pivot_longer()` e `pivot_wider()` são novas versões das funções `spread()` e `gather()`, respectivamente.
+- As funções foram refatoradas por conta de reiteradas reclamações da comunidade sobre a dificuldade de ensinar essas funções.
+- No entanto, as funções antigas não deixaram de existir. Elas só deixarão de ser atualizadas. Uma função assim é chamada de "aposentada" (ver ?spread).
+- `pivot_longer()` e `pivot_wider()` ainda estão em desenvolvimento e podem mudar no futuro.
+
+---
+## List columns
+
+- Nem sempre queremos trabalhar com valores nas células
+- Às vezes, pode ser útil guardar, em cada elemento, uma outra base de dados.
+- Tabelas aninhadas podem facilitar visualização e diminuem a quantidade de tabelas a serem consideradas no estudo.
+
+--
+
+- O tema é polêmico e nem todos concordam...
+
+---
+## nest()
+
+
+---
+## unnest()
+
+
+---
+# Referências
+
+- [Material de tidyverse da UFPR](http://www.leg.ufpr.br/~walmes/ensino/dsbd-linprog/slides/02-r-tidyverse.html#1)
+- [Material da Curso-R](https://www.curso-r.com/material/)
+- [Apresentação Garret Grolemund](https://github.com/rstudio/webinars/blob/master/05-Data-Wrangling-with-R-and-RStudio/wrangling-webinar.pdf)
