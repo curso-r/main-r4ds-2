@@ -16,10 +16,7 @@
  *    - remarkjs wiki: https://github.com/gnab/remark/wiki
  *
  * ------------------------------------------------------- */
-@import url(https://fonts.googleapis.com/css?family=Montserrat:400,500);
-@import url(https://fonts.googleapis.com/css?family=Arvo);
-@import url(https://fonts.googleapis.com/css?family=Droid+Mono);
-
+@import url('https://fonts.googleapis.com/css2?family=Arvo&family=Montserrat:wght@400;500&family=Source+Code+Pro:wght@400;500&display=swap');
 
 body {
   font-family: Montserrat, 'Palatino Linotype', 'Book Antiqua', Palatino, 'Microsoft YaHei', 'Songti SC', serif;
@@ -49,10 +46,10 @@ h1, h2, h3 {
     font-size: 35px;
 }
 .remark-code, .remark-inline-code {
-  font-family: Droid Mono, 'Lucida Console', Monaco, monospace;
+  font-family: 'Source Code Pro', monospace;
 }
 .remark-code {
-  font-size: 0.9em;
+  font-size: 0.75em;
 }
 .remark-inline-code {
   font-size: 1em;
