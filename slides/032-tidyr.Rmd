@@ -19,6 +19,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 library(dplyr)
 library(tidyr)
+library(ggplot2)
 
 colorido <- function(x, cor = "#6495ed") {
   glue::glue(
@@ -83,79 +84,278 @@ dados %>%
   )
 ```
 
+Como exemplo, vamos transformar a coluna `generos` da base IMDB em três colunas, cada uma com um dos gêneros do filme. Lembrando que os valores da coluna `generos` estão no seguinte formato:
+
+```{r}
+imdb %>% pull(generos) %>% head()
+```
+
+
 ---
 ## 
 
+Veja que agora, temos 3 colunas de gênero. Filmes com menos de 3 gêneros recebem `NA` na coluna `genero2` e/ou `genero3`. Os gêneros sobressalentes são descartados, assim como a coluna `generos` original.
 
-
+```{r}
+imdb %>% 
+  separate( 
+    col = generos,  #<<
+    into = c("genero1", "genero2", "genero3"),  #<<
+    sep = "\\|" #<<
+  )
+```
 
 ---
 ## unite()
 
+A função `unite()` realiza a operação inversa da função `separate()`. Ela concatena os valores de várias variáveis em uma única coluna. A sintaxe é a seguinte:
+
 ```{r eval=FALSE, echo=TRUE}
 dados %>% 
-  {{unite(coluna_nova, colunas, para, colar, sep = "separador")}}
+  unite(
+    col = coluna_nova,  #<<
+    colunas_para_juntar, #<<
+    sep = "separador" #<<
+  )
 ```
 
+Como exemplo, vamos agora transformar as colunas `ator1`, `ator2` e `ator3` em uma única coluna `atores`. Lembrando que essas colunas estão no formato abaixo.
 
+```{r}
+imdb %>% select(starts_with("ator")) %>% head(3)
+```
+
+---
+## 
+
+Veja que agora a coluna `atores` possui os 3 atores concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
+
+```{r}
+imdb %>% 
+  unite(
+    col = "atores", #<<
+    starts_with("ator"), #<<
+    sep = " - " #<<
+  ) %>% 
+  select(atores)
+```
 
 
 ---
 ## Pivotagem
 
-- Quando nossas linhas não são unidades obsevacionais ou nossas colunas não são variáveis, precisamos fazer pivotagem.
-- É similar à pivotagem do Excel, mas mais completa.
-- O ato de pivotar envolve "espalhar" ou "derreter" as informações de uma tabela.
+O conceito de pivotagem no *tidyverse* se refere a mudança da estrutura da base, geralmente para alcançar o formato *tidy*. 
+
+Geralmente realizamos pivotagem quando nossas linhas não são unidades observacionais ou nossas colunas não são variáveis. Ela é similiar à pivotagem do Excel, mas um pouco mais complexa.
+
+O ato de pivotar resulta em transformar uma base de dados *long* em *wide* e vice-versa. 
+
+Uma base no formato *long* possui mais linhas e pode ter menos colunas, enquanto no formato *wide* poussi menos linhas e pode ter mais colunas
+
+Esses formatos são sempre relativos às colunas que estão sendo pivotadas, sendo que uma base *tidy* pode estar tanto no formato *long* quanto *wide*.
+
+---
+## 
+
+Antigamente, utilizávamos as funções `gather()` e `spread()` para fazer as operações de pivotagem. A fonte da imagem é [este site](https://www.garrickadenbuie.com/project/tidyexplain/#spread-and-gather").
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("img/032-tidyr/pivotagem.gif")
+```
+
+---
+## pivot_longer()
+
+Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_nome` e `ator_protagonismo`.
+
+```{r}
+imdb %>% 
+  pivot_longer(
+    cols = starts_with("ator"), 
+    names_to = "ator_protagonismo",
+    values_to = "ator_nome"
+  ) %>% 
+  select(titulo, ator_nome, ator_protagonismo) %>% 
+  head(6)
+```
+
+---
+## 
+
+Se considerarmos que na análise da base IMDB cada observação deve ser um filme, então essa nova base já não mais *tidy*, pois agora cada filme aparece em três linhas diferentes, uma vez para cada um de seus atores.
+
+Nesse sentido, embora possa parecer que a variável `ator_protagonismo` estava implícita na base original, ela não é uma variável de fato. Todos filmes tem um `ator_1`, um `ator_2` e um `ator_3`. Não existe nenhuma informação sobre o filme que podemos tirar da coluna `ator_protagonismo`, pois ela qualifica apenas os atores, não o filme em si.
 
 
 ---
 ## pivot_wider()
 
-```{r}
-knitr::include_graphics("img/03-dplyr-plus/wider.png")
-```
-
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
-
----
-## pivot_longer()
+A função `pivot_wider()` faz a operação inversa da `pivot_longer()`. Sem aplicarmos as duas funções em sequência, voltamos para a base original.
 
 ```{r}
-knitr::include_graphics("img/03-dplyr-plus/longer.png")
+imdb %>% 
+  pivot_longer(
+    cols = starts_with("ator"), 
+    names_to = "ator_protagonismo",
+    values_to = "ator_nome"
+  ) %>% 
+  pivot_wider(
+    names_from = "ator_protagonismo",
+    values_from = "ator_nome"
+  ) %>% 
+  head(4)
 ```
 
-(retirado do livro [r4ds](https://r4ds.had.co.nz))
+---
+## 
+
+A base `imdb` não possui nenhuma variável que faça sentido aplicarmos direto a função `pivot_wider()`. Vamos então considerar a seguinte tabela derivada da base `imdb`:
+
+```{r}
+tab_romance_terror <- imdb %>%
+  filter(ano >= 2010) %>%
+  mutate(
+    genero = case_when(
+      stringr::str_detect(generos, "Romance") ~ "Romance",
+      stringr::str_detect(generos, "Horror") ~ "Horror",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(genero)) %>%
+  group_by(ano, genero) %>%
+  summarise(receita_media = mean(receita, na.rm = TRUE))
+```
+
+Essa tabela possui a receita média dos filmes de romance e terror nos anos de 2010 a 2016.
 
 ---
-## Observação
+## 
 
-- `pivot_longer()` e `pivot_wider()` são novas versões das funções `spread()` e `gather()`, respectivamente.
-- As funções foram refatoradas por conta de reiteradas reclamações da comunidade sobre a dificuldade de ensinar essas funções.
-- No entanto, as funções antigas não deixaram de existir. Elas só deixarão de ser atualizadas. Uma função assim é chamada de "aposentada" (ver ?spread).
-- `pivot_longer()` e `pivot_wider()` ainda estão em desenvolvimento e podem mudar no futuro.
+Pode ser que, para apresentá-la em uma reunião, fique mais agradável ter os anos nas colunas e não nas linhas. Para isso, basta utilizarmos a função `pivot_wider()`.
+
+```{r}
+# Tabela original
+tab_romance_terror
+```
+
+---
+## 
+
+```{r}
+# Tabela com os anos nas colunas
+tab_romance_terror %>% 
+  pivot_wider(
+    names_from = ano,
+    values_from = receita_media
+  )
+```
+
+Esse é um caso que *bagunçar* um pouquinho a tabela nos trouxe um resultado desejado.
 
 ---
 ## List columns
 
-- Nem sempre queremos trabalhar com valores nas células
-- Às vezes, pode ser útil guardar, em cada elemento, uma outra base de dados.
-- Tabelas aninhadas podem facilitar visualização e diminuem a quantidade de tabelas a serem consideradas no estudo.
+Um terceiro conceito de dados *tidy* é que cada célula da tabela possui um valor. No entanto, quando estamos programando, muitas vezes vale apena abandonar essa definição e guardarmos objetos mais complexos nas células de uma tabela.
 
---
+Utilizando as chamadas *list columns* podemos guardar virtualmente qualquer objeto em nossas *tibbles*, como gráficos, resultados de modelos ou até mesmo outras tabelas.
 
-- O tema é polêmico e nem todos concordam...
+Uma forma de trabalhar com *list columns* consiste em utilizarmos as funções
+
+- `nest()`: para criar uma *list column*;
+
+- `unnest()`: para desfazer uma *list column*.
+
+Se você não estiver familiarizado com o conceito de listas dentro do R, leia o [capítulo de listas do nosso livro](https://livro.curso-r.com/3-9-listas.html).
 
 ---
 ## nest()
 
+A forma mais simples de utilizarmos uma *list column* é *aninhar* a nossa base com relação a uma variável.
+
+```{r}
+imdb_nest <- imdb %>%
+  group_by(ano) %>%
+  nest() %>% 
+  arrange(ano)
+
+head(imdb_nest, 8)
+```
+
+---
+## 
+
+A base `imdb_nest` possui duas colunas `ano` e `data` e uma linha para cada ano. Na coluna `data`, temos o restante da base `imdb`, recortada para cada um dos anos.
+
+Abaixo, acessmos os dados do único filme de 1916 (primeira linha da base `imdb_nest`).
+
+```{r}
+imdb_nest$data[[1]]
+```
+
+Imagine que queiramos fazer, para cada ano, um gráfico de dispersão da receita contra o orçamento dos filmes lançados no ano.
+
+Com a base no formato de *list columns*, basta criarmos uma função para gerar o gráfico e utilizarmos a função `purrr::map()`.
+
+---
+## 
+
+Abaixo, construímos a função `fazer_grafico_dispersao()`, que será aplicada a cada uma das bases contidas na coluna `data` da base `imdb_nest`. Os gráficos, respectivamos a cada ano, são salvos na coluna `grafico`.
+
+```{r}
+fazer_grafico_dispersao <- function(tab) {
+  tab %>%
+    ggplot(aes(x = orcamento, y = receita)) +
+    geom_point()
+}
+
+imdb_graficos <- imdb_nest %>% 
+  mutate(
+    grafico = purrr::map(data, fazer_grafico_dispersao)
+  )
+
+head(imdb_graficos, 6)
+```
+
+---
+## 
+
+Para acessar cada um dos gráficos, basta rodar o código abaixo.
+
+```{r, fig.height=5, fig.width=5, fig.align="center"}
+# Pegando o gráfico referente ao ano de 2000
+imdb_graficos$grafico[[74]]
+```
+
+---
+## 
+
+Ou, escolhendo diretamente pelo ano
+
+```{r, fig.height=5, fig.width=5, fig.align="center"}
+imdb_graficos %>% 
+  filter(ano == 2000) %>% 
+  pull(grafico)
+```
+
 
 ---
 ## unnest()
+
+A função `unnest()` remove a estrutura de *list column*. Fazendo a operação abaixo, voltamos para a base `imdb` original.
+
+```{r}
+imdb_nest %>%
+  unnest(cols = "data")
+```
 
 
 ---
 # Referências
 
 - [Material de tidyverse da UFPR](http://www.leg.ufpr.br/~walmes/ensino/dsbd-linprog/slides/02-r-tidyverse.html#1)
-- [Material da Curso-R](https://www.curso-r.com/material/)
+
+- [Livro da Curso-R](https://livro.curso-r.com/7-manipulacao.html)
+
 - [Apresentação Garret Grolemund](https://github.com/rstudio/webinars/blob/master/05-Data-Wrangling-with-R-and-RStudio/wrangling-webinar.pdf)
+
+- [Excelente blog post sobre manipulação de bases](https://www.garrickadenbuie.com/project/tidyexplain/#spread-and-gather%22)

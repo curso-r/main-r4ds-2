@@ -51,7 +51,7 @@ Já vimos que com os principais verbos do `{dplyr}` já conseguimos fazer divers
 
 .pull-right[
 ```{r, out.width="100%", echo = FALSE}
-knitr::include_graphics("img/03-dplyr-plus/arte_dplyr.png")
+knitr::include_graphics("img/031-dplyr/arte_dplyr.png")
 ```
 ]
 
