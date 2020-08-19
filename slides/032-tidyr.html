@@ -50,17 +50,52 @@ Vamos ver aqui algumas de suas principais funções:
 - `nest()` e `unnest()`: para criar *list columns*.
 
 ---
+## Motivação
+
+Como motivação para utilizar esssas funções, vamos utilizar a nossa boa e velha base `imdb`.
+
+
+```r
+imdb &lt;- readr::read_rds("../data/imdb.rds")
+
+head(imdb)
+```
+
+```
+## # A tibble: 6 x 15
+##   titulo   ano diretor duracao cor   generos pais  classificacao orcamento
+##   &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
+## 1 Avatar  2009 James …     178 Color Action… USA   A partir de … 237000000
+## 2 Pirat…  2007 Gore V…     169 Color Action… USA   A partir de … 300000000
+## 3 The D…  2012 Christ…     164 Color Action… USA   A partir de … 250000000
+## 4 John …  2012 Andrew…     132 Color Action… USA   A partir de … 263700000
+## 5 Spide…  2007 Sam Ra…     156 Color Action… USA   A partir de … 258000000
+## 6 Tangl…  2010 Nathan…     100 Color Advent… USA   Livre         260000000
+## # … with 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
+## #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
+```
+
+
+---
 ## separate()
+
+A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. A sintaxe da função está apresentada abaixo.
 
 
 ```r
 dados %&gt;% 
   separate( 
-*   coluna_velha,
-*   c("colunas", "novas"),
+*   col = coluna_velha,
+*   into = c("colunas", "novas"),
 *   sep = "separador"
   )
 ```
+
+---
+## 
+
+
+
 
 ---
 ## unite()

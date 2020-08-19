@@ -58,16 +58,36 @@ Vamos ver aqui algumas de suas principais funções:
 - `nest()` e `unnest()`: para criar *list columns*.
 
 ---
+## Motivação
+
+Como motivação para utilizar esssas funções, vamos utilizar a nossa boa e velha base `imdb`.
+
+```{r}
+imdb <- readr::read_rds("../data/imdb.rds")
+
+head(imdb)
+```
+
+
+---
 ## separate()
+
+A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. A sintaxe da função está apresentada abaixo.
 
 ```{r eval=FALSE}
 dados %>% 
   separate( 
-    coluna_velha,  #<<
-    c("colunas", "novas"),  #<<
+    col = coluna_velha,  #<<
+    into = c("colunas", "novas"),  #<<
     sep = "separador" #<<
   )
 ```
+
+---
+## 
+
+
+
 
 ---
 ## unite()
