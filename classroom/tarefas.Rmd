@@ -20,14 +20,173 @@ b. Crie um script em R e adicione a função `colar()`, criada no exercício 1.
 c. Commit & Push.
 d. Veja se seu arquivo R está no seu repositório do Github.
 
+# Manipulação
 
-# Manipulação de dados
+## dplyr 1.0
+
+Faça os exercícios do script exercicios/01-exercicios-dplyr.R no material do curso.
+
+## tidyr
 
 
-# Visualização de dados
+
+# Análise IMDB
+
+## 1. Criando o projeto/pacote
+
+a. Crie um novo projeto ou pacote para a análise usando as funções usethis::use_project() ou usethis::use_package().
+
+Dica: você pode dar qualquer nome para o projeto/pacote, mas ele deve ser informativo, como "exemploIMDB" ou "analiseIMDB".
+
+b. Adicione o GIT à pasta do seu projeto usando a função usethis::use_git().
+
+c. Conecte a pasta do seu projeto/pacote ao Github utilizando a função usethis::use_github()
+
+## 2. Importação
+
+Se você estiver usando um projeto:
+
+A base IMDB (imdb.rds) está dentro da pasta data/ no material do curso. Crie também uma pasta data/ dentro do seu projeto e copie a base IMDB dentro dela.
+
+Se você estiver usando um pacote:
+
+a. Rode o código usethis::use_data_raw("imdb") para criar um script de manipulação. Essa função criará o script imdb.R dentro da pasta data-raw/ do seu pacate. Se essa pasta ainda não existir, ela será criada automaticamente.
+
+b. A base IMDB (imdb.rds) está dentro da pasta data/ no material do curso. Copie esse arquivo para a pasta data-raw/ dentro do seu pacote.
+
+c. No script criado no item a), importe a base IMDB, usando o código 
+
+imbd <- readr::read_rds("data-raw/imdb.rds")
+
+e rode a linha com o código usethis::use_data(imdb, overwrite = TRUE).
+
+d. Rode devtools::load_all() ou use o atalho CTRL + SHIFT + L.
+
+Se tudo ocorreu bem, a partir de agora, a base imdb ficará disponível no ambiente sempre que você executar o item d).
+
+## 3. Pegando maiores receitas
+
+Escreva uma função que receba a base IMDB e um número "n" e retorne uma tabela com o título, diretor e receita dos "n" filmes com maior receita na base IMDB. 
+
+Essa função deverá ter a estrutura a seguir:
+
+pegar_maiores_receitas <- function(tab, n) {
+  
+  tab_n_maiores_receitas <- imdb %>%
+    # codigo para manipular a tabela
+
+  tab_n_maiores_receitas
+}
+
+Com a função pronta, se rodarmos pegar_maiores_receitas(imdb, 1), ela deve retornar uma tibble (1 linha, 3 colunas) com o título, diretor e receita do filme com maior receita na base IMDB. Se rodarmos pegar_maiores_receitas(imdb, 10), ela deve retornar uma tibble (10 linhas, 3 colunas) com o título, diretor e receita dos 10 filmes com maior receita na base IMDB.
+
+Dicas:
+
+1. Crie um script .R na pasta data-raw/ para usar de rascunho na construção do código de manipulação.
+
+2. Depois que o código que gera a tabela estiver pronto, transforme ele em uma função e e a coloque dentro da pasta R/.
+
+3. Você pode usar a função `usethis::use_r("tabelas.R") para criar um script na pasta R/ onde você colocará todas as suas funções que geram tabelas.
+
+4. Se você estiver utilizando um pacote, documente a sua função para treinar a sintaxe de documentação.
+
+5. Quando a função estiver pronta, você pode apagar o script criado em 1 (opcional).
+
+## 4. Calcular número de filmes
+
+Crie uma função que receba a base IMDB e uma string com o nome de um ator e retorne o número de filmes que esse ator aparece, independentemente da posição (i.e., ator_1, ator_2, ator_3).
+
+A sua função deve ter a seguinte estrutura:
+
+calcular_num_filmes <- function(tab, nome_ator) {
+  
+  num_filmes <- imdb %>%
+    # codigo para calcular o número de filmes do ator "nome_ator"
+
+  num_filmes
+}
+
+Exemplo: a chamada calcular_num_filmes(imdb, "Will Smith") deve retornar o número 19, isto é, o ator Will Smith aparece em 19 filmes na base IMDB.
+
+Dica: use a função pivot_longer() para criar apenas uma coluna de atores.
+
+Mais dicas:
+
+1. Crie um script .R na pasta data-raw/ para usar de rascunho na construção do código de manipulação.
+
+2. Depois que o código que gera o número de filmes estiver pronto, transforme ele em uma função e a coloque dentro da pasta R/.
+
+3. Você pode usar a função `usethis::use_r("valores_uteis.R") para criar um script na pasta R/ onde você colocará todas as suas funções que geram valores interessantes para a análise.
+
+4. Se você estiver utilizando um pacote, documente a sua função para treinar a sintaxe de documentação.
+
+5. Quando a função estiver pronta, você pode apagar o script criado em 1 (opcional).
+
+# Análise Ames
+
+## 1. Criando o projeto/pacote
+
+Crie um novo projeto ou pacote para realizar uma análise de dados da base Ames. Conecte o seu projeto/pacote com o GIT e com o Github, criando um novo repositório para ele na sua conta.
+
+A base Ames possui informações sobre casas vendidas na cidade de Ames, nos EUA.
+
+## 2. Importação
+
+A base Ames (ames.rds) está dentro da pasta data/ no material do curso. Copie o arquivo e coloque a base dentro do seu projeto/pacote de maneira adequada.
+
+## 3. Valor médio da venda
+
+Crie uma função que receba a base Ames e uma string com o nome de uma coluna categórica retorne o valor médio da venda para cada uma das categorias dessa variável.
+
+A estrutura da sua função deve ser a seguinte:
 
 
-# Programação funcional
+sumarizar_venda_media <- function(tab, nome_coluna) {
+  
+  tab %>%
+    group_by(across(nome_culuna)) %>%
+    summarise(
+      # código que calcula a venda média
+    )
+    
+}
 
 
-# Shiny
+## 4. Número de Nas
+
+Crie uma função que receba a base Ames e uma string referente ao nome de uma coluna da base Ames e retorne o número de valores NAs nessa coluna.
+
+A informação de NA nessa base é importante, pois representa o número de casas que não tem uma determinada característica. Se a uma observação tiver NA na coluna piscina_qualidade, por exemplo, significa que a casa em questão não tem piscina.
+
+A sua função deverá ter a seguinte estrutura:
+
+pegar_num_NAs <- function(tab, nome_coluna) {
+  
+  tab %>%
+    # código que retorna o número de NAs da coluna "nome_coluna"
+
+}
+
+Com a função pronta, se rodarmos pegar_num_NAs(ames, piscina_area), ela deve devolver o número 2917, isto é, existem 2917 casas na base que não possuem piscina.
+
+
+EXTRA: adicione um parâmetro lógico na sua função que faça a função devolver a proporção de valores NA na coluna. Nesse caso, a função teria a estrutura:
+
+
+pegar_num_NAs <- function(tab, nome_coluna, prop = FALSE) {
+  
+  tab %>%
+    # código que retorna o número de NAs da coluna "nome_coluna"
+    
+  if (prop) {
+    # código que transforma o valor em proporção
+  }
+
+}
+
+E pegar_num_NAs(ames, piscina_area, prop = TRUE) precisa devolver 0.9955631.
+
+
+
+
+
