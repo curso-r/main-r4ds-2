@@ -1,6 +1,6 @@
 ---
 title: "R para Ciência de Dados 2"
-subtitle: "Organização de projetos"
+subtitle: "Exemplo de análise usando um pacote"
 author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
 date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
