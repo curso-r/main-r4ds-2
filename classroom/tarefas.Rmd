@@ -28,7 +28,9 @@ Faça os exercícios do script exercicios/01-exercicios-dplyr.R no material do c
 
 ## tidyr
 
+Faça os exercícios do script exercicios/01-exercicios-tidyr.R no material do curso.
 
+A base "pokemon" possui os status, tipo e cor de todos os pokémon da primeira à sétima geração. 
 
 # Análise IMDB
 
