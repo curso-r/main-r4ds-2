@@ -76,7 +76,7 @@ usethis::use_github()
 ---
 ## Passo 2: importação
 
-Vamos baixar a [base de municípios do Sinesp](http://dados.mj.gov.br/dataset/210b9ae2-21fc-4986-89c6-2006eb4db247/resource/03af7ce2-174e-4ebd-b085-384503cfb40f/download/indicadoressegurancapublicamunicmar20.xlsx) do [dados.gob.br](https://dados.gov.br). 
+Vamos baixar a [base de municípios do Sinesp](http://dados.mj.gov.br/dataset/210b9ae2-21fc-4986-89c6-2006eb4db247/resource/03af7ce2-174e-4ebd-b085-384503cfb40f/download/indicadoressegurancapublicamunicmar20.xlsx) do [dados.gov.br](https://dados.gov.br). 
 
 Essa base é um arquivo `.xlsx` e os dados que queremos estão divididos em abas.
 

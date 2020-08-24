@@ -26,11 +26,15 @@ d. Veja se seu arquivo R está no seu repositório do Github.
 
 Faça os exercícios do script exercicios/01-exercicios-dplyr.R no material do curso.
 
+A base "ames" possui informações de casas vendidas na cidade de Ames, nos EUA. cada observação é uma casa diferente.
+
 ## tidyr
 
 Faça os exercícios do script exercicios/01-exercicios-tidyr.R no material do curso.
 
-A base "pokemon" possui os status, tipo e cor de todos os pokémon da primeira à sétima geração. 
+A base "pokemon" possui os status, tipo e cor de todos os pokémon da primeira à sétima geração. Cada observação é um pokémon diferente.
+
+A base "imdb" possui informações de filmes de 1916 a 2016 extraídas do site IMDB. Cada observação é um filme diferente.
 
 # Análise IMDB
 
@@ -138,10 +142,9 @@ A base Ames (ames.rds) está dentro da pasta data/ no material do curso. Copie o
 
 ## 3. Valor médio da venda
 
-Crie uma função que receba a base Ames e uma string com o nome de uma coluna categórica retorne o valor médio da venda para cada uma das categorias dessa variável.
+Crie uma função que receba a base Ames e uma string com o nome de uma coluna categórica e retorne o valor médio da venda para cada uma das categorias dessa variável.
 
 A estrutura da sua função deve ser a seguinte:
-
 
 sumarizar_venda_media <- function(tab, nome_coluna) {
   
