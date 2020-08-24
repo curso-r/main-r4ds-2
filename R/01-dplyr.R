@@ -6,15 +6,15 @@ library(dplyr)
 # bind_rows ---------------------------------------------------------------
 
 # Juntando duas bases
-imdb_2015 <- readr::read_rds("data-raw/rds/imdb_2015.rds")
-imdb_2016 <- readr::read_rds("data-raw/rds/imdb_2016.rds")
+imdb_2015 <- readr::read_rds("data/imdb_por_ano/imdb_2015.rds")
+imdb_2016 <- readr::read_rds("data/imdb_por_ano/imdb_2016.rds")
 
 bind_rows(imdb_2015, imdb_2016)
 rbind(imdb_2015, imdb_2016)
 
 # Juntando várias bases
 
-arquivos <- list.files("data-raw/rds/imdb_por_ano/", full.names = TRUE)
+arquivos <- list.files("data/imdb_por_ano/", full.names = TRUE)
 
 arquivos %>%
   purrr::map(readr::read_rds) %>%
@@ -76,9 +76,9 @@ case_when(
 mtcars %>%
   mutate(
     mpg_cat = case_when(
-      mpg < 15 ~ "economico",
+      mpg < 15 ~ "bebe bem",
       mpg < 22 ~ "regular",
-      mpg >= 22 ~ "bebe bem"
+      mpg >= 22 ~ "economico"
     )
   )
 
@@ -86,9 +86,9 @@ mtcars %>%
 mtcars %>%
   mutate(
     mpg_cat = case_when(
-      mpg < 15 ~ "economico",
+      mpg < 15 ~ "bebe bem",
       mpg < 22 ~ "regular",
-      TRUE ~ "bebe bem"
+      TRUE ~ "economico"
     )
   )
 
@@ -175,7 +175,6 @@ tab %>%
 # Devolve uma coluna da base (como vetor)
 mtcars %>%
   pull(mpg)
-
 
 # sample_n, sample_frac ---------------------------------------------------
 
