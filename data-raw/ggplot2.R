@@ -58,7 +58,7 @@ ames %>%
 
 rick_and_morty <- readr::read_rds("data/rick_and_morty.rds")
 
-img_rick <- png::readPNG("R/rick.png") %>%
+img_rick <- png::readPNG("data-raw/rick.png") %>%
   grid::rasterGrob(interpolate = TRUE)
 
 # Um gráfico de linha

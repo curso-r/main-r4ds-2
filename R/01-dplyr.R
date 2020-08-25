@@ -206,6 +206,9 @@ help(ames, package = "basesCursoR")
 # A função across substitui a família de verbos
 # _all_, _if, _at
 
+# O objetivo é fazer uma mesma operação
+# em uma seleção de colunas
+
 # Para sumarizar a base para mais de uma variável,
 # antigamente fazíamos
 ames %>%
