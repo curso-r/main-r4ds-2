@@ -3,6 +3,10 @@
 
 library(dplyr)
 
+# Antes de falarmos do dplyr 1.0,
+# vamos aquecer com uma pequena
+# revisão/miscelânea de dplyr
+
 # bind_rows ---------------------------------------------------------------
 
 # Juntando duas bases
