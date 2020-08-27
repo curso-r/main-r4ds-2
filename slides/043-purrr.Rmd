@@ -5,13 +5,13 @@ author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5
 date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
   xaringan::moon_reader:
-    css: ["default", "default-fonts", "css/custom-intro.css"]
     lib_dir: libs
+    css: "css/xaringan-themer.css"
     nature:
+      ratio: '16:9'
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
-      ratio: "4:3"
 ---
 
 ```{r setup, include=FALSE}
@@ -32,30 +32,74 @@ colorido <- function(x, cor) {
 }
 
 options(width = 85)
+knitr::opts_chunk$set(comment = "#>")
+options(dplyr.print_min = 4, dplyr.print_max = 4)
 ```
 
-class: inverse, center, middle
-# Iterações
-
----
 # Motivação
 
-- A iteração é um dos padrões mais comuns em qualquer tarefa de programação
+Além de lidar com listas, o `{purrr}` lida com iterações, um dos padrões mais
+comuns em qualquer tarefa de programação (independentemente da linguagem).
 
-- Entender bem como uma iteração funciona pode facilitar a vida
+Apesar de não ser tão evidente, todos os data frames do R não passam de listas
+com algumas propriedades específicas, então saber lidar com elas pode ser útil
+em diversos lugares.
 
-- Padrões mais seguros de iteração podem deixar o código mais limpo
+Ainda pode ser difícil entender como isso funciona, mas, além de números,
+strings e datas, é possível colocar listas nas colunas de um data frame.
 
-- É comum precisar repetir uma tarefa várias vezes na ciência de dados
+A sintaxe do `{purrr}` é capaz de mudar para sempre o modo como você funciona,
+ensinando padrões robustos de programação (sem efeitos colaterais e sem
+repetição de código).
 
 ---
 # Introdução
 
-- __Iteração__ não é nada mais do que a repetição de um trecho de código várias
-vezes
+- Listas são como vetores, com a diferença de que elas não precisam ser
+homogêneas (seus elementos podem ter qualquer tipo)
 
 ```{r}
-vec <- 1:10
+l <- list(
+  um_numero = 123,
+  um_vetor = c(TRUE, FALSE, TRUE),
+  uma_string = "abc",
+  uma_lista = list(1, 2, 3)
+)
+str(l)
+```
+
+---
+# Estrutura
+
+```{r}
+l
+```
+
+---
+# Indexação
+
+- Para acessar os elementos de uma lista precisamos tomar cuidado com a diferença
+entre `[]` e `[[]]` (ou `purrr::pluck()`): o primeiro acesa uma posição,
+enquanto o segundo acessa um elemento
+
+```{r}
+l[3]
+l[[3]]
+```
+
+```{r}
+library(purrr)
+pluck(l, 4, 2) # Indexação profunda
+```
+
+---
+# Iterações
+
+- Iteração não é nada mais do que a repetição de um trecho de código várias
+vezes, normalmente associada a um _loop_ (laço)
+
+```{r}
+vec <- 1:5
 for (i in seq_along(vec)) {
   vec[i] <- vec[i] + 10
 }
@@ -63,147 +107,164 @@ vec
 ```
 
 - Note como a única coisa que fazemos é aplicar uma operação em cada elemento do
-vetor
+vetor (`vec[i] + 10`)
 
-- Identificamos algumas estruturas: entrada (vetor de 1 a 10), função (somar 10),
-formato da saída (um vetor numérico)
+- Identificamos algumas estruturas: **entrada** (vetor de 1 a 5) e **função**
+(somar 10 a cada elemento)
 
 ---
-# O pacote {purrr}
+# Simplificando
 
 - O pacote `{purrr}` nos permite simplificar iterações e integrá-las a pipelines
-do `{tidyverse}`
+do `{tidyverse}`: a função `map()` realiza uma iteração recebendo apenas uma
+entrada e uma função
 
 ```{r}
-library(purrr)
+vec <- 1:5
+soma_dez <- function(x) {
+  x + 10
+}
 
-soma_dez <- function(x) x + 10
+l <- map(vec, soma_dez)
+str(l)
+```
+
+---
+# Achatamento
+
+- `map()` sempre retorna uma lista independente do objeto recebido porque ela
+não pode assumir nada sobre o resultado
+
+- Se quisermos achatar os resultados só precisamos chamar uma função da família
+`map_***()` (onde `***` é a abreviação do tipo do objeto que deve ser retornado)
+
+```{r}
 map_dbl(vec, soma_dez)
 ```
 
-- `map_` denota a iteração, `vec` é a entrada, `soma_dez()` é a função e `dbl`
-é o formato da saída (_double_)
+- Os tipos possíveis são: `dbl` (números), `chr` (strings), `dfc` (_data frame
+columns_), `dfr` (_data frame rows_), `int` (inteiros) e `lgl` (lógicos)
 
-- Note que o `map()` passa os elementos do vetor para o __primeiro__ argumento
-da função `soma_dez()`
+```{r}
+map_chr(vec, soma_dez)
+```
 
 ---
 # Funções
 
-- Para passar outros arugmentos (fixos) a uma função, basta adicioná-los ao
-`map()`
+- Para passar outros arugmentos **fixos** a uma função, basta adicioná-los ao
+final da chamada de `map()`
 
 ```{r}
-soma_n <- function(x, n) x + n
+soma_n <- function(x, n) {
+  x + n
+}
 map_dbl(vec, soma_n, n = 3)
 ```
 
-- Para simplificar funções simples, podemos usar uma notação __lambda__ na qual
-`.x` representa onde deve ir o elemento do vetor
+- Para simplificar funções simples, podemos usar uma notação **lambda** na qual
+`.x` representa onde deve ser inserido o elemento atual da iteração
 
 ```{r}
-map_dbl(vec, ~3+.x)
+map_dbl(vec, ~.x+3)
 ```
 
 ---
-# Extras
+# Duas entradas
 
-- Se for necessário iterar em duas listas, basta usar `map2()`
+- Se for necessário iterar em duas listas ou vetores, basta usar `map2()`
 
 ```{r}
 strings <- c("oiii", "como vai", "tchau")
 padroes <- c("i+",   "(.o){2}",  "[au]+$")
-map2_chr(strings, padroes, str_extract)
+map2_chr(strings, padroes, stringr::str_extract)
 ```
 
-- E, se for mais útil não especificar o formato de saída, basta usar as versões
-puras dos `map()`s
+- A notação lambda funciona exatamente do mesmo modo, com `.x` e `.y`
+representando o primeiro e o segundo elementos da iteração
 
 ```{r}
-map2(strings, padroes, str_extract)
+map2_chr(strings, padroes, ~stringr::str_c(.y, " | ", .x))
 ```
 
 ---
-# Vamos ao R!
+# List-columns
 
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+- _List-columns_ são colunas nas quais cada elemento é uma lista (ou até mesmo
+uma tabela completa)
+
+-  A função `str_split()`, por exemplo, retorna uma lista contendo os pedaços da
+string original quebrada com um regex
+
+```{r,echo=FALSE,message=FALSE}
+library(dplyr); library(readr); library(stringr)
+imdb <- read_rds("../data/imdb.rds")
+```
+
+```{r}
+imdb %>%
+  mutate(split_generos = str_split(generos, "\\|")) %>% #<<
+  select(titulo, generos, split_generos)
 ```
 
 ---
-class: inverse, middle, center
-# Programando com dplyr
+# Unnest
 
----
-# Motivação
+- Usando `tidyr::unnest()` é possível "abrir" a list-column de modo que cada
+linha fique com um de seus elementos (neste caso, o título do filme vai ser
+repetido uma vez para cada gênero ao qual o filme pertence)
 
-- O `{dplyr}` facilita a nossa vida ao permitir colocar os nomes das variáveis
-sem aspas nos argumentos das funções principais
-
-- Isso só é possível por conta de um recurso quase exclusivo do R, chamado de
-*non standard evaluation* (NSE)
-
-- No entanto, quando queremos criar funções, isso pode atrapalhar
-
-```{r eval=FALSE, echo=TRUE}
-selecionar <- function(da, coluna) {
-  da %>% 
-    select(coluna)
-}
-
-da_sinesp_muni %>% 
-  selecionar(regiao)
-```
-    
-    #> Error: object 'regiao' not found
-
----
-# Programando com R
-
-- Para isso, existe o curly-curly `{{ }}`
-
-- Basta colocá-lo ao redor do argumento que você quer passar
-
-```{r eval=FALSE, echo=TRUE}
-selecionar <- function(da, coluna) {
-  da %>% 
-    select({{coluna}})
-}
-
-da_sinesp_muni %>% 
-  selecionar(regiao)
-```
-
-    # A tibble: 124,246 x 1
-       regiao
-       <chr> 
-     1 NORTE 
-     2 NORTE 
-     3 NORTE 
-     4 NORTE 
-     5 NORTE 
-     6 NORTE 
-     7 NORTE 
-     8 NORTE 
-     9 NORTE 
-    10 NORTE 
-    # … with 124,236 more rows
-
----
-# Vamos ao R!
-
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+```{r}
+library(tidyr)
+imdb %>%
+  mutate(split_generos = str_split(generos, "\\|")) %>%
+  select(titulo, split_generos) %>%
+  unnest(split_generos) #<<
 ```
 
 ---
-# Resumindo
+# Nest
 
-- Use `{{variavel}}` quando não quiser colocar aspas no argumento da função.
+- A operação inversa do `unnest()` é o  `nest()`, que transforma um grupo de
+linhas em uma list-column
 
-- Use `.data[["variavel"]]` quando quiser colocar aspas no argumento da função.
+```{r}
+imdb %>%
+  mutate(split_generos = str_split(generos, "\\|")) %>%
+  select(titulo, split_generos) %>%
+  unnest(split_generos) %>%
+  group_by(titulo) %>% #<<
+  nest(generos = c(split_generos)) #<<
+```
 
-- Use `{{nome}} := ...` quando quiser criar colunas com nomes que estão no argumento da função.
+---
+# Voltando ao {purrr}
 
-__Referência__: https://www.curso-r.com/blog/2019-08-21-nse/
+- Trazendo o assunto de volta para o `{purrr}`, o pacote nos permite operar com
+facilidade em list-columns justamente pela sua capacidade de tratar listas
 
+```{r}
+imdb %>%
+  mutate(split_generos = str_split(generos, "\\|")) %>%
+  select(titulo, split_generos) %>%
+  unnest(split_generos) %>%
+  group_by(titulo) %>%
+  nest(generos = c(split_generos)) %>%
+  ungroup() %>% #<<
+  mutate(n_generos = map_dbl(generos, nrow)) #<<
+```
+
+---
+# Para saber mais
+
+- [A Magia de Purrr](https://lente.dev/posts/magica-purrr/)
+
+- [Webinar de purrr avançado](https://www.youtube.com/watch?v=vb1lD9_AFcU)
+
+- [Exemplos com purrr](https://lente.dev/advanced-purrr.pdf)
+
+- [Purrr cheat sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/purrr.pdf)
+
+- [Purrr tutorial](https://jennybc.github.io/purrr-tutorial/)
+
+- [R for Data Science: Iteration](https://r4ds.had.co.nz/iteration.html)

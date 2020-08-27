@@ -53,7 +53,7 @@ print("こんにちは! Está 10\u00BAC na lá fora")
 ```
 
 ```
-## [1] "こんにちは! Está 10ºC na lá fora"
+#&gt; [1] "こんにちは! Está 10ºC na lá fora"
 ```
 
 - Para colocar aspas dentro de uma string, podemos __escapar__ o caractere
@@ -64,7 +64,7 @@ cat("Ele disse \"escapar\"")
 ```
 
 ```
-## Ele disse "escapar"
+#&gt; Ele disse "escapar"
 ```
 
 ---
@@ -81,7 +81,7 @@ str_c("prefixo-", abc, "-sufixo")
 ```
 
 ```
-## [1] "prefixo-a-sufixo" "prefixo-b-sufixo" "prefixo-c-sufixo"
+#&gt; [1] "prefixo-a-sufixo" "prefixo-b-sufixo" "prefixo-c-sufixo"
 ```
 
 - Todas as funções relevantes começam com `str_` e funcionam bem juntas
@@ -94,7 +94,7 @@ abc %&gt;%
 ```
 
 ```
-## [1] 8 8 8
+#&gt; [1] 8 8 8
 ```
 
 ---
@@ -122,7 +122,7 @@ str_detect("Colando Strings", pattern = "ando")
 ```
 
 ```
-## [1] TRUE
+#&gt; [1] TRUE
 ```
 
 ```r
@@ -130,7 +130,7 @@ str_extract("Colando Strings", pattern = "ando")
 ```
 
 ```
-## [1] "ando"
+#&gt; [1] "ando"
 ```
 
 ```r
@@ -138,7 +138,7 @@ str_replace("Colando Strings", pattern = "ando", replacement = "ei")
 ```
 
 ```
-## [1] "Colei Strings"
+#&gt; [1] "Colei Strings"
 ```
 
 ```r
@@ -146,7 +146,7 @@ str_remove("Colando Strings", pattern = " Strings")
 ```
 
 ```
-## [1] "Colando"
+#&gt; [1] "Colando"
 ```
 
 ---
@@ -158,8 +158,8 @@ str_split("Colando Strings", pattern = " ")
 ```
 
 ```
-## [[1]]
-## [1] "Colando" "Strings"
+#&gt; [[1]]
+#&gt; [1] "Colando" "Strings"
 ```
 
 ```r
@@ -167,7 +167,7 @@ str_squish("   Colando   Strings   ")
 ```
 
 ```
-## [1] "Colando Strings"
+#&gt; [1] "Colando Strings"
 ```
 
 ```r
@@ -175,7 +175,7 @@ str_sub("Colando Strings", start = 1, end = 7)
 ```
 
 ```
-## [1] "Colando"
+#&gt; [1] "Colando"
 ```
 
 ```r
@@ -183,7 +183,7 @@ str_to_lower("Colando Strings")
 ```
 
 ```
-## [1] "colando strings"
+#&gt; [1] "colando strings"
 ```
 
 ---
@@ -202,7 +202,7 @@ str_detect(frutas, pattern = "na")
 ```
 
 ```
-## [1]  TRUE FALSE FALSE FALSE
+#&gt; [1]  TRUE FALSE FALSE FALSE
 ```
 
 - Exemplos: `.` (qualquer caractere), `^` (início da string) e `$` (fim da string)
@@ -213,7 +213,7 @@ str_detect(frutas, pattern = "^ma")
 ```
 
 ```
-## [1] FALSE FALSE  TRUE FALSE
+#&gt; [1] FALSE FALSE  TRUE FALSE
 ```
 
 ---
@@ -229,7 +229,7 @@ str_extract(ois, pattern = "i+")
 ```
 
 ```
-## [1] "i"   "ii"  "iii" "i"
+#&gt; [1] "i"   "ii"  "iii" "i"
 ```
 
 - `[]` é um conjunto e `()` é um conjunto "inquebrável"
@@ -240,7 +240,7 @@ str_extract(ois, pattern = "[i!]$")
 ```
 
 ```
-## [1] "i" "i" "!" "!"
+#&gt; [1] "i" "i" "!" "!"
 ```
 
 ```r
@@ -248,7 +248,7 @@ str_extract(ois, pattern = "(oi)+")
 ```
 
 ```
-## [1] "oi"     "oi"     "oi"     "oioioi"
+#&gt; [1] "oi"     "oi"     "oi"     "oioioi"
 ```
 
 ---
@@ -263,7 +263,7 @@ str_replace("Bom dia.", pattern = ".", replacement = "!")
 ```
 
 ```
-## [1] "!om dia."
+#&gt; [1] "!om dia."
 ```
 
 ```r
@@ -271,7 +271,7 @@ str_replace("Bom dia.", pattern = "\\.", replacement = "!")
 ```
 
 ```
-## [1] "Bom dia!"
+#&gt; [1] "Bom dia!"
 ```
 
 - Não esquecer que algumas funções do `{stringr}` possuem variações
@@ -282,7 +282,7 @@ str_replace_all("Bom. Dia.", pattern = "\\.", replacement = "!")
 ```
 
 ```
-## [1] "Bom! Dia!"
+#&gt; [1] "Bom! Dia!"
 ```
 
 ---
@@ -294,7 +294,7 @@ str_subset(c("banana", "TANGERINA", "maçã", "lima"), "NA")  # Maiúscula
 ```
 
 ```
-## [1] "TANGERINA"
+#&gt; [1] "TANGERINA"
 ```
 
 ```r
@@ -302,7 +302,7 @@ str_subset(c("banana", "TANGERINA", "maçã", "lima"), "^ma") # Início
 ```
 
 ```
-## [1] "maçã"
+#&gt; [1] "maçã"
 ```
 
 ```r
@@ -310,7 +310,7 @@ str_subset(c("banana", "TANGERINA", "maçã", "lima"), "ma$") # Final
 ```
 
 ```
-## [1] "lima"
+#&gt; [1] "lima"
 ```
 
 ```r
@@ -318,7 +318,7 @@ str_subset(c("banana", "TANGERINA", "maçã", "lima"), ".a")  # Qualquer
 ```
 
 ```
-## [1] "banana" "maçã"   "lima"
+#&gt; [1] "banana" "maçã"   "lima"
 ```
 
 ---
@@ -330,7 +330,7 @@ str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "i+!")    # 1 ou mais
 ```
 
 ```
-## [1] NA     "iii!" "iii!" "i!"
+#&gt; [1] NA     "iii!" "iii!" "i!"
 ```
 
 ```r
@@ -338,7 +338,7 @@ str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "i+!?")   # 0 ou 1
 ```
 
 ```
-## [1] "ii"   "iii!" "iii!" "i"
+#&gt; [1] "ii"   "iii!" "iii!" "i"
 ```
 
 ```r
@@ -346,7 +346,7 @@ str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "i+!*")   # 0 ou mais
 ```
 
 ```
-## [1] "ii"     "iii!"   "iii!!!" "i"
+#&gt; [1] "ii"     "iii!"   "iii!!!" "i"
 ```
 
 ```r
@@ -354,7 +354,7 @@ str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "i{1,2}") # Entre m e n
 ```
 
 ```
-## [1] "ii" "ii" "ii" "i"
+#&gt; [1] "ii" "ii" "ii" "i"
 ```
 
 ---
@@ -366,7 +366,7 @@ str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "[i!]$") # Algum
 ```
 
 ```
-## [1] "i" "!" "!" "!"
+#&gt; [1] "i" "!" "!" "!"
 ```
 
 ```r
@@ -374,7 +374,7 @@ str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "[i!]+") # Algum
 ```
 
 ```
-## [1] "ii"     "iii!"   "iii!!!" "i"
+#&gt; [1] "ii"     "iii!"   "iii!!!" "i"
 ```
 
 ```r
@@ -382,7 +382,7 @@ str_extract(c("banana", "TANGERINA", "maçã", "lima"), "[a-z]") # Conjuntos
 ```
 
 ```
-## [1] "b" NA  "m" "l"
+#&gt; [1] "b" NA  "m" "l"
 ```
 
 ```r
@@ -390,7 +390,7 @@ str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "(oi)+") # Tudo
 ```
 
 ```
-## [1] "oi"     "oi"     "oi"     "oioioi"
+#&gt; [1] "oi"     "oi"     "oi"     "oioioi"
 ```
 
 ---
@@ -402,7 +402,7 @@ str_replace("Bom dia.", "\\.", "!")      # Escapando
 ```
 
 ```
-## [1] "Bom dia!"
+#&gt; [1] "Bom dia!"
 ```
 
 ```r
@@ -410,7 +410,7 @@ str_replace("Bom. Dia.", "\\.", "!")     # Primeira ocorrência
 ```
 
 ```
-## [1] "Bom! Dia."
+#&gt; [1] "Bom! Dia."
 ```
 
 ```r
@@ -418,7 +418,7 @@ str_replace_all("Bom. Dia.", "\\.", "!") # Lembrar do _all
 ```
 
 ```
-## [1] "Bom! Dia!"
+#&gt; [1] "Bom! Dia!"
 ```
 
 ```r
@@ -426,7 +426,7 @@ str_remove_all("Bom \"dia\"", "\\\"")    # Escapando escape
 ```
 
 ```
-## [1] "Bom dia"
+#&gt; [1] "Bom dia"
 ```
 
 ---
@@ -438,7 +438,7 @@ stringi::stri_trans_general("Váríös àçêntõs", "Latin-ASCII") # Remover ac
 ```
 
 ```
-## [1] "Varios acentos"
+#&gt; [1] "Varios acentos"
 ```
 
 ```r
@@ -446,8 +446,8 @@ str_extract_all("Número: (11) 91234-1234", "[0-9]+")         # Números
 ```
 
 ```
-## [[1]]
-## [1] "11"    "91234" "1234"
+#&gt; [[1]]
+#&gt; [1] "11"    "91234" "1234"
 ```
 
 ```r
@@ -455,7 +455,7 @@ str_extract("Número: (11) 91234-1234", "[A-Za-z]+")          # Conjuntos juntos
 ```
 
 ```
-## [1] "N"
+#&gt; [1] "N"
 ```
 
 ```r
@@ -463,7 +463,7 @@ str_extract("Número: (11) 91234-1234", "[:alpha:]+")         # Acentos
 ```
 
 ```
-## [1] "Número"
+#&gt; [1] "Número"
 ```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

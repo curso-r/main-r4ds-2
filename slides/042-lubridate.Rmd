@@ -32,6 +32,8 @@ colorido <- function(x, cor) {
 }
 
 options(width = 85)
+knitr::opts_chunk$set(comment = "#>")
+options(dplyr.print_min = 5, dplyr.print_max = 5)
 ```
 
 # Motivação

@@ -209,6 +209,14 @@ e. Crie uma coluna que indica a idade mínima de uma pessoa que pode ver aquele 
 
 a. Leia a tabela do SINESP com readr::read_rds("data/dados_sinesp.rds").
 
-b. Converta a coluna mes_ano para o primeiro dia do mês correspondente. Por exemplo: "01/2018" -> 2018-01-01.
+b. Converta a coluna "mes_ano" para o primeiro dia do mês correspondente. Por exemplo: "01/2018" -> 2018-01-01.
 
 c. Transforme a coluna criada acima para o formato brasileiro de datas. Dica: tente entender como a função lubridate::stamp() funciona ou, se ficar complicado, tente usar format.Date().
+
+## 2. Listas
+
+a. Dentro do diretório data/imdb_por_ano há uma série de arquivos RDS com fatias da base IMDB. O comando fs::dir_ls("data/imdb_por_ano/") lista todos os arquivos deste diretório. Em UMA linha e usando apenas DUAS funções, leia todos os arquivos listados com o comando anterior e empilhe as tabelas em um único data frame. Dica: procure entender toda a família map_***().
+
+b. A partir da tabela obtida no exercício anterior, obtenha uma tabela com duas colunas: "ano" e "filmes", onde "filmes" é uma list-column contendo todas as informações dos filmes dos respectivos anos.
+
+c. A partir da tabela obtida no exercício anterior, "abra" a coluna filmes de modo que a unidade amostral volte a ser filmes, ou seja, transforme a tabela de b. na tabela de a.
