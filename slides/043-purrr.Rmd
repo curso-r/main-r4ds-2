@@ -152,7 +152,7 @@ map_chr(vec, soma_dez)
 ---
 # Funções
 
-- Para passar outros arugmentos **fixos** a uma função, basta adicioná-los ao
+- Para passar outros argumentos **fixos** a uma função, basta adicioná-los ao
 final da chamada de `map()`
 
 ```{r}

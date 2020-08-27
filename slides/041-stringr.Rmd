@@ -49,7 +49,7 @@ quesito
 O conhecimento de expressões regulares vale para a vida, é impossível descrever
 com poucas palavras todas as coisas que são implementáveis via regex
 
-Pormalmente os textos são bagunçados, independentemente do quão cuidadosa foi a
+Normalmente os textos são bagunçados, independentemente do quão cuidadosa foi a
 coleta de dados, então precisamos arrumá-los; podemos fazer isso do jeito fácil
 (`{stringr}` e regex) ou do jeito difícil (`{base}` e lágrimas)
 
