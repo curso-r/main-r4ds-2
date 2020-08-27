@@ -191,12 +191,24 @@ pegar_num_NAs <- function(tab, nome_coluna, prop = FALSE) {
 
 E pegar_num_NAs(ames, piscina_area, prop = TRUE) precisa devolver 0.9955631.
 
-# Strings e Datas
+# Strings, datas e listas
 
 ## 1. Strings
 
 a. Leia a tabela do IMDB com readr::read_rds("data/imdb.rds").
+
 b. Crie uma coluna com o número de gêneros aos quais um filme pertence. Dica: você vai precisar descobrir uma função do pacote {stringr} que conte o número de ocorrências de um padrão.
+
 c. Alguns filmes contém subtítulos (texto que segue um dois-pontos); crie uma coluna com o subtítulos dos filmes que os têm. Por exemplo: "The Hobbit: The Desolation of Smaug" -> "The Desolation of Smaug".
+
 d. Filtre da tabela apenas os filmes cujos títulos começam com números.
+
 e. Crie uma coluna que indica a idade mínima de uma pessoa que pode ver aquele filme. Por exemplo: "Livre" -> 0, "A partir de 13 anos" -> 13.
+
+## 2. Datas
+
+a. Leia a tabela do SINESP com readr::read_rds("data/dados_sinesp.rds").
+
+b. Converta a coluna mes_ano para o primeiro dia do mês correspondente. Por exemplo: "01/2018" -> 2018-01-01.
+
+c. Transforme a coluna criada acima para o formato brasileiro de datas. Dica: tente entender como a função lubridate::stamp() funciona ou, se ficar complicado, tente usar format.Date().

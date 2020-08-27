@@ -34,25 +34,29 @@ colorido <- function(x, cor) {
 options(width = 85)
 ```
 
-class: inverse, center, middle
-# Datas
-
----
 # Motivação
 
-- Datas e horas são provavelmente os dados mais delicados
+É difícil encontrar um tipo de dado mais delicado do que datas (e horas):
+diferentemente de textos e erros de _encoding_, erros de _locale_ podem passar
+desapercebidos e estragar uma análise inteira.
 
-- Realizar operações com tempo é algo bastante difícil
+Operações com tempo são complicadas, pois envolvem precisão e diversos fatores
+que variam de um lugar para o outro (fuso horário, horário de verão, anos
+bissextos, formato da data, etc.).
 
-- Diversas fontes de dados contém datas mal formatadas
+Além das variações normais de como cada país escreve suas datas, cada computador
+tem seu jeito de interpretá-las e cada programa tem seu jeito de salvá-las.
 
-- Entender como o tempo funciona em programação é muito valioso
+Entender como é a representação de tempo dentro de linguagens de programação é
+muito valioso porque isso é um problema relevante independentemente da
+ferramenta sendo utilizada.
 
 ---
 # Introdução
 
-- O problema das datas e data-horas é que elas são valores numéricos (segundos
-desde o início do universo) expressos com strings
+- Como representar datas em um universo cheio de fusos e calendários diferentes?
+Estabelecendo um momento universal e contando os segundos que se passaram desde
+lá
 
 ```{r, message=FALSE}
 library(lubridate)
@@ -60,40 +64,82 @@ now()
 as.numeric(now())
 ```
 
-- O formato utilizado pelas linguagens de programação para data-horas se chama
-ISO 8601 e é o _único_ que sempre funciona
+- O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
+ano novo de 1970 em Londres (01/01/1970 00:00:00 UTC)
 
 ---
 # O pacote {lubridate}
 
-- O pacote `lubridate` vai nos possibilitar trabalhar com datas e data-horas
-fora do ISO 8601
+- O pacote `{lubridate}` vai nos possibilitar trabalhar com datas e data-horas
+fora do ISO 8601 (`ano-mês-dia hora:minuto:segundo`)
 
-- O formato brasileiro é `dia/mês/ano hora:minuto:segundo`
+- Para converter uma data-hora do formato brasileiro para o padrão universal,
+pensamos na ordem das unidades em inglês: _day, month, year, hour, minute,
+second_
 
 ```{r}
 dmy_hms("06/05/2020 02:25:00")
 ```
 
-- Possível também trabalhar só com datas ou horas
+- Também é possível trabalhar só com datas usando a mesma lógica das unidades
 
 ```{r}
 dmy("06/05/2020")
 ```
 
 ---
-# Componentes
+# Você acredita em mágica?
 
-- Extrair os componentes de uma data pode ser importante para uma análise
+- O `{lubridate}` é tão poderoso que pode parecer mágica
 
 ```{r}
-month("2020-05-06")
+dmy("27 de agosto de 2020", locale = "pt_BR.UTF-8")
+mdy("August 27th 2020", locale = "en_US.UTF-8") # Mês-dia-ano
 ```
 
-- Podemos também somar dias, horas, minutos, etc.
+- Às vezes o Excel salva datas como o número de dias desde 01/01/1970, mas nem
+isso pode vencer o `{lubridate}`
 
 ```{r}
-today() + 2
+as_date(18501)
+```
+
+---
+# Fusos
+
+- É mais raro precisar lidar com fusos horários porque normalmente trabalhamos
+com data-horas de um mesmo fuso, mas o `{lubridate}` permite lidar com isso
+também
+
+```{r}
+now(tzone = "Europe/London")
+```
+
+- Nem o horário de verão consegue atrapalhar um cálculo preciso: com a função
+`dst()` é possível saber se em um dado dia aquele lugar estava no horário de
+verão
+
+```{r}
+dst(now(tzone = "Europe/London"))
+```
+
+---
+# Componentes
+
+- As funções `year()`, `month()`, `day()`... (**no singular**) podem extrair os
+componentes de uma data
+
+```{r}
+month("2020-08-27")
+```
+
+- Obs.: Note como não foi necessário converter a string para data porque ela já
+está no formato esperado pelo `{lubridate}`
+
+- As funções `years()`, `months()`, `days()`... (**no plural**) permitem fazer
+contas com datas e data-horas
+
+```{r}
 now() + days(5)
 ```
 
@@ -104,20 +150,68 @@ now() + days(5)
 distâncias entre datas e horas
 
 ```{r}
-dif <- dmy("06/05/2020") - dmy("04/05/2020")
+dif <- dmy("27/08/2020") - dmy("25/08/2020")
+dif
 ```
 
 - Podemos transformar um objeto de diferença temporal em qualquer unidade que
-queiramos
+queiramos usando as funções no plural
 
 ```{r}
-dif
 as.period(dif) / minutes(1)
 ```
 
----
-# Vamos ao R!
+- Para diferenças entre data-horas pode ser importante usar os fusos
 
-```{r echo=FALSE, fig.align='center', out.width="80%"}
-knitr::include_graphics("img/gato.gif")
+---
+# Exemplos intermináveis
+
+```{r}
+dmy_hms("27/08/2020 02:25:30") # Data-hora
+dmy_hm("27/08/2020 02:25")     # Sem segundo
+dmy_h("27/08/2020 02")         # Sem minuto
+as_datetime(1598539497)        # Numérico
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+```{r}
+mdy_hms("8/27/20 2:25:30 PM")                                # Americano
+dmy_hms("27/08/2020 02:25:30", tz = "Europe/London")         # Com fuso
+now() - dmy_hms("27/08/2020 02:25:30")                       # Diferença
+now() - dmy_hms("27/08/2020 02:25:30", tz = "Europe/London") # Com fuso
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+```{r}
+minute("2020-08-27 02:25:30")                                           # Minuto
+year("2020-08-27")                                                      # Ano
+wday("2020-08-27")                                                      # Dia da semana
+month("2020-08-27", label = TRUE, abbr = FALSE, locale = "pt_BR.UTF-8") # Mês (sem abrev.)
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+```{r}
+today() + months(5)                              # Dia
+now() + seconds(5)                               # Segundo
+now() + days(5)                                  # Dia
+as.period(today() - dmy("01/01/2020")) / days(1) # Dia - dia
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+```{r}
+t1 <- dmy_hms("27/08/2020 02:25:00", tz = "America/Sao_Paulo")
+t2 <- dmy_hms("27/08/2020 02:25:00")
+t1 - t2
+t1 <- dmy_hms("27/08/2020 02:25:00", tz = "America/Sao_Paulo")
+t2 <- dmy_hms("27/08/2020 02:25:00", tz = "Europe/London")
+t1 - t2
+head(OlsonNames())
 ```
