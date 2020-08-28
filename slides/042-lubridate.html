@@ -52,7 +52,7 @@ now()
 ```
 
 ```
-#&gt; [1] "2020-08-27 14:19:10 -03"
+#&gt; [1] "2020-08-27 22:10:25 -03"
 ```
 
 ```r
@@ -60,7 +60,7 @@ as.numeric(now())
 ```
 
 ```
-#&gt; [1] 1598548751
+#&gt; [1] 1598577026
 ```
 
 - O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
@@ -78,22 +78,22 @@ second_
 
 
 ```r
-dmy_hms("06/05/2020 02:25:00")
+dmy_hms("27/08/2020 02:25:00")
 ```
 
 ```
-#&gt; [1] "2020-05-06 02:25:00 UTC"
+#&gt; [1] "2020-08-27 02:25:00 UTC"
 ```
 
 - Também é possível trabalhar só com datas usando a mesma lógica das unidades
 
 
 ```r
-dmy("06/05/2020")
+dmy("27/08/2020")
 ```
 
 ```
-#&gt; [1] "2020-05-06"
+#&gt; [1] "2020-08-27"
 ```
 
 ---
@@ -103,7 +103,7 @@ dmy("06/05/2020")
 
 
 ```r
-dmy("27 de agosto de 2020", locale = "pt_BR.UTF-8")
+dmy("27 de agosto de 2020", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1252
 ```
 
 ```
@@ -143,7 +143,7 @@ now(tzone = "Europe/London")
 ```
 
 ```
-#&gt; [1] "2020-08-27 18:19:10 BST"
+#&gt; [1] "2020-08-28 02:10:25 BST"
 ```
 
 - Nem o horário de verão consegue atrapalhar um cálculo preciso: com a função
@@ -186,7 +186,7 @@ now() + days(5)
 ```
 
 ```
-#&gt; [1] "2020-09-01 14:19:11 -03"
+#&gt; [1] "2020-09-01 22:10:25 -03"
 ```
 
 ---
@@ -280,7 +280,7 @@ now() - dmy_hms("27/08/2020 02:25:30")                       # Diferença
 ```
 
 ```
-#&gt; Time difference of 14.89474 hours
+#&gt; Time difference of 22.74881 hours
 ```
 
 ```r
@@ -288,7 +288,7 @@ now() - dmy_hms("27/08/2020 02:25:30", tz = "Europe/London") # Com fuso
 ```
 
 ```
-#&gt; Time difference of 15.89474 hours
+#&gt; Time difference of 23.74881 hours
 ```
 
 ---
@@ -345,7 +345,7 @@ now() + seconds(5)                               # Segundo
 ```
 
 ```
-#&gt; [1] "2020-08-27 14:19:16 -03"
+#&gt; [1] "2020-08-27 22:10:30 -03"
 ```
 
 ```r
@@ -353,7 +353,7 @@ now() + days(5)                                  # Dia
 ```
 
 ```
-#&gt; [1] "2020-09-01 14:19:11 -03"
+#&gt; [1] "2020-09-01 22:10:25 -03"
 ```
 
 ```r

@@ -229,12 +229,13 @@ map_dbl(vec, soma_n, n = 3)
 #&gt; [1] 4 5 6 7 8
 ```
 
-- Para simplificar funções simples, podemos usar uma notação **lambda** na qual
-`.x` representa onde deve ser inserido o elemento atual da iteração
+- Para simplificar funções curtas, podemos usar uma notação **lambda** na qual
+`.x` representa onde deve ser inserido o elemento atual da iteração (o valor
+"iterante") e `~` indica a declaração da função
 
 
 ```r
-map_dbl(vec, ~.x+3)
+map_dbl(vec, ~3+.x)
 ```
 
 ```
@@ -384,6 +385,10 @@ imdb %&gt;%
 
 ---
 # Para saber mais
+
+O `{purrr}` simplifica loops, impede efeitos colaterais e ainda deixa seu código
+mais bonito! Para entender melhor como esse pacote incrível funciona, veja mais
+nos links abaixo:
 
 - [A Magia de Purrr](https://lente.dev/posts/magica-purrr/)
 

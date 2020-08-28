@@ -95,18 +95,19 @@ abc %>%
 ---
 # Principais funções
 
-|Função(ões)            |Significado                               |
-|:----------------------|:-----------------------------------------|
-|`str_c`                | Colar strings                            |
-|`str_length`           | Contagem de caracteres na string         |
-|`str_detect`           | O padrão existe na string?               |
-|`str_extract[_all]`    | Extrair o padrão da string               |
-|`str_replace[_all]`    | Substituir um padrão por outro na string |
-|`str_remove[_all]`     | Remover um padrão da string              |
-|`str_split`            | Quebrar a string em pedaços              |
-|`str_squish`           | Remover espaços extras da string         |
-|`str_sub`              | Extrair um pedaço da string              |
-|`str_to_[lower/upper]` | Converter a string para caixa baixa/alta |
+|Função(ões)               |Significado                               |
+|:-------------------------|:-----------------------------------------|
+|`str_c`                   | Colar strings                            |
+|`str_length`              | Contagem de caracteres na string         |
+|`str_detect`              | O padrão existe na string?               |
+|`str_extract[_all]`       | Extrair o padrão da string               |
+|`str_replace[_all]`       | Substituir um padrão por outro na string |
+|`str_remove[_all]`        | Remover um padrão da string              |
+|`str_split`               | Quebrar a string em pedaços              |
+|`str_squish`              | Remover espaços extras da string         |
+|`str_sub`                 | Extrair um pedaço da string              |
+|`str_to_[lower/upper]`    | Converter a string para caixa baixa/alta |
+|`str_to_[sentence/title]` | Converter no formato de frase ou título  |
 
 ---
 # Exemplos
@@ -152,7 +153,7 @@ str_detect(frutas, pattern = "^ma")
 # Mais regex
 
 - Podemos contar as ocorrências de um padrão: `+` (1 ou mais vezes), `*` (0 ou
-mais vezes), `{m,n}` (entre `m` e `n` vezes)
+mais vezes), `{m,n}` (entre `m` e `n` vezes), `?` (0 ou 1 vez)
 
 ```{r}
 ois <- c("oi", "oii", "oiii!", "oioioi!")
@@ -190,7 +191,7 @@ str_replace_all("Bom. Dia.", pattern = "\\.", replacement = "!")
 str_subset(c("banana", "TANGERINA", "maçã", "lima"), "NA")  # Maiúscula
 str_subset(c("banana", "TANGERINA", "maçã", "lima"), "^ma") # Início
 str_subset(c("banana", "TANGERINA", "maçã", "lima"), "ma$") # Final
-str_subset(c("banana", "TANGERINA", "maçã", "lima"), ".a")  # Qualquer
+str_subset(c("banana", "TANGERINA", "maçã", "lima"), ".m")  # Qualquer
 ```
 
 ---
@@ -207,10 +208,10 @@ str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "i{1,2}") # Entre m e n
 # Exemplos intermináveis (cont.)
 
 ```{r}
-str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "[i!]$") # Algum
-str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "[i!]+") # Algum
+str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "[i!]+")  # Algum
 str_extract(c("banana", "TANGERINA", "maçã", "lima"), "[a-z]") # Conjuntos
-str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "(oi)+") # Tudo
+str_extract(c("oii", "oiii!", "oiii!!!", "oioioi!"), "(oi)+")  # Tudo
+str_extract(c("oii", "oiii!", "ola!!!", "oioioi!"), "(i+|!+)") # Ou
 ```
 
 ---

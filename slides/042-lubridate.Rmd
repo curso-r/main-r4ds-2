@@ -80,13 +80,13 @@ pensamos na ordem das unidades em inglês: _day, month, year, hour, minute,
 second_
 
 ```{r}
-dmy_hms("06/05/2020 02:25:00")
+dmy_hms("27/08/2020 02:25:00")
 ```
 
 - Também é possível trabalhar só com datas usando a mesma lógica das unidades
 
 ```{r}
-dmy("06/05/2020")
+dmy("27/08/2020")
 ```
 
 ---
@@ -95,7 +95,7 @@ dmy("06/05/2020")
 - O `{lubridate}` é tão poderoso que pode parecer mágica
 
 ```{r}
-dmy("27 de agosto de 2020", locale = "pt_BR.UTF-8")
+dmy("27 de agosto de 2020", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1252
 mdy("August 27th 2020", locale = "en_US.UTF-8") # Mês-dia-ano
 ```
 

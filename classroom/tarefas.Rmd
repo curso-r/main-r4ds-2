@@ -213,10 +213,24 @@ b. Converta a coluna "mes_ano" para o primeiro dia do mês correspondente. Por e
 
 c. Transforme a coluna criada acima para o formato brasileiro de datas. Dica: tente entender como a função lubridate::stamp() funciona ou, se ficar complicado, tente usar format.Date().
 
-## 2. Listas
+## 3. Listas
 
-a. Dentro do diretório data/imdb_por_ano há uma série de arquivos RDS com fatias da base IMDB. O comando fs::dir_ls("data/imdb_por_ano/") lista todos os arquivos deste diretório. Em UMA linha e usando apenas DUAS funções, leia todos os arquivos listados com o comando anterior e empilhe as tabelas em um único data frame. Dica: procure entender toda a família map_***().
+a. Dentro do diretório data/imdb_por_ano/ há uma série de arquivos RDS com fatias da base IMDB. O comando fs::dir_ls("data/imdb_por_ano/") lista todos os arquivos desse diretório. Em UMA linha e usando apenas DUAS funções, leia todos os arquivos listados com o comando anterior e empilhe as tabelas em um único data frame. Dica: procure entender toda a família map_***().
 
 b. A partir da tabela obtida no exercício anterior, obtenha uma tabela com duas colunas: "ano" e "filmes", onde "filmes" é uma list-column contendo todas as informações dos filmes dos respectivos anos.
 
-c. A partir da tabela obtida no exercício anterior, "abra" a coluna filmes de modo que a unidade amostral volte a ser filmes, ou seja, transforme a tabela de b. na tabela de a.
+c. A partir da tabela obtida no exercício anterior, abra a coluna "filmes" de modo que a unidade amostral volte a ser filmes, ou seja, transforme a tabela de b. na tabela de a.
+
+d. Escreva as funções abaixo como lambdas:
+
+d.1) Simples: function(x) { 10 + x }
+
+d.2) Valor fixo: function(x, y = 3) { x + y }
+
+d.3) Valores fixos: function(x, y = 3, z = 4) { x + y + z }
+
+d.4) Agumentos não-fixos: function(x, y) { x + y }
+
+d.5) Invertendo argumentos não-fixos: function(pattern, string) { stringr::str_detect(string, pattern) }
+
+d.6) Três argumentos não-fixos (desafio): function(x, y, z) { x + y + z }
