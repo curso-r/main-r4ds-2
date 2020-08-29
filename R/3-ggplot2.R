@@ -157,6 +157,9 @@ tab_covid_estado %>%
 
 # Temas -------------------------------------------------------------------
 
+library(dplyr)
+library(ggplot2)
+
 rick_and_morty <- readr::read_rds("data/rick_and_morty.rds")
 
 img_rick <- png::readPNG("data-raw/rick.png") %>%
@@ -289,34 +292,148 @@ rick_and_morty %>%
 # gganimate
 
 # install.packages("gganimate")
+library(dplyr)
+library(ggplot2)
 library(gganimate)
 
-tab_covid <- readr::read_rds("data/covid.rds")
+covid <- readr::read_rds("data/covid.rds")
 
-tab_covid %>%
-  filter(is.na(codmun), !is.na(estado), estado == "SP") %>%
-  ggplot(aes(x = data, y = obitosAcumulado)) +
+
+# Série de óbitos dos 10 estados
+# com mais mortes por COVID
+covid %>%
+  filter(
+    !is.na(municipio)
+  ) %>%
+  group_by(estado, data) %>%
+  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
+  mutate(num_obitos = max(obitosAcumulado)) %>%
+  ungroup() %>%
+  mutate(
+    limite = num_obitos %>%
+      unique() %>%
+      sort(decreasing = TRUE) %>%
+      nth(10)
+  ) %>%
+  filter(num_obitos >= limite) %>%
+  ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
   geom_line()
 
+# Transformando em GIF
+covid %>%
+  filter(
+    !is.na(municipio)
+  ) %>%
+  group_by(estado, data) %>%
+  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
+  mutate(num_obitos = max(obitosAcumulado)) %>%
+  ungroup() %>%
+  mutate(
+    limite = num_obitos %>%
+      unique() %>%
+      sort(decreasing = TRUE) %>%
+      nth(10)
+  ) %>%
+  filter(num_obitos >= limite) %>%
+  ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
+  geom_line() +
+  transition_reveal(data)
 
-tab_covid %>%
-  filter(is.na(codmun), !is.na(estado)) %>%
-  mutate(estado = forcats::fct_reorder(estado, obitosAcumulado, max)) %>%
-  ggplot(aes(x = estado, y = obitosAcumulado, fill = estado)) +
-  geom_col() +
-  coord_flip() +
-  labs(
-    title = 'Dia: {closest_state}',
-    x = 'Estado',
-    y = 'Número de casos acumulado'
-  ) +
-  transition_states(
-    data,
-    transition_length = 2,
-    state_length = 1
-  ) +
-  ease_aes("linear")
 
- # gghighlight
+# Colocando ponto
 
-## ggalluvial
+covid %>%
+  filter(
+    !is.na(municipio)
+  ) %>%
+  group_by(estado, data) %>%
+  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
+  mutate(num_obitos = max(obitosAcumulado)) %>%
+  ungroup() %>%
+  mutate(
+    limite = num_obitos %>%
+      unique() %>%
+      sort(decreasing = TRUE) %>%
+      nth(10)
+  ) %>%
+  filter(num_obitos >= limite) %>%
+  ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
+  geom_line() +
+  geom_point() +
+  transition_reveal(data)
+
+# Colocando label
+
+covid %>%
+  filter(
+    !is.na(municipio)
+  ) %>%
+  group_by(estado, data) %>%
+  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
+  mutate(num_obitos = max(obitosAcumulado)) %>%
+  ungroup() %>%
+  mutate(
+    limite = num_obitos %>%
+      unique() %>%
+      sort(decreasing = TRUE) %>%
+      nth(10)
+  ) %>%
+  filter(num_obitos >= limite) %>%
+  ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
+  geom_line(show.legend = FALSE) +
+  geom_label(aes(label = estado), show.legend = FALSE) +
+  transition_reveal(data)
+
+# gghighlight
+
+# install.packages("gghighlight")
+library(dplyr)
+library(ggplot2)
+library(gghighlight)
+
+ames <- readr::read_rds("data/ames.rds")
+
+# Área do lote vs valor da venda
+ames %>%
+  mutate(venda_valor = venda_valor/1000) %>%
+  ggplot(aes(x = lote_area, y = venda_valor)) +
+  geom_point()
+
+# Destacando lotes muito grandes
+ames %>%
+  mutate(venda_valor = round(venda_valor/1000)) %>%
+  ggplot(aes(x = lote_area, y = venda_valor)) +
+  geom_point() +
+  gghighlight(lote_area > 100000, label_key = venda_valor)
+
+# Trocando a cor dos pontos destacados
+ames %>%
+  mutate(venda_valor = round(venda_valor/1000)) %>%
+  ggplot(aes(x = lote_area, y = venda_valor)) +
+  geom_point(color = "red") +
+  gghighlight(
+    lote_area > 100000,
+    label_key = venda_valor
+  )
+
+# Trocando a cor dos outros pontos
+ames %>%
+  mutate(venda_valor = round(venda_valor/1000)) %>%
+  ggplot(aes(x = lote_area, y = venda_valor)) +
+  geom_point(color = "red") +
+  gghighlight(
+    lote_area > 100000,
+    unhighlighted_colour = "black",
+    label_key = venda_valor
+  )
+
+# Também funciona com linhas
+covid %>%
+  filter(
+    !is.na(municipio)
+  ) %>%
+  group_by(estado, data) %>%
+  summarise(across(c(obitosAcumulado, casosAcumulado), sum)) %>%
+  ggplot(aes(y = obitosAcumulado, x = data, group = estado)) +
+  geom_line() +
+  gghighlight(max(obitosAcumulado) > 3000)
