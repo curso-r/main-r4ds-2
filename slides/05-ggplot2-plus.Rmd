@@ -610,21 +610,35 @@ class: titulo
 # Extensões do {ggplot2}
 
 ---
-# gganimate
+## Visite a galeria de extensões!
 
-Veja uma lista de extensões do ggplot2
-https://exts.ggplot2.tidyverse.org/gallery/
+O `{ggplot2}` tem um site dedicado só para as suas extensões, feitas pela comunidade!
+
+Veja uma lista de todas elas em: [https://exts.ggplot2.tidyverse.org/gallery/](https://exts.ggplot2.tidyverse.org/gallery/)
+
+Vamos discutir aqui duas delas, muito úteis na hora da comunicação da nossa análise:
+
+- `{gganimate}`
+
+- `{gghighlight}`
+
+---
+# {gganimate}
+
+O pacote `{gganimate}` transforma nossos gráficos em animações (GIFs)!
+
+Primeiro, instale e carregue o pacote. Vamos utilizar como exemplo a base de dados com número de casos e óbitos por COVID-19.
 
 ```{r, eval = FALSE}
 install.packages("gganimate")
 library(gganimate)
 
-covid <- readr::read_rds("data/covid.rds")
+covid <- readr::read_rds("../data/covid.rds")
 ```
 
 ---
 
-Série de óbitos dos 10 estados com mais mortes por COVID
+Primeiro, vamos ver a série de óbitos dos 10 estados com mais mortes por COVID.
 
 ```{r}
 covid %>%
@@ -648,7 +662,7 @@ covid %>%
 
 ---
 
-Transformando em GIF
+Agora, vamos usar a função `gganimate::transition_reveal()` para transforma o gráfico em uma animação.
 
 ```{r}
 covid %>%
@@ -673,7 +687,7 @@ covid %>%
 
 ---
 
-Colocando ponto
+Também podemos colocar o ponto no início das séries.
 
 ```{r}
 covid %>%
@@ -699,7 +713,7 @@ covid %>%
 
 ---
 
-Colocando label
+Ou uma label.
 
 ```{r}
 covid %>%
@@ -724,6 +738,11 @@ covid %>%
 ```
 
 ---
+## {gghighlight}
+
+O pacote `{gghighlight}` serve para destacarmos pontos e curvas nos nossos gráficos.
+
+Primeiro, instale e carregue o pacote. Vamos utilizar aqui a base `ames``.
 
 ```{r, eval = FALSE}
 install.packages("gghighlight")
@@ -734,7 +753,7 @@ ames <- readr::read_rds("data/ames.rds")
 
 ---
 
-Área do lote vs valor da venda
+Vamos construir incialmente um gráfico da área do lote vs o valor de venda da casa.
 
 ```{r}
 ames %>%
@@ -745,7 +764,7 @@ ames %>%
 
 ---
 
-Destacando lotes muito grandes
+Observamos que há lotes muito grandes. Podemos destaça-los utilizando a função `gghighlight()`. O principal argumento dela é uma condição para filtrar quais pontos serão destacados. No exemplo, destacamos casas com lotes maiores que 100000 pés quadrados.
 
 ```{r}
 ames %>%
@@ -757,7 +776,7 @@ ames %>%
 
 ---
 
-Trocando a cor dos pontos destacados
+Para trocar a cor dos pontos destacados, basta usar o argumento `color` dentro da função `geom_point()`.
 
 ```{r}
 ames %>%
@@ -772,7 +791,7 @@ ames %>%
 
 ---
 
-Trocando a cor dos outros pontos
+Já para trocar a cor dos demais pontos, utilizamos o argumento `unhighlighted_colour` dentro da função `gghighlight()`.
 
 ```{r}
 ames %>%
@@ -788,7 +807,7 @@ ames %>%
 
 ---
 
-Também funciona com linhas
+A função `gghighlight()` também funciona com gráficos de linha. A utilização é análoga a que vimos para gráfico de pontos.
 
 ```{r}
 covid %>%
