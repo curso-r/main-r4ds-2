@@ -1,48 +1,26 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/custom-intro.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R para Ciência de Dados 2
+## ggplot2 ++
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+### Agosto de 2020
+
 ---
-title: "R para Ciência de Dados 2"
-subtitle: "ggplot2 ++"
-author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
-date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
-output:
-  xaringan::moon_reader:
-    css: ["default", "default-fonts", "css/custom-intro.css"]
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: "4:3"
----
 
-```{r setup, include=FALSE}
-`%>%` <- magrittr::`%>%`
 
-blue <- function(x) {
-  glue::glue(
-    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
 
-colorido <- function(x, cor) {
-  glue::glue(
-    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
-
-options(width = 80)
-
-knitr::opts_chunk$set(
-  cache = TRUE,
-  fig.width = 8,
-  fig.height = 5,
-  fig.align = "center",
-  warning = FALSE, 
-  message = FALSE
-)
-
-```
 
 class: titulo
 # Motivação
@@ -54,11 +32,12 @@ Já vimos que o `{ggplot2}` é um excelente framework para construção de gráf
 
 Para aquecermos, vamos fazer um gráfico de dispersão do valor de venda vs qualidade geral das casas da base `ames`.
 
-```{r, message = FALSE, warning = FALSE}
+
+```r
 library(dplyr)
 library(ggplot2)
 
-ames <- readr::read_rds("../data/ames.rds")
+ames &lt;- readr::read_rds("../data/ames.rds")
 ```
 
 A base `ames` possui diversas características de casas vendidas na cidade de Ames, nos EUA.
@@ -67,17 +46,21 @@ A base `ames` possui diversas características de casas vendidas na cidade de Am
 ## Um gráfico de dispersão
 
 
-```{r fig.width = 8, fig.height = 5, fig.align="center"}
-ames %>%
+
+```r
+ames %&gt;%
   ggplot() +
   geom_point(aes(x = geral_qualidade, y = venda_valor))
 ```
 
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
 ---
 ## Melhorando o visual
 
-```{r, fig.height=4}
-ames %>%
+
+```r
+ames %&gt;%
   ggplot() +
   geom_point(aes(x = geral_qualidade, y = venda_valor)) +
   labs(x = "Qualidade", y = "Valor da venda ($)") +
@@ -85,19 +68,22 @@ ames %>%
   theme_minimal()
 ```
 
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
 ---
 ## Um pouco de manipulação
 
 .pull-left[
 
-```{r, eval = FALSE}
-ames %>%
+
+```r
+ames %&gt;%
   mutate(
     geral_qualidade = as.character(
       geral_qualidade
     ),
     venda_valor = venda_valor / 1000
-  ) %>%
+  ) %&gt;%
   ggplot() +
   geom_boxplot(
     aes(x = geral_qualidade, 
@@ -115,31 +101,22 @@ ames %>%
 .pull-right[
 Transformando `geral_qualidade` em uma variável categórica e mudando escala do valor
 
-```{r, echo = FALSE, fig.width=5, fig.height=4}
-ames %>%
-  mutate(
-    geral_qualidade = as.character(geral_qualidade),
-    venda_valor = venda_valor / 1000
-  ) %>%
-  ggplot() +
-  geom_boxplot(aes(x = geral_qualidade, y = venda_valor)) +
-  labs(x = "Qualidade", y = "Valor da venda (em milhares de dólares)") +
-  theme_minimal()
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 ## Fatores
 
 .pull-left[
-```{r, eval = FALSE}
-ames %>%
+
+```r
+ames %&gt;%
   mutate(
     geral_qualidade = as.factor(
       geral_qualidade
     ),
     venda_valor = venda_valor / 1000
-  ) %>%
+  ) %&gt;%
   ggplot() +
   geom_boxplot(
     aes(
@@ -160,26 +137,7 @@ ames %>%
 Quais hipóteses você consegue levantar a partir desse gráfico?
 
 
-```{r, echo = FALSE, fig.width=5, fig.height=4}
-ames %>%
-  mutate(
-    geral_qualidade = as.factor(
-      geral_qualidade
-    ),
-    venda_valor = venda_valor / 1000
-  ) %>%
-  ggplot() +
-  geom_boxplot(
-    aes(
-      x = geral_qualidade, 
-      y = venda_valor
-    )
-  ) +
-  labs(
-    x = "Qualidade", 
-    y = "Valor da venda (em milhares de dólares)") +
-  theme_minimal()
-```    
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 
@@ -209,7 +167,8 @@ No R, temos o excelente pacote `{sf}` que nos permite trabalhar com dados geogr�
 
 Se você ainda não tiver o pacote `{sf}` instalado, instale e carregue o pacote usando o código abaixo.
 
-```{r, eval=FALSE}
+
+```r
 install.packages("sf")
 library(sf)
 ```
@@ -225,9 +184,10 @@ A função `system.file()` devolve o caminho para esse arquivo.
 
 Para ler um arquivo `.shp`, basta utilizarmos a função `sf::st_read()`. O objeto criado é um `data.frame` com a classe extra `sf`. 
 
-```{r}
-arquivo <- system.file("shape/nc.shp", package = "sf")
-tab_nc <- sf::st_read(arquivo, quiet = TRUE)
+
+```r
+arquivo &lt;- system.file("shape/nc.shp", package = "sf")
+tab_nc &lt;- sf::st_read(arquivo, quiet = TRUE)
 ```
 
 ---
@@ -237,8 +197,29 @@ A característica mais importante desse objeto é a existência de uma coluna ch
 
 De modo geral, Informações geográficas são determinadas por pontos, retas e polígonos.
 
-```{r}
+
+```r
 glimpse(tab_nc)
+```
+
+```
+## Rows: 100
+## Columns: 15
+## $ AREA      &lt;dbl&gt; 0.114, 0.061, 0.143, 0.070, 0.153, 0.097, 0.062, 0.091, 0.1…
+## $ PERIMETER &lt;dbl&gt; 1.442, 1.231, 1.630, 2.968, 2.206, 1.670, 1.547, 1.284, 1.4…
+## $ CNTY_     &lt;dbl&gt; 1825, 1827, 1828, 1831, 1832, 1833, 1834, 1835, 1836, 1837,…
+## $ CNTY_ID   &lt;dbl&gt; 1825, 1827, 1828, 1831, 1832, 1833, 1834, 1835, 1836, 1837,…
+## $ NAME      &lt;chr&gt; "Ashe", "Alleghany", "Surry", "Currituck", "Northampton", "…
+## $ FIPS      &lt;chr&gt; "37009", "37005", "37171", "37053", "37131", "37091", "3702…
+## $ FIPSNO    &lt;dbl&gt; 37009, 37005, 37171, 37053, 37131, 37091, 37029, 37073, 371…
+## $ CRESS_ID  &lt;int&gt; 5, 3, 86, 27, 66, 46, 15, 37, 93, 85, 17, 79, 39, 73, 91, 4…
+## $ BIR74     &lt;dbl&gt; 1091, 487, 3188, 508, 1421, 1452, 286, 420, 968, 1612, 1035…
+## $ SID74     &lt;dbl&gt; 1, 0, 5, 1, 9, 7, 0, 0, 4, 1, 2, 16, 4, 4, 4, 18, 3, 4, 1, …
+## $ NWBIR74   &lt;dbl&gt; 10, 10, 208, 123, 1066, 954, 115, 254, 748, 160, 550, 1243,…
+## $ BIR79     &lt;dbl&gt; 1364, 542, 3616, 830, 1606, 1838, 350, 594, 1190, 2038, 125…
+## $ SID79     &lt;dbl&gt; 0, 3, 6, 2, 3, 5, 2, 2, 2, 5, 2, 5, 4, 4, 6, 17, 4, 7, 1, 0…
+## $ NWBIR79   &lt;dbl&gt; 19, 12, 260, 145, 1197, 1237, 139, 371, 844, 176, 597, 1369…
+## $ geometry  &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((-81.47276 3..., MULTIPOLYGON (…
 ```
 
 ---
@@ -246,45 +227,57 @@ glimpse(tab_nc)
 
 Para plotar o mapa utilizando o `{ggplot2}`, basta usarmos o `geom_sf()`. Por padrão, a função `geom_sf()` vai procurar a coluna `geometry` na sua base.
 
-```{r}
-tab_nc %>%
+
+```r
+tab_nc %&gt;%
   ggplot() +
   geom_sf()
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Podemos preencher a área dos municípios segundo a variável `AREA`. Municípios maiores estão representados por tons de azul mais claros.
 
-```{r}
-tab_nc %>%
+
+```r
+tab_nc %&gt;%
   ggplot() +
   geom_sf(aes(fill = AREA))
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Para mudar a cor ou tamanho das bordas, basta utilizarmos os argumentos `color` ou `size`.
 
-```{r}
-tab_nc %>%
+
+```r
+tab_nc %&gt;%
   ggplot() +
   geom_sf(aes(fill = AREA), color = "white", size = 1)
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Se quisermos colocar textos dentro dos polígonos, bastautilizarmos as funções `geom_sf_text()` ou `geom_sf_label()`.
 
-```{r, fig.width = 10, fig.height = 4, warning = FALSE, message = FALSE}
-tab_nc %>%
+
+```r
+tab_nc %&gt;%
   ggplot() +
   geom_sf(aes(fill = AREA), color = "white") +
   geom_sf_text(aes(label = NAME), size = 1, color = "white")
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## Mapas do brasil
@@ -293,47 +286,61 @@ Podemos fazer mapas do Brasil utilizando o pacote `geobr`. Para mais detalhes, v
 
 Rode o código abaixo para instalar e carregar o pacote.
 
-```{r, eval = FALSE}
+
+```r
 install.packages("geobr")
 library(geobr)
 ```
 
 Para carregar a geometria do Brasil, rodamos o código abaixo. Ele fará o download dos dados e salvará no objeto `tab_brasil`. A tabela criada só possui a coluna `geometry`.
 
-```{r, eval = FALSE}
-tab_brasil <- geobr::read_country()
+
+```r
+tab_brasil &lt;- geobr::read_country()
 ```
 
-```{r, include = FALSE}
-tab_brasil <- geobr::read_country()
-```
+
 
 ---
 ## 
 
 Com o objeto `tab_brasil`, conseguimos fazer um mapa do Brasil facilmente.
 
-```{r}
-tab_brasil %>%
+
+```r
+tab_brasil %&gt;%
   ggplot() +
   geom_sf()
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Se quisermos fazer a seperação dos estados, basta utilizarmos a função `geobr::read_state()`. Veja que essa tabela possui mais informações.
 
-```{r, eval = FALSE}
-tab_estados <- geobr::read_state()
+
+```r
+tab_estados &lt;- geobr::read_state()
 ```
 
-```{r, include = FALSE}
-tab_estados <- geobr::read_state()
-```
 
-```{r}
+
+
+```r
 glimpse(tab_estados)
+```
+
+```
+## Rows: 27
+## Columns: 6
+## $ code_state   &lt;dbl&gt; 11, 12, 13, 14, 15, 16, 17, 21, 22, 23, 24, 25, 26, 27, …
+## $ abbrev_state &lt;chr&gt; "RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "C…
+## $ name_state   &lt;chr&gt; "Rondônia", "Acre", "Amazonas", "Roraima", "Pará", "Amap…
+## $ code_region  &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3,…
+## $ name_region  &lt;chr&gt; "Norte", "Norte", "Norte", "Norte", "Norte", "Norte", "N…
+## $ geom         &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((-63.32721 -..., MULTIPOLYGO…
 ```
 
 ---
@@ -341,55 +348,65 @@ glimpse(tab_estados)
 
 Utilizamos a coluna `abbrev_state` para colocar a sigla dos estados.
 
-```{r}
-tab_estados %>%
+
+```r
+tab_estados %&gt;%
     ggplot() +
     geom_sf() +
     geom_sf_text(aes(label = abbrev_state), size = 2)
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 O código anterior demora para rodar porque um mapa com muitos detalhes demora para ser "desenhado". Podemos simplificar os polígonos de uma mapa utilizando a função `sf::st_simplify()`. O argumento `dTolerance` determina o nível da simplificação. Quanto maior o valor, mais simples serão os polígonos.
 
-```{r, fig.height=4}
-tab_estados %>%
-  sf::st_simplify(dTolerance = 0.1) %>%
+
+```r
+tab_estados %&gt;%
+  sf::st_simplify(dTolerance = 0.1) %&gt;%
   ggplot() +
   geom_sf() +
   geom_sf_text(aes(label = abbrev_state), size = 2)
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Também podemos usar a função `geom_sf_label()` para escrever textos nos mapas.
 
-```{r}
-tab_estados %>%
-  sf::st_simplify(dTolerance = 0.1) %>%
+
+```r
+tab_estados %&gt;%
+  sf::st_simplify(dTolerance = 0.1) %&gt;%
   ggplot() +
   geom_sf() +
   geom_sf_label(aes(label = abbrev_state), size = 2)
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Muitas vezes, vamos precisar trazer informações de outras tabelas para incluir nos mapas. No exemplo abaixo, juntamos o número de óbitos totais por COVID no dia 1º de junho de 2020 à tabela com os dados geográficos.
 
-```{r}
-tab_covid <- readr::read_rds("../data/covid.rds")
 
-tab_estados <- sf::st_simplify(tab_estados, dTolerance = 0.1)
+```r
+tab_covid &lt;- readr::read_rds("../data/covid.rds")
 
-tab_covid_estado <- tab_covid %>%
+tab_estados &lt;- sf::st_simplify(tab_estados, dTolerance = 0.1)
+
+tab_covid_estado &lt;- tab_covid %&gt;%
   filter(
     data == "2020/06/01",
     is.na(codmun),
     !is.na(estado)
-  ) %>%
+  ) %&gt;%
   right_join(tab_estados, by = c("estado" = "abbrev_state"))
 ```
 
@@ -398,26 +415,31 @@ tab_covid_estado <- tab_covid %>%
 
 Agora podemos visualizar o número de óbitos por estado no nosso mapa.
 
-```{r}
-tab_covid_estado %>%
+
+```r
+tab_covid_estado %&gt;%
   ggplot() +
   geom_sf(aes(geometry = geom, fill = obitosAcumulado)) +
   geom_sf_label(aes(geometry = geom, label = estado), size = 2)
-
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Mudamos a escala de cor usando a função `scale_fill_gradient()`, igual fazemos para qualquer outro tipo de gráfico. 
 
-```{r}
-tab_covid_estado %>%
+
+```r
+tab_covid_estado %&gt;%
   ggplot() +
   geom_sf(aes(geometry = geom, fill = obitosAcumulado)) +
   geom_sf_label(aes(geometry = geom, label = estado), size = 2) +
   scale_fill_gradient(low = "yellow", high = "red")
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-27-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 class: titulo
@@ -431,9 +453,23 @@ Vamos supor que queremos fazer um gráfico e apresentá-lo com um visual que com
 
 Como exemplo, vamos fazer um gráfico da audiência média dos episódios do seriado Rick and Morty com um tema que represente o visual da série.
 
-```{r}
-rick_and_morty <- readr::read_rds("../data/rick_and_morty.rds")
+
+```r
+rick_and_morty &lt;- readr::read_rds("../data/rick_and_morty.rds")
 head(rick_and_morty, 5)
+```
+
+```
+## # A tibble: 5 x 8
+##   num_episodio num_temporada num_dentro_temp… titulo direcao roteiro
+##          &lt;int&gt;         &lt;int&gt;            &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;  
+## 1            1             1                1 Pilot  Justin… Dan Ha…
+## 2            2             1                2 Lawnm… John R… Ryan R…
+## 3            3             1                3 Anato… John R… Eric A…
+## 4            4             1                4 M. Ni… Jeff M… Tom Ka…
+## 5            5             1                5 Meese… Bryan … Ryan R…
+## # … with 2 more variables: data_transmissao_original &lt;date&gt;,
+## #   qtd_espectadores_EUA &lt;dbl&gt;
 ```
 
 
@@ -442,20 +478,24 @@ head(rick_and_morty, 5)
 
 Vamos começar com um gráfico de linha.
 
-```{r}
-rick_and_morty %>%
+
+```r
+rick_and_morty %&gt;%
   ggplot(aes(x = num_episodio, y = qtd_espectadores_EUA)) +
   geom_line()
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-29-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Podemos construir um gráfico de barras para incluir a informação da temporada.
 
-```{r, fig.height=4}
-rick_and_morty %>%
-  mutate(num_temporada = as.factor(num_temporada)) %>%
+
+```r
+rick_and_morty %&gt;%
+  mutate(num_temporada = as.factor(num_temporada)) %&gt;%
   ggplot(aes(
     x = num_episodio,
     y = qtd_espectadores_EUA,
@@ -464,6 +504,8 @@ rick_and_morty %>%
   geom_col()
 ```
 
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-30-1.png" style="display: block; margin: auto;" /&gt;
+
 ---
 ## 
 
@@ -471,13 +513,14 @@ rick_and_morty %>%
 
 Arrumando labels e salvando em um objeto. 
 
-```{r, eval = FALSE}
-p <- rick_and_morty %>%
+
+```r
+p &lt;- rick_and_morty %&gt;%
   mutate(
     num_temporada = as.factor(
       num_temporada
     )
-  ) %>%
+  ) %&gt;%
   ggplot(aes(
     x = num_episodio,
     y = qtd_espectadores_EUA,
@@ -496,24 +539,7 @@ p
 ]
 
 .pull-right[
-```{r, echo = FALSE, fig.width=5, fig.height=4}
-p <- rick_and_morty %>%
-  mutate(num_temporada = as.factor(num_temporada)) %>%
-  ggplot(aes(
-    x = num_episodio,
-    y = qtd_espectadores_EUA,
-    fill = num_temporada)
-  ) +
-  geom_col() +
-  labs(
-    x = "episodio",
-    y = "audiencia",
-    fill = "temporada",
-    title = "Rick and Morty"
-  )
-
-p
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-32-1.png" style="display: block; margin: auto;" /&gt;
 
 Agora vamos usar a função `theme()` para ajustar o visual.
 
@@ -523,7 +549,8 @@ Agora vamos usar a função `theme()` para ajustar o visual.
 ## 
 
 .pull-left[
-```{r, eval = FALSE}
+
+```r
 p +
   theme(
     legend.position = "bottom"
@@ -535,19 +562,15 @@ p +
 
 Colocando legenda na parte de baixo.
 
-```{r, echo = FALSE, fig.width=5, fig.height=5}
-p +
-  theme(
-    legend.position = "bottom"
-  )
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-34-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 ## 
 
 .pull-left[
-```{r, eval = FALSE}
+
+```r
 p +
   theme(
     legend.position = "bottom",
@@ -568,22 +591,15 @@ p +
 
 Pintando o fundo de preto.
 
-```{r, echo = FALSE, fig.width=5, fig.height=4}
-p +
-  theme(
-    legend.position = "bottom",
-    panel.background = element_rect(fill = "black"),
-    legend.background = element_rect(fill = "black", color = "black"),
-    plot.background = element_rect(fill = "black", color = "black")
-  )
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-36-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 ## 
 
 .pull-left[
-```{r, eval = FALSE}
+
+```r
 p +
   theme(
     legend.position = "bottom",
@@ -606,30 +622,15 @@ p +
 
 Removendo algumas linhas do gride.
     
-```{r, echo = FALSE, fig.width=5, fig.height=4}
-p +
-  theme(
-    legend.position = "bottom",
-    panel.background = element_rect(
-      fill = "black"
-    ),
-    legend.background = element_rect(
-      fill = "black", color = "black"
-    ),
-    plot.background = element_rect(
-      fill = "black", color = "black"
-    ),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank()
-  )
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-38-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 ## 
 
 .pull-left[
-```{r, eval = FALSE}
+
+```r
 p +
   theme(
     legend.position = "bottom",
@@ -657,29 +658,15 @@ p +
     
 Formatando título. Faça o download da fonte [aqui](https://fontmeme.com/fontes/fonte-get-schwifty/).
     
-```{r, echo = FALSE, fig.width=5, fig.height=4}
-p +
-  theme(
-    legend.position = "bottom",
-    panel.background = element_rect(fill = "black"),
-    legend.background = element_rect(fill = "black", color = "black"),
-    plot.background = element_rect(fill = "black", color = "black"),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),
-    plot.title = element_text(
-      family = "Get Schwifty",
-      hjust = 0.5,
-      size = 30
-    )
-  )  
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-40-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 ## 
 
 .pull-left[
-```{r, eval = FALSE}
+
+```r
  p +
   theme(
         legend.position = "bottom",
@@ -714,35 +701,15 @@ p +
 Formatando demais textos.
     
     
-```{r, echo = FALSE, fig.width=5, fig.height=4}
-p +
-  theme(
-    legend.position = "bottom",
-    panel.background = element_rect(fill = "black"),
-    legend.background = element_rect(fill = "black", color = "black"),
-    plot.background = element_rect(fill = "black", color = "black"),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),
-    plot.title = element_text(
-      family = "Get Schwifty",
-      hjust = 0.5,
-      size = 30
-    ),
-    text = element_text(
-      colour = "#11a2c6",
-      family = "Get Schwifty",
-      size = 16
-    ),
-    axis.text = element_text(color = "white"),
-  )
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-42-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 ## 
 
 .pull-left[
-```{r, eval = FALSE}
+
+```r
  p +
   theme(
     legend.position = "bottom",
@@ -778,36 +745,7 @@ p +
 
 Removendo tracinhos do eixo x e diminuindo espessura do gride no eixe y.
     
-```{r, echo = FALSE, fig.width=5, fig.height=4}
-p +
-  theme(
-    legend.position = "bottom",
-    panel.background = element_rect(
-      fill = "black"
-    ),
-    legend.background = element_rect(
-      fill = "black", color = "black"
-    ),
-    plot.background = element_rect(
-      fill = "black", color = "black"
-    ),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),
-    plot.title = element_text(
-      family = "Get Schwifty",
-      hjust = 0.5,
-      size = 30
-    ),
-    text = element_text(
-      colour = "#11a2c6",
-      family = "Get Schwifty",
-      size = 16
-    ),
-    axis.text = element_text(color = "white"),
-    axis.ticks.x = element_line(color = "white"),
-    panel.grid.major.y = element_line(size = 0.1)
-  )    
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-44-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -815,8 +753,9 @@ p +
 
 Criando uma função que aplica o tema
 
-```{r}
-tema_rick_and_morty <- function() {
+
+```r
+tema_rick_and_morty &lt;- function() {
   theme(
     legend.position = "bottom",
     panel.background = element_rect(fill = "black"),
@@ -846,18 +785,22 @@ tema_rick_and_morty <- function() {
 
 Aplicando a nossa função com o tema criado.
 
-```{r}
+
+```r
 p +
   tema_rick_and_morty()
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-46-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Inserindo uma imagem.
 
-```{r}
-img_rick <- png::readPNG("../R/rick.png") %>%
+
+```r
+img_rick &lt;- png::readPNG("../R/rick.png") %&gt;%
   grid::rasterGrob(interpolate = TRUE)
 
 p +
@@ -865,14 +808,17 @@ p +
   tema_rick_and_morty()
 ```
 
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-47-1.png" style="display: block; margin: auto;" /&gt;
+
 ---
 ## 
 
 Aplicando o tema no gráfico de linha.
 
-```{r, fig.height=3}
-rick_and_morty %>%
-  mutate(num_temporada = as.factor(num_temporada)) %>%
+
+```r
+rick_and_morty %&gt;%
+  mutate(num_temporada = as.factor(num_temporada)) %&gt;%
   ggplot(aes(x = num_episodio, y = qtd_espectadores_EUA)) +
   geom_line(color = "white") +
   labs(
@@ -883,6 +829,8 @@ rick_and_morty %>%
   annotation_custom(img_rick, xmin = 35, ymin = 2) +
   tema_rick_and_morty()
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-48-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 class: titulo
@@ -908,7 +856,8 @@ O pacote `{gganimate}` transforma nossos gráficos em animações (GIFs)!
 
 Primeiro, instale e carregue o pacote. Vamos utilizar como exemplo a base de dados com número de casos e óbitos por COVID-19.
 
-```{r, eval = FALSE}
+
+```r
 install.packages("gganimate")
 library(gganimate)
 ```
@@ -918,24 +867,25 @@ library(gganimate)
 
 Primeiro, vamos ver a série de óbitos dos 10 estados com mais mortes por COVID.
 
-```{r, eval = FALSE}
-covid <- readr::read_rds("../data/covid.rds")
 
-covid %>%
+```r
+covid &lt;- readr::read_rds("../data/covid.rds")
+
+covid %&gt;%
   filter(
     !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
-  mutate(num_obitos = max(obitosAcumulado)) %>%
-  ungroup() %>%
+  ) %&gt;%
+  group_by(estado, data) %&gt;%
+  summarise(obitosAcumulado = sum(obitosAcumulado)) %&gt;%
+  mutate(num_obitos = max(obitosAcumulado)) %&gt;%
+  ungroup() %&gt;%
   mutate(
-    limite = num_obitos %>%
-      unique() %>%
-      sort(decreasing = TRUE) %>%
+    limite = num_obitos %&gt;%
+      unique() %&gt;%
+      sort(decreasing = TRUE) %&gt;%
       nth(10)
-  ) %>%
-  filter(num_obitos >= limite) %>%
+  ) %&gt;%
+  filter(num_obitos &gt;= limite) %&gt;%
   ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
   geom_line()
 ```
@@ -943,51 +893,32 @@ covid %>%
 ---
 ## 
 
-<br>
+&lt;br&gt;
 
-```{r, echo = FALSE}
-covid <- readr::read_rds("../data/covid.rds")
-
-covid %>%
-  filter(
-    !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
-  mutate(num_obitos = max(obitosAcumulado)) %>%
-  ungroup() %>%
-  mutate(
-    limite = num_obitos %>%
-      unique() %>%
-      sort(decreasing = TRUE) %>%
-      nth(10)
-  ) %>%
-  filter(num_obitos >= limite) %>%
-  ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
-  geom_line()
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-51-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Agora, vamos usar a função `gganimate::transition_reveal()` para transforma o gráfico em uma animação.
 
-```{r, eval = FALSE}
-covid %>%
+
+```r
+covid %&gt;%
   filter(
     !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
-  mutate(num_obitos = max(obitosAcumulado)) %>%
-  ungroup() %>%
+  ) %&gt;%
+  group_by(estado, data) %&gt;%
+  summarise(obitosAcumulado = sum(obitosAcumulado)) %&gt;%
+  mutate(num_obitos = max(obitosAcumulado)) %&gt;%
+  ungroup() %&gt;%
   mutate(
-    limite = num_obitos %>%
-      unique() %>%
-      sort(decreasing = TRUE) %>%
+    limite = num_obitos %&gt;%
+      unique() %&gt;%
+      sort(decreasing = TRUE) %&gt;%
       nth(10)
-  ) %>%
-  filter(num_obitos >= limite) %>%
+  ) %&gt;%
+  filter(num_obitos &gt;= limite) %&gt;%
   ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
   geom_line() +
   gganimate::transition_reveal(data)
@@ -996,50 +927,32 @@ covid %>%
 ---
 ## 
 
-<br>
+&lt;br&gt;
 
-```{r, echo = FALSE}
-covid %>%
-  filter(
-    !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
-  mutate(num_obitos = max(obitosAcumulado)) %>%
-  ungroup() %>%
-  mutate(
-    limite = num_obitos %>%
-      unique() %>%
-      sort(decreasing = TRUE) %>%
-      nth(10)
-  ) %>%
-  filter(num_obitos >= limite) %>%
-  ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
-  geom_line() +
-  gganimate::transition_reveal(data)
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-53-1.gif" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Também podemos colocar o ponto no início das séries.
 
-```{r, eval = FALSE}
-covid %>%
+
+```r
+covid %&gt;%
   filter(
     !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
-  mutate(num_obitos = max(obitosAcumulado)) %>%
-  ungroup() %>%
+  ) %&gt;%
+  group_by(estado, data) %&gt;%
+  summarise(obitosAcumulado = sum(obitosAcumulado)) %&gt;%
+  mutate(num_obitos = max(obitosAcumulado)) %&gt;%
+  ungroup() %&gt;%
   mutate(
-    limite = num_obitos %>%
-      unique() %>%
-      sort(decreasing = TRUE) %>%
+    limite = num_obitos %&gt;%
+      unique() %&gt;%
+      sort(decreasing = TRUE) %&gt;%
       nth(10)
-  ) %>%
-  filter(num_obitos >= limite) %>%
+  ) %&gt;%
+  filter(num_obitos &gt;= limite) %&gt;%
   ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
   geom_line() +
   geom_point() +
@@ -1049,51 +962,32 @@ covid %>%
 ---
 ## 
 
-<br>
+&lt;br&gt;
 
-```{r, echo = FALSE}
-covid %>%
-  filter(
-    !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
-  mutate(num_obitos = max(obitosAcumulado)) %>%
-  ungroup() %>%
-  mutate(
-    limite = num_obitos %>%
-      unique() %>%
-      sort(decreasing = TRUE) %>%
-      nth(10)
-  ) %>%
-  filter(num_obitos >= limite) %>%
-  ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
-  geom_line() +
-  geom_point() +
-  gganimate::transition_reveal(data)
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-55-1.gif" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Ou uma label.
 
-```{r, eval = FALSE}
-covid %>%
+
+```r
+covid %&gt;%
   filter(
     !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
-  mutate(num_obitos = max(obitosAcumulado)) %>%
-  ungroup() %>%
+  ) %&gt;%
+  group_by(estado, data) %&gt;%
+  summarise(obitosAcumulado = sum(obitosAcumulado)) %&gt;%
+  mutate(num_obitos = max(obitosAcumulado)) %&gt;%
+  ungroup() %&gt;%
   mutate(
-    limite = num_obitos %>%
-      unique() %>%
-      sort(decreasing = TRUE) %>%
+    limite = num_obitos %&gt;%
+      unique() %&gt;%
+      sort(decreasing = TRUE) %&gt;%
       nth(10)
-  ) %>%
-  filter(num_obitos >= limite) %>%
+  ) %&gt;%
+  filter(num_obitos &gt;= limite) %&gt;%
   ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
   geom_line(show.legend = FALSE) +
   geom_label(aes(label = estado), show.legend = FALSE) +
@@ -1103,29 +997,9 @@ covid %>%
 ---
 ## 
 
-<br>
+&lt;br&gt;
 
-```{r, echo = FALSE}
-covid %>%
-  filter(
-    !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(obitosAcumulado = sum(obitosAcumulado)) %>%
-  mutate(num_obitos = max(obitosAcumulado)) %>%
-  ungroup() %>%
-  mutate(
-    limite = num_obitos %>%
-      unique() %>%
-      sort(decreasing = TRUE) %>%
-      nth(10)
-  ) %>%
-  filter(num_obitos >= limite) %>%
-  ggplot(aes(y = obitosAcumulado, x = data, color = estado)) +
-  geom_line(show.legend = FALSE) +
-  geom_label(aes(label = estado), show.legend = FALSE) +
-  gganimate::transition_reveal(data)
-```
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-57-1.gif" style="display: block; margin: auto;" /&gt;
 
 ---
 ## O pacote {gghighlight}
@@ -1134,7 +1008,8 @@ O pacote `{gghighlight}` serve para destacarmos pontos e curvas nos nossos gráf
 
 Primeiro, instale e carregue o pacote. Vamos utilizar aqui a base `ames`.
 
-```{r, eval = FALSE}
+
+```r
 install.packages("gghighlight")
 library(gghighlight)
 ```
@@ -1144,71 +1019,210 @@ library(gghighlight)
 
 Vamos construir incialmente um gráfico da área do lote vs o valor de venda da casa.
 
-```{r}
-ames <- readr::read_rds("../data/ames.rds")
 
-ames %>%
-  mutate(venda_valor = venda_valor/1000) %>%
+```r
+ames &lt;- readr::read_rds("../data/ames.rds")
+
+ames %&gt;%
+  mutate(venda_valor = venda_valor/1000) %&gt;%
   ggplot(aes(x = lote_area, y = venda_valor)) +
   geom_point()
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-59-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Podemos destacar os lotes muito grandes utilizando a função `gghighlight()`. No exemplo, destacamos casas com lotes maiores que 100000 pés quadrados.
 
-```{r}
-ames %>%
-  mutate(venda_valor = round(venda_valor/1000)) %>%
+
+```r
+ames %&gt;%
+  mutate(venda_valor = round(venda_valor/1000)) %&gt;%
   ggplot(aes(x = lote_area, y = venda_valor)) +
   geom_point() +
-  gghighlight::gghighlight(lote_area > 100000, label_key = venda_valor)
+  gghighlight::gghighlight(lote_area &gt; 100000, label_key = venda_valor)
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-60-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Para trocar a cor dos pontos destacados, basta usar o argumento `color` dentro da função `geom_point()`.
 
-```{r}
-ames %>%
-  mutate(venda_valor = round(venda_valor/1000)) %>%
+
+```r
+ames %&gt;%
+  mutate(venda_valor = round(venda_valor/1000)) %&gt;%
   ggplot(aes(x = lote_area, y = venda_valor)) +
   geom_point(color = "red") +
-  gghighlight:: gghighlight(lote_area > 100000, label_key = venda_valor)
+  gghighlight:: gghighlight(lote_area &gt; 100000, label_key = venda_valor)
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-61-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 Já para trocar a cor dos demais pontos, utilizamos o argumento `unhighlighted_colour` dentro da função `gghighlight()`.
 
-```{r, fig.height=4}
-ames %>%
-  mutate(venda_valor = round(venda_valor/1000)) %>%
+
+```r
+ames %&gt;%
+  mutate(venda_valor = round(venda_valor/1000)) %&gt;%
   ggplot(aes(x = lote_area, y = venda_valor)) +
   geom_point(color = "red") +
   gghighlight::gghighlight(
-    lote_area > 100000,
+    lote_area &gt; 100000,
     unhighlighted_colour = "black",
     label_key = venda_valor
   )
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-62-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## 
 
 A função `gghighlight()` também funciona com gráficos de linha. A utilização é análoga a que vimos para gráfico de pontos.
 
-```{r, fig.height=4}
-covid %>%
+
+```r
+covid %&gt;%
   filter(
     !is.na(municipio)
-  ) %>%
-  group_by(estado, data) %>%
-  summarise(across(c(obitosAcumulado, casosAcumulado), sum)) %>%
+  ) %&gt;%
+  group_by(estado, data) %&gt;%
+  summarise(across(c(obitosAcumulado, casosAcumulado), sum)) %&gt;%
   ggplot(aes(y = obitosAcumulado, x = data, group = estado)) +
   geom_line() +
-  gghighlight::gghighlight(max(obitosAcumulado) > 3000)
+  gghighlight::gghighlight(max(obitosAcumulado) &gt; 3000)
 ```
+
+&lt;img src="05-ggplot2-plus_files/figure-html/unnamed-chunk-63-1.png" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "4:3"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
