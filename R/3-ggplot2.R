@@ -163,7 +163,7 @@ library(ggplot2)
 rick_and_morty <- readr::read_rds("data/rick_and_morty.rds")
 
 img_rick <- png::readPNG("data-raw/rick.png") %>%
-  grid::rasterGrob(interpolate = TRUE)
+  grid::rasterGrob()
 
 # Um gráfico de linha
 
