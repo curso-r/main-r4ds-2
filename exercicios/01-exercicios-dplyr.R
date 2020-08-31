@@ -82,6 +82,12 @@ ames %>%
 # todos os "_" dos nomes das colunas
 # por um espaço " ".
 
+ames %>%
+  rename_with(stringr::str_replace_all, pattern = "_", replacement = " ")
+
+ames %>%
+  rename_with(.fn = ~stringr::str_replace_all(.x, pattern = "_", replacement = " "))
+
 
 # Dica: utilize a função stringr::str_replace_all()
 
