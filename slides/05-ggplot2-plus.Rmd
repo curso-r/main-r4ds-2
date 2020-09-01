@@ -34,7 +34,7 @@ colorido <- function(x, cor) {
 options(width = 80)
 
 knitr::opts_chunk$set(
-  cache = TRUE,
+  cache = FALSE,
   fig.width = 8,
   fig.height = 5,
   fig.align = "center",
