@@ -62,7 +62,7 @@ b. A base IMDB (imdb.rds) está dentro da pasta data/ no material do curso. Copi
 
 c. No script criado no item a), importe a base IMDB, usando o código 
 
-imbd <- readr::read_rds("data-raw/imdb.rds")
+imdb <- readr::read_rds("data-raw/imdb.rds")
 
 e rode a linha com o código usethis::use_data(imdb, overwrite = TRUE).
 
