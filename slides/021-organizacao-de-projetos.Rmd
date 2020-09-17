@@ -125,8 +125,6 @@ Ao reabrir o RStudio, o conteúdo armazenados nestes arquivos será carregado no
 
 - Se todos os resultados parciais de uma análise estiverem disponíveis a qualquer momento, `r colorido("diminui o incentivo para a escrita de código reprodutível")`.
 
-- Se todo o histórico de comandos for acessível, `r colorido("acaba a necessidade de experimentos controlados")`.
-
 - Ao dependermos ativamente do `.Rdata`, `r colorido("se acidentalmente sobrescrevemos um objeto")` relevante e o código para recriá-lo não estiver mais acessível, `r colorido("não haverá nenhuma forma confiável de recuperá-lo")`.
 
 - A menos que pretendamos sentar com colegas para explicar como utilizar os objetos do `.RData` e do `.Rhistory`, `r colorido("não pode-se esperar que outra pessoa seja capaz de reproduzir uma análise")`.
@@ -180,11 +178,7 @@ Fixar o diretório de trabalho como a pasta raiz do projeto, ao lado da regra de
 
 Antes de falarmos de Git e versionamento, precisamos discutir sobre a organização dos nossos códigos dentro de arquivos e dos nossos arquivos dentro do nosso projeto.
 
-Para isso, vamos introduzir mais alguns assuntos.
-
-- **Funções e dependências**: como organizar arquivos, funções e dependências para maximizar a reprodutibilidade do código.
-
-- **Pacotes**: como e por que transformar um projeto em um pacote e como documentá-lo.
+Para isso, vamos introduzir como organizar arquivos, funções e dependências para maximizar a reprodutibilidade do código.
 
 ---
 class: middle, center, inverse
@@ -230,8 +224,6 @@ A resposta para essa pergunta pode assustar: no código ideal, a função `libra
 
 **É excessivamente preciosista pedir para que qualquer análise em R seja feita sem a invocação de nenhuma biblioteca, apenas com chamadas do tipo** `biblioteca::funcao()`. 
 
-Muitas pessoas inclusive nem sabem que é possível invocar uma função diretamente através dessa sintaxe!
-
 **Mas existem vantagens de se fazer isso**. E, se serve como consolo, **o RStudio facilita muito esse tipo de programação** por causa da sua capacidade de sugerir continuações para código interativamente. 
 
 Para escrever `dplyr::`, por exemplo, basta digitar `d`, `p`, `l` e apertar TAB uma vez. Com os `::`, as sugestões passarão a ser somente de funções daquele pacote.
@@ -247,89 +239,42 @@ Para escrever `dplyr::`, por exemplo, basta digitar `d`, `p`, `l` e apertar TAB 
 
 - O uso do `::` será fundamental na criação e organização de pacotes.
 
+
 ---
 class: middle, center, inverse
-# Pacotes
+# Organização dos arquivos
 
 ---
-## Pacotes
+## A pasta data/
 
-Um pacote do R nada mais é do que uma forma específica de organizar seus código, seguindo o protocolo descrito pela R Foundation.
+Vamos salvar os dados estruturados (aqueles prontos para serem analisados e gerar resultados) dentro de uma pasta chamada `/data`.
 
-> Pacotes são a unidade fundamental de código R reprodutível. <br>
-> Hadley Wickham
-
-```{r echo=FALSE, fig.align='center'}
-knitr::include_graphics("img/021-organizacao-de-projetos/pacote.gif")
-```
+Dentro dela, salvaremos dados no formato `.rds`.
 
 ---
-## Vantagens
+## A pasta data-raw/
 
-- Padroniza a organização das análises
+As bases que salvaremos na pasta `/data` serão resultado de um processo de importação, arrumação e manipulação. Os códigos desses processos serão salvos na pasta `data-raw`.
 
-- Integração com pacotes que aceleram desenvolvimento
+Além desses códigos, podemos salvar os nossos arquivos de dados originais.
 
-- Motiva e facilita a documentação do código
+Uma sugestão interessante para quando tempos muito arquivos de dados é dividi-los em pastas por extensão: colocar arquivos Excel na pasta `data-raw/xlsx/`, arquivos CSV na pasta `data-raw/csv/` e assim por diante.
 
-- Facilita o compartilhamento e a reutilização de códigos em outros projetos
-
-
----
-## Criando um pacote
-
-Para criar um pacote, usamos a função `usethis::create_package()`.
-
-Tenha em mente que:
-
-- Você deve passar um caminho como `~/Documents/MeuProjeto` e uma nova pasta chamada "Meu projeto" na pasta será criada dentro da pasta `Documents`. Essa pasta será tanto um `Rproj` quanto um pacote, ambos chamados `MeuProjeto`.
-
-- Nomes de pacotes só podem conter letras, números e pontos, devem começar com uma letra e não podem acabar com um ponto.
+Nesta pasta, também podemos guardar rascunhos da nossa análise.
 
 ---
-## Estrutura básica do pacote
+## A pasta R/
 
-- `DESCRIPTION`: define o nome, descrição, versão, licença, dependências e outras caracaterísticas do seu pacote.
-
-- `R/`: arqui ficam suas funções desenvolvidas em R.
-
-- `LICENSE`: especifica os termos de uso e distribuição do seu pacote.
-
-- `.Rbuildignore` e `NAMESPACE`: cuida de questões mais avançadas que não discutiremos neste curso.
-
----
-## A pasta R
-
-Dentro de um pacote, a pasta `R/` só pode ter funções.
-
-Uma função é responsável por executar uma tarefa pequena, mas muito bem. Quando trabalhamos com funções, nossas operações ficam mais confiáveis.
+A pasta `R/` só pode ter scripts `.R` com funções.
 
 A ideia da pasta `R/` é guardar em um local comum tudo aquilo que nós utilizamos como ferramenta interna para nossas análises, bem como aquilo que queremos que outras pessoas possam usar no futuro.
-
----
-## Dados
-
-Se você quiser inserir dados ao seu pacote, você pode utilizar a função `usethis::use_data(meus_dados)`. 
-
-Ela criará uma pasta `data/` na raiz do seu pacote, caso ela não exista ainda, e salvará nela o objeto `meus_dados` em formato `.rda`.
-
-Arquivos `.rda` são extremamente estáveis, compactos e podem ser carregados rapidamente pelo R, tornando este formato o principal meio de guardar dados de um pacote.
-
----
-## Manipulando dados crus
-
-Se a base que você quiser colocar no pacote for o resultado de um processo de manipulação de uma base crua, você pode salvar o código desse processo na pasta `data-raw`. 
-
-Para isso, utilize a função `usethis::data_raw("meus_dados")`. Ela criará uma pasta `data-raw/` na raiz do seu pacote, caso ela não exista ainda, e um arquivo `meus_dados.R` onde você colocará o código de manipulação da base crua.
 
 ---
 ## Qual a diferença entre R/ e data-raw/?
 
 `data-raw`
 
-- A pasta `data-raw/` é sua caixa de areia.
-
-- Apesar de existirem formas razoáveis de organizar seus pacotes aqui, nessa parte você será livre.
+- A pasta `data-raw/` é sua caixa de areia, qualquer script que (ainda) não couber em outra pasta, poderá ser colocado nela.
 
 `R/`
 
@@ -337,21 +282,22 @@ Para isso, utilize a função `usethis::data_raw("meus_dados")`. Ela criará uma
 
 - Por exemplo, uma função que ajusta um modelo estatístico, outra que arruma um texto de um jeito patronizado, ou uma que contém seu tema customizado do `ggplot`.
 
-- Dentro dessa pasta você não deve carregar outros pacotes com `library()`, mas sim usar o operador `::`.
+- Dentro dessa pasta é recomendado não carregar outros pacotes com `library()`, mas sim usar o operador `::`.
 
 ---
-## Comunicação
+## A pasta docs/
 
-Se você precisar construir sites, relatórios, dashboards estáticos (flexdashboard) dentro do seu pacote, você pode criar uma pasta chamada `docs/` na raiz do seu projeto para guardar esses arquivos.
+Se você precisar construir sites, relatórios, dashboards estáticos (flexdashboard) dentro do seu projeto, você pode criar uma pasta chamada `docs/` na raiz do seu projeto para guardar esses arquivos.
 
-É muito comum a construção de *vignettes* para documentar o pacote. Elas são documentos em HTML melhor formatados do que a tradicional documentação do R.
+---
+## A pasta inst/
 
-Você pode usar a função `usethis::use_vignette()` para criar *vignettes*.
+Qualquer outro tipo de arquivo que não couber nas pastas anteriores pode ser colocado na pasta `inst/`.
 
 ---
 ## Documentação
 
-A documentação de funções deve seguir a estrutura a seguir usando o símbolo `#'`:
+Se você quiser documentar as suas funções, uma boa forma de fazer isso é seguir o formato abaixo. 
 
 ```{r eval=FALSE}
 #' Título da função
@@ -363,26 +309,10 @@ A documentação de funções deve seguir a estrutura a seguir usando o símbolo
 #' 
 #' @return descrição do resultado
 #' 
-#' @export
 fun <- function(a, b) { 
   a + b
 }
 ```
-
-O parâmetro `@export` indica que a função ficará disponível quando rodarmos `library(MeuProjeto)`.
-
----
-## Utilizando seu pacote durante a análise
-
-Algumas dicas e boas práticas.
-
-- Não rode as funções diretamente. Utilize sempre a função `devtools::load_all()`. Ela carrega todas as funções da pasta `R/` e as bases salvas na pasta `data/`. Isso diminuirá a chance de elas estarem sendo afetadas por valores externos que estão no seu *Environment*.
-
-- Limpe o seu *Environment* sempre que possível. Um atalho útil: `CTRL+SHIFT+F10`.
-
-- Para deixar a documentação das suas funções acessível (no help do R), use a função `devtools::document()`.
-
-- Se você precisar instalar o seu pacote (equivalente ao que fazemos com pacotes do CRAN quando rodamos `install.packages()`), use a função `devtools::install()`. Ela deve ser utilizada quando o seu pacote estiver pronto (ou pelo menos alguma versão dele).
 
 ---
 class: middle, center, inverse
@@ -427,11 +357,11 @@ knitr::include_graphics("img/021-organizacao-de-projetos/github.png")
 ```
 
 ---
-## Pacotes e GitHub
+## Projetos e GitHub
 
-No nosso caso, pacote e repositório serão termos equivalentes.
+No nosso caso, projeto e repositório serão termos equivalentes.
 
-`r colorido("Pacotes do R e repositórios do GitHub são melhores amigos.")`
+`r colorido("Projetos do R e repositórios do GitHub são melhores amigos.")`
 
 ```{r echo=FALSE, out.width="40%", fig.align='center'}
 knitr::include_graphics("img/021-organizacao-de-projetos/hug.gif")
@@ -451,19 +381,19 @@ knitr::include_graphics("img/021-organizacao-de-projetos/fluxo_github_rstudio.pn
 ```
 
 ---
-## Passo 1: crie e configure seu pacote
+## Passo 1: crie e configure seu projeto
 
 ```{r eval=FALSE}
-usethis::create_package("meuPacote")
+usethis::create_project("meuProjeto")
 ```
 
-Lembrando que nomes de pacotes
+Quanto aos nomes dos projetos, recomenda-se:
 
-- Só podem ter letras, números e ponto
+- só ter letras, números e pontos;
 
-- Devem começar com uma letra
+- começar com uma letra;
 
-- Não podem acabar com ponto
+- não acabar com ponto.
 
 ---
 ## Passo 2: adicione o Git
@@ -472,7 +402,7 @@ Lembrando que nomes de pacotes
 usethis::use_git()
 ```
 
-- Rodando o comando acima na pasta do projeto (a nova aba do RStudio que
+- Rodando o comando acima na pasta do projeto (a nova janela do RStudio que
 apareceu) você adiciona controle de versão.
 
 - Você receberá algumas instruções para seguir, mas está tudo certo.
@@ -507,12 +437,13 @@ usethis::use_github()
 
 - Ao conectar com o GitHub, você será instruída(o) a criar um *Personal Access Token* (PAT).
 
-
 - O PAT serve para autenticar ao github, podendo ser utilizado como senha de acesso ou internamente para automatizar tarefas (como criar um repositório).
 
 - Para acessar seu PAT, rode `usethis::github_token()`. 
 
 - Se quiser editá-lo, rode `usethis::edit_r_environ()` e lembre-se de reiniciar sua sessão do R.
+
+Leia [aqui](https://curso-r.github.io/zen-do-r/git-github.html).
 
 ---
 ## Passo 4: Stage & Commit
@@ -546,29 +477,9 @@ knitr::include_graphics("img/021-organizacao-de-projetos/passo_5_pull.gif")
 - *Pull* é a ação inversa do *Push*: você trará a versão mais recente dos arquivos do seu repositório remoto (GitHub) para a sua máquina (caso você tenha subido uma versão de um outro computador ou uma outra pessoa tenha subido uma atualização).
 
 ---
-
-## Resumo
-
-#### 1. Repositório: Criar projeto/pacote
-#### 2. Adicionar Git
-#### 3. Adicionar GitHub
-#### 4. Commit: Edite e "Commite" as mudanças no código
-#### 5. Push: Suba os commits para o Github
-#### Extra. Pull: Baixe o estado atual do projeto
-
----
-## Cuidados
-
-- Se uma base de dados tem mais do que 50Mb de tamanho, ela não deveria estar no seu repositório.
-
-- Nem sempre o comando Pull dá certo. Às vezes, você e a colega de trabalho fizeram mudanças no mesmo arquivo e, quando vão juntar, ocorre um conflito.
-
----
 # Referências
 
 - [Zen do R](https://curso-r.github.io/zen-do-r/), livro em desenvolvimento pela Curso-R.
-
-- [R Packages](https://r-pkgs.org), livro aprofundado sobre desenvolvimento de pacotes.
 
 - [Apresentação da Bea Milz](https://beatrizmilz.github.io/RLadies-Git-RStudio-2019).
 
