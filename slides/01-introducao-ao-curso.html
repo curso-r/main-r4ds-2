@@ -4,7 +4,6 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -14,7 +13,7 @@ class: center, middle, inverse, title-slide
 # R para Ciência de Dados 2
 ## Introdução ao curso
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### agosto de 2020
+### Março de 2021
 
 ---
 
@@ -25,108 +24,195 @@ class: middle, center, inverse
 # Sobre a Curso-R
 
 ---
-## Curso-R
+class: middle, center
 
-&lt;img src="img/01-introducao-ao-curso/professores.png" width="812" style="display: block; margin: auto;" /&gt;
+## A empresa
+
+.pull-left[
+&lt;img src="https://d33wubrfki0l68.cloudfront.net/295643c6243701ae6a9bac3fb8ad467ff0ce3c84/d1785/img/logo/cursor1-41.png" width="70%" /&gt;
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;img src="img/logo_r6.png" width="70%" /&gt;
+
+]
+
+.pull-right[
+&lt;img src="img/produtos.png" width="70%" /&gt;
+]
+
+### [www.curso-r.com](https://www.curso-r.com)
 
 ---
-## Linha do tempo
 
-&lt;img src="img/01-introducao-ao-curso/linha_do_tempo.png" width="406" style="display: block; margin: auto;" /&gt;
-
----
 ## Nossos cursos
 
-&lt;div&gt;
-  &lt;div class="pull-left"&gt;
-    &lt;div class="container center"&gt;
-      &lt;div class="card"&gt;
-        &lt;h4&gt;Programação em R&lt;/h4&gt;
-        &lt;hr style="background-color:#3bb44a;"/&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/r4ds-1/"&gt;R para Ciência de Dados I&lt;/a&gt;
-        &lt;/p&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/r4ds-2/"&gt;R para Ciência de Dados II&lt;/a&gt;
-        &lt;/p&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/rcpp/"&gt;Introdução ao R com C++&lt;/a&gt;
-        &lt;/p&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;br/&gt;
-    &lt;div class="container center"&gt;
-      &lt;div class="card"&gt;
-        &lt;h4&gt;Modelagem&lt;/h4&gt;
-        &lt;hr style="background-color:#996699;"/&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/regressao-linear/"&gt;Regressão linear&lt;/a&gt;
-        &lt;/p&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/intro-machine-learning/"&gt;Machine Learning&lt;/a&gt;
-        &lt;/p&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/xgboost/"&gt;XGBoost&lt;/a&gt;
-        &lt;/p&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/deep-learning/"&gt;Deep Learning&lt;/a&gt;
-        &lt;/p&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="pull-right"&gt;
-    &lt;div class="container center"&gt;
-      &lt;div class="card"&gt;
-        &lt;h4&gt;Extração de dados&lt;/h4&gt;
-        &lt;hr style="background-color:#eeba30;"/&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/web-scraping/"&gt;Web scraping&lt;/a&gt;
-        &lt;/p&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;br/&gt;
-    &lt;br/&gt;
-    &lt;div class="container center"&gt;
-      &lt;div class="card"&gt;
-        &lt;h4&gt;Comunicação e automação&lt;/h4&gt;
-        &lt;hr style="background-color:#ff6699;"/&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/dashboards/"&gt;Dashboards&lt;/a&gt;
-        &lt;/p&gt;
-        &lt;p style='font-size:16px'&gt;
-          &lt;a href="https://www.curso-r.com/cursos/deploy/"&gt;Deploy&lt;/a&gt;
-        &lt;/p&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+.smaller[
+<div>
+<div class="pull-left">
+<div class="container center">
+<div class="card">
+<h2>Programação em R</h2>
+<hr style="background-color:#3bb44a;"/>
+<p>
+<a href="https://www.curso-r.com/cursos/intro-programacao/">Introdução à Programação em R</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/r4ds-1/">R para Ciência de Dados I</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/r4ds-2/">R para Ciência de Dados II</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/pacotes/">Pacotes</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/rcpp/">Introdução ao R com C++</a>
+</p>
+</div>
+</div>
+<br/>
+<div class="container center">
+<div class="card">
+<h2>Visualização de dados</h2>
+<hr style="background-color:#ff6699;"/>
+<p>
+<a href="https://www.curso-r.com/cursos/visualizacao/">Relatórios e Visualização de Dados</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/dashboards/">Dashboards</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/deploy/">Deploy</a>
+</p>
+</div>
+</div>
+</div>
+<div class="pull-right">
+<div class="container center">
+<div class="card">
+<h2>Modelagem</h2>
+<hr style="background-color:#996699;"/>
+<p>
+<a href="https://www.curso-r.com/cursos/regressao-linear/">Regressão linear</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/intro-machine-learning/">Machine Learning</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/xgboost/">XGBoost</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/deep-learning/">Deep Learning</a>
+</p>
+</div>
+</div>
+<br/>
+<br/>
+<div class="container center">
+<div class="card">
+<h2>Extração de dados</h2>
+<hr style="background-color:#eeba30;"/>
+<p>
+<a href="https://www.curso-r.com/cursos/faxina/">Faxina de Dados</a>
+</p>
+<p>
+<a href="https://www.curso-r.com/cursos/web-scraping/">Web scraping</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+]
 
 ---
 class: middle, center, inverse
 # Sobre o curso
 
 ---
+## Material
+
+&lt;center&gt;
+
+&lt;br&gt;
+
+Nosso livro Ciência de Dados em R:
+
+&lt;br&gt;
+
+&lt;a href='https://livro.curso-r.com/'&gt;https://livro.curso-r.com/&lt;/a&gt;
+
+&lt;br&gt;
+&lt;br&gt;
+
+O Zen do R
+
+&lt;br&gt;
+
+&lt;a href='https://curso-r.github.io/zen-do-r/'&gt;https://curso-r.github.io/zen-do-r/ &lt;/a&gt;
+
+&lt;br&gt;
+&lt;br&gt;
+
+Também temos um blog: 
+
+&lt;br&gt;
+
+&lt;a href='http://curso-r.com/blog/'&gt;http://curso-r.com/blog/ &lt;/a&gt;
+
+&lt;/center&gt;
+
+
+---
 ## Dinâmica curso
 
-- As aulas serão (quase totalmente) expositivas.
+- As aulas terão um bloco teórico e um bloco prático.
 
-- Teremos diversos exercícios e uma entrega final para serem feitos "em casa".
+- Teremos diversos exercícios opcionais e uma entrega final obrigatória para serem feitos "em casa".
 
-- Os exercícios não serão avaliações, isto é, não terão prazo nem nota. O objetivo deles será gerar dúvidas, para que possamos melhor orientá-las(los) durante o curso. Portanto, **não é preciso entregar os exercícios**.
+- Os exercícios não terão prazo nem nota. O objetivo deles será gerar dúvidas, para que possamos melhor orientá-las(los) durante o curso. Portanto, **não é preciso entregar os exercícios**.
 
 - A entrega final será um pequeno projeto englobando diversos conceitos abordados durante o curso. O prazo da entrega final será de 2 semanas após a última aula.
 
-- O certificado será emitido para os alunos que fizerem **entrega final**. A entrega final será uma composição de todos os exercícios. 
+- O certificado será emitido para os alunos que fizerem **entrega final**.
+
+---
+## Pratique
+
+- Não se preocupe com estilos de estudo. Use o que te deixar mais confortável.
+
+- Estude um pouco todo dia. Se você tem apenas uma hora para estudar na semana, faça 3 sessões de 20 minutos em dias diferentes.
+
+- Se teste! Coloque em prática o que você aprendeu resolvendo exercícios ou inserindo o R no seu dia-a-dia.
+
+
+&lt;br&gt;
+&lt;br&gt;
+### Referência
+
+[Nahurhodo 205 - Powerpoint é útil para a aprendizagem?](https://www.b9.com.br/shows/naruhodo/naruhodo-205-powerpoint-e-util-para-a-aprendizagem/)
+
+---
+## Tirando dúvidas
+
+ - **Não existe dúvida idiota**.
+ 
+ - Nem sempre é trivial fazer a pergunta certa para que outra pessoa esclareça a sua dúvida. Neste curso, **vamos mostrar melhores práticas na hora de fazer perguntas sobre programação**.
+ 
+ - Fora do horário de aula ou monitoria:
+     - perguntas gerais sobre o curso deverão ser feitas no Classroom.
+     
+     - perguntas sobre R, principalmente as que envolverem código, deverão ser enviadas no [nosso discourse](https://discourse.curso-r.com/).
+
+- [Veja aqui dicas de como fazer uma boa pergunta](https://discourse.curso-r.com/t/como-escrever-uma-boa-pergunta/542).
 
 ---
 ## Extras
 
-- Teremos monitoria duas vezes pode semana, sempre 30 minutos antes do início das aulas (ter e qui, das 18:30h às 19h).
-
-- Além das aulas, teremos alguns conteúdos extras, tanto em texto quanto em vídeo.
+- Teremos monitoria duas vezes pode semana, sempre 30 minutos antes do início das aulas.
 
 - A gravação das aulas ficará disponível no Google Classroom por 1 ano após o final do curso.
-
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

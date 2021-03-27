@@ -22,109 +22,127 @@ class: middle, center, inverse
 # Sobre a Curso-R
 
 ---
-## Curso-R
+class: middle, center
 
-```{r, echo=FALSE, fig.align='center'}
-knitr::include_graphics("img/01-introducao-ao-curso/professores.png", dpi = 260)
+## A empresa
+
+.pull-left[
+```{r, echo = FALSE, out.width="70%"}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/295643c6243701ae6a9bac3fb8ad467ff0ce3c84/d1785/img/logo/cursor1-41.png")
 ```
 
----
-## Linha do tempo
+<br>
+<br>
 
-```{r, echo=FALSE, fig.align='center'}
-knitr::include_graphics("img/01-introducao-ao-curso/linha_do_tempo.png", dpi = 120)
+```{r, echo = FALSE, out.width="70%"}
+knitr::include_graphics("img/logo_r6.png")
 ```
 
+]
+
+.pull-right[
+```{r, echo = FALSE, out.width="70%"}
+knitr::include_graphics("img/produtos.png")
+```
+]
+
+### [www.curso-r.com](https://www.curso-r.com)
+
 ---
+
 ## Nossos cursos
 
-<div>
-  <div class="pull-left">
-    <div class="container center">
-      <div class="card">
-        <h4>Programação em R</h4>
-        <hr style="background-color:#3bb44a;"/>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/r4ds-1/">R para Ciência de Dados I</a>
-        </p>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/r4ds-2/">R para Ciência de Dados II</a>
-        </p>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/rcpp/">Introdução ao R com C++</a>
-        </p>
-      </div>
-    </div>
-    <br/>
-    <div class="container center">
-      <div class="card">
-        <h4>Modelagem</h4>
-        <hr style="background-color:#996699;"/>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/regressao-linear/">Regressão linear</a>
-        </p>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/intro-machine-learning/">Machine Learning</a>
-        </p>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/xgboost/">XGBoost</a>
-        </p>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/deep-learning/">Deep Learning</a>
-        </p>
-      </div>
-    </div>
-  </div>
-  <div class="pull-right">
-    <div class="container center">
-      <div class="card">
-        <h4>Extração de dados</h4>
-        <hr style="background-color:#eeba30;"/>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/web-scraping/">Web scraping</a>
-        </p>
-      </div>
-    </div>
-    <br/>
-    <br/>
-    <div class="container center">
-      <div class="card">
-        <h4>Comunicação e automação</h4>
-        <hr style="background-color:#ff6699;"/>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/dashboards/">Dashboards</a>
-        </p>
-        <p style='font-size:16px'>
-          <a href="https://www.curso-r.com/cursos/deploy/">Deploy</a>
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
+.smaller[
+```{r, echo = FALSE}
+templatesR6::criar_slide_nossos_cursos()
+```
+]
 
 ---
 class: middle, center, inverse
 # Sobre o curso
 
 ---
+## Material
+
+<center>
+
+<br>
+
+Nosso livro Ciência de Dados em R:
+
+<br>
+
+<a href='https://livro.curso-r.com/'>https://livro.curso-r.com/</a>
+
+<br>
+<br>
+
+O Zen do R
+
+<br>
+
+<a href='https://curso-r.github.io/zen-do-r/'>https://curso-r.github.io/zen-do-r/ </a>
+
+<br>
+<br>
+
+Também temos um blog: 
+
+<br>
+
+<a href='http://curso-r.com/blog/'>http://curso-r.com/blog/ </a>
+
+</center>
+
+
+---
 ## Dinâmica curso
 
-- As aulas serão (quase totalmente) expositivas.
+- As aulas terão um bloco teórico e um bloco prático.
 
-- Teremos diversos exercícios e uma entrega final para serem feitos "em casa".
+- Teremos diversos exercícios opcionais e uma entrega final obrigatória para serem feitos "em casa".
 
-- Os exercícios não serão avaliações, isto é, não terão prazo nem nota. O objetivo deles será gerar dúvidas, para que possamos melhor orientá-las(los) durante o curso. Portanto, **não é preciso entregar os exercícios**.
+- Os exercícios não terão prazo nem nota. O objetivo deles será gerar dúvidas, para que possamos melhor orientá-las(los) durante o curso. Portanto, **não é preciso entregar os exercícios**.
 
 - A entrega final será um pequeno projeto englobando diversos conceitos abordados durante o curso. O prazo da entrega final será de 2 semanas após a última aula.
 
-- O certificado será emitido para os alunos que fizerem **entrega final**. A entrega final será uma composição de todos os exercícios. 
+- O certificado será emitido para os alunos que fizerem **entrega final**.
+
+---
+## Pratique
+
+- Não se preocupe com estilos de estudo. Use o que te deixar mais confortável.
+
+- Estude um pouco todo dia. Se você tem apenas uma hora para estudar na semana, faça 3 sessões de 20 minutos em dias diferentes.
+
+- Se teste! Coloque em prática o que você aprendeu resolvendo exercícios ou inserindo o R no seu dia-a-dia.
+
+
+<br>
+<br>
+### Referência
+
+[Nahurhodo 205 - Powerpoint é útil para a aprendizagem?](https://www.b9.com.br/shows/naruhodo/naruhodo-205-powerpoint-e-util-para-a-aprendizagem/)
+
+---
+## Tirando dúvidas
+
+ - **Não existe dúvida idiota**.
+ 
+ - Nem sempre é trivial fazer a pergunta certa para que outra pessoa esclareça a sua dúvida. Neste curso, **vamos mostrar melhores práticas na hora de fazer perguntas sobre programação**.
+ 
+ - Fora do horário de aula ou monitoria:
+     - perguntas gerais sobre o curso deverão ser feitas no Classroom.
+     
+     - perguntas sobre R, principalmente as que envolverem código, deverão ser enviadas no [nosso discourse](https://discourse.curso-r.com/).
+
+- [Veja aqui dicas de como fazer uma boa pergunta](https://discourse.curso-r.com/t/como-escrever-uma-boa-pergunta/542).
 
 ---
 ## Extras
 
-- Teremos monitoria duas vezes pode semana, sempre 30 minutos antes do início das aulas (ter e qui, das 18:30h às 19h).
-
-- Além das aulas, teremos alguns conteúdos extras, tanto em texto quanto em vídeo.
+- Teremos monitoria duas vezes pode semana, sempre 30 minutos antes do início das aulas.
 
 - A gravação das aulas ficará disponível no Google Classroom por 1 ano após o final do curso.
 

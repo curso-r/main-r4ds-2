@@ -13,7 +13,7 @@
 class: center, middle, inverse, title-slide
 
 # R para Ciência de Dados 2
-## dplyr ++
+## dplyr (miscelânea)
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
 ### Março de 2021
 
@@ -49,575 +49,6 @@ Já vimos que com os principais verbos do `{dplyr}` já conseguimos fazer divers
 &lt;center&gt;
 <span style="color:#6495ed; font-weight: bold;">Mas o dplyr tem muito mais para oferecer. MUITO MAIS!</span>
 &lt;/center&gt;
-
----
-class: titulo
-# dplyr 1.0
-
----
-## O novo dplyr
-
-A versão 1.0 do pacote `dplyr` foi oficialmente lançada em junho de 2020 e contou com diversas novidades Vamos falar das principais mudanças:
-
-- A nova função `across()`, que facilita aplicar uma mesma operação em várias colunas.
-
-- A repaginada função `rowwise()`, para fazer operações por linha.
-
-- Novas funcionalidades das funções `select()` e `rename()` e a nova função `relocate()`.
-
----
-## Motivação
-
-Base de dados de venda de casas na cidade de Ames, nos Estados Unidos.
-
-- 2930 linhas e 77 colunas.
-
-- Cada linha corresponde a uma casa vendida e cada coluna a uma característica da casa ou da venda.
-
-- Versão traduzida: faça o download [clicando aqui](https://github.com/curso-r/main-r4ds2/raw/master/data/ames.rds).
-
-- Base original:
-
-
-```r
-install.packages("AmesHousing")
-
-data(ames_raw, package = "AmesHousing")
-```
-
-
-
----
-## across()
-
-A função `across()` substitui a família de verbos `verbo_all()`, `verbo_if` e `verbo_at()`. A ideia é facilitar a aplicação de uma operação a diversas colunas da base. Para sumarizar a base para mais de uma variável, antigamente fazíamos
-
-
-```r
-ames %&gt;%
-  group_by(geral_qualidade) %&gt;%
-  summarise(
-    lote_area_media = mean(lote_area, na.rm = TRUE),
-    venda_valor_medio = mean(venda_valor, na.rm = TRUE)
-  )
-```
-
-```
-## # A tibble: 10 x 3
-##    geral_qualidade lote_area_media venda_valor_medio
-##              &lt;int&gt;           &lt;dbl&gt;             &lt;dbl&gt;
-##  1               1          15214.            48725 
-##  2               2           9326.            52325.
-##  3               3           9439.            83186.
-##  4               4           8464.           106485.
-##  5               5           9995.           134753.
-##  6               6           9788.           162130.
-##  7               7          10309.           205026.
-##  8               8          10618.           270914.
-##  9               9          12777.           368337.
-## 10              10          18071.           450217.
-```
-
----
-## 
-
-Ou então
-
-
-```r
-ames %&gt;%
-  group_by(geral_qualidade) %&gt;%
-  summarise_at(
-    .vars = vars(lote_area, venda_valor),
-    ~mean(.x, na.rm = TRUE)
-  )
-```
-
-```
-## # A tibble: 10 x 3
-##    geral_qualidade lote_area venda_valor
-##              &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-##  1               1    15214.      48725 
-##  2               2     9326.      52325.
-##  3               3     9439.      83186.
-##  4               4     8464.     106485.
-##  5               5     9995.     134753.
-##  6               6     9788.     162130.
-##  7               7    10309.     205026.
-##  8               8    10618.     270914.
-##  9               9    12777.     368337.
-## 10              10    18071.     450217.
-```
-
----
-## 
-
-Com a nova função `across()`, fazemos
-
-
-```r
-ames %&gt;%
-  group_by(geral_qualidade) %&gt;%
-  summarise(across(
-    .cols = c(lote_area, venda_valor),
-    .fns = mean, na.rm = TRUE
-  ))
-```
-
-```
-## # A tibble: 10 x 3
-##    geral_qualidade lote_area venda_valor
-##              &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-##  1               1    15214.      48725 
-##  2               2     9326.      52325.
-##  3               3     9439.      83186.
-##  4               4     8464.     106485.
-##  5               5     9995.     134753.
-##  6               6     9788.     162130.
-##  7               7    10309.     205026.
-##  8               8    10618.     270914.
-##  9               9    12777.     368337.
-## 10              10    18071.     450217.
-```
-
-A sintaxe é parecida com a função `summarise_at()`, mas agora não precisamos mais usar a função `vars()` e nem usar `list(nome_da_funcao)` ou `~nome_da_funcao(.x)` para definir a função aplicada nas colunas.
-
----
-## 
-
-Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. Abaixo, calculamos o número de valores distintos para todas as variáveis da base `ames`.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;% 
-  summarise(across(.fns = n_distinct)) %&gt;% 
-  select(1:5) 
-```
-
-```
-## # A tibble: 1 x 5
-##   lote_fachada lote_area lote_formato lote_config terreno_contorno
-##          &lt;int&gt;     &lt;int&gt;        &lt;int&gt;       &lt;int&gt;            &lt;int&gt;
-## 1          129      1960            4           5                4
-```
-
-O padrão do parâmetro `.cols` é `everithing()`, que representa "todas as colunas".
-
----
-## 
-
-Anteriormente, utilizaríamos a função `summarise_all()`.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;% 
-  summarise_all(.funs = ~n_distinct(.x)) %&gt;% 
-  select(1:5) 
-```
-
-```
-## # A tibble: 1 x 5
-##   lote_fachada lote_area lote_formato lote_config terreno_contorno
-##          &lt;int&gt;     &lt;int&gt;        &lt;int&gt;       &lt;int&gt;            &lt;int&gt;
-## 1          129      1960            4           5                4
-```
-
----
-## 
-
-Se quisermos selecionar as colunas a serem modificadas a partir de um teste lógico, utilizamos o ajudante `where()`.
-
-No exemplo abaixo, calculamos o número de valores distintos das colunas de texto.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
-  summarise(across(where(is.character), n_distinct)) %&gt;% 
-  select(1:5)
-```
-
-```
-## # A tibble: 1 x 5
-##   lote_formato lote_config terreno_contorno terreno_declive rua_tipo
-##          &lt;int&gt;       &lt;int&gt;            &lt;int&gt;           &lt;int&gt;    &lt;int&gt;
-## 1            4           5                4               3        2
-```
-
-Todas as colunas da base resultante eram colunas com classe `character` na base `ames`.
-
----
-## 
-
-Antes, utilizávamos a função `summarise_if()`.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
-  summarise_if(is.character, n_distinct) %&gt;% 
-  select(1:5)
-```
-
-```
-## # A tibble: 1 x 5
-##   lote_formato lote_config terreno_contorno terreno_declive rua_tipo
-##          &lt;int&gt;       &lt;int&gt;            &lt;int&gt;           &lt;int&gt;    &lt;int&gt;
-## 1            4           5                4               3        2
-```
-
-Você também pode combinar as ações do `summarise_if()` e `summarise_at()` em um único `across()`. Calculamos as áreas médias, garantindo que pegamos apenas variáveis numéricas.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
-  summarise(across(where(is.numeric) &amp; contains("area"), mean, na.rm = TRUE)) %&gt;% 
-  select(1:5)
-```
-
-```
-## # A tibble: 1 x 5
-##   lote_area alvenaria_area porao_area_com_ac… porao_area_com_a… porao_area_sem_…
-##       &lt;dbl&gt;          &lt;dbl&gt;              &lt;dbl&gt;             &lt;dbl&gt;            &lt;dbl&gt;
-## 1    10148.           102.               443.              49.7             559.
-```
-
-
----
-## 
-
-Com a função `across()`, podemos fazer sumarizações complexas.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
-  group_by(fundacao_tipo) %&gt;%
-  summarise(
-    across(contains("area"), mean, na.rm = TRUE),
-    across(where(is.character), ~sum(is.na(.x))),
-    n_obs = n(),
-  ) %&gt;% 
-  select(1:4, n_obs)
-```
-
-```
-## # A tibble: 6 x 5
-##   fundacao_tipo lote_area alvenaria_area porao_area_com_acabamento_1 n_obs
-##   &lt;chr&gt;             &lt;dbl&gt;          &lt;dbl&gt;                       &lt;dbl&gt; &lt;int&gt;
-## 1 BrkTil            8712.           10.2                       151.    311
-## 2 CBlock           10616.           85.0                       468.   1244
-## 3 PConc            10054.          144.                        506.   1310
-## 4 Slab             10250.           35.2                         0      49
-## 5 Stone             8659.            0                          43.9    11
-## 6 Wood              9838.           16                         812.      5
-```
-
-Isso não era possível utilizando apenas as funções `summarise()`, `summarise_if()` e `summarise_at()`.
-
----
-## Across outros verbos
-
-Embora a nova sintaxe, usando `across()`, não seja muito diferente do que fazíamos antes, realizar sumarizações complexas não é a única vantagem desse novo *framework*.
-
-O `across()` pode ser utilizado em todos os verbos do `{dplyr}` (com exceção do `select()` e `rename()`, já que ele não trás vantagens com relação ao que já existe) e isso unifica o modo de fazermos essas operações no R. Em vez de termos uma família de funções para cada verbo, temos agora apenas o próprio verbo e o `across()`.
-
-Vamos ver um exemplo para o `mutate()` e para o `filter()`.
-
----
-## 
-
-O código abaixo transforma todas as variáveis que possuem "area" no nome, passando os valores de pés quadrados para metros quadrados.
-
-
-```r
-ames %&gt;%
-  mutate(across(
-    contains("area"),
-    ~ .x / 10.764
-  ))
-```
-
-Já o código a seguir filtra apenas as casas que possuem varanda aberta, cerca e lareira.
-
-
-```r
-ames %&gt;%
-  filter(across(
-    c(varanda_aberta_area, cerca_qualidade, lareira_qualidade),
-    ~!is.na(.x)
-  )) 
-```
-
----
-## select()
-
-Não precisamos do `across()` na hora de selecionar colunas. A função `select()` já usa naturalmente o mecanismo de seleção de colunas que o `across()` proporciona.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
-  select(where(is.numeric)) %&gt;% 
-  select(1:5)
-```
-
-```
-## # A tibble: 2,930 x 5
-##    lote_fachada lote_area construcao_ano remodelacao_ano geral_qualidade
-##           &lt;int&gt;     &lt;int&gt;          &lt;int&gt;           &lt;int&gt;           &lt;int&gt;
-##  1          141     31770           1960            1960               6
-##  2           80     11622           1961            1961               5
-##  3           81     14267           1958            1958               6
-##  4           93     11160           1968            1968               7
-##  5           74     13830           1997            1998               5
-##  6           78      9978           1998            1998               6
-##  7           41      4920           2001            2001               8
-##  8           43      5005           1992            1992               8
-##  9           39      5389           1995            1996               8
-## 10           60      7500           1999            1999               7
-## # … with 2,920 more rows
-```
-
----
-## rename()
-
-O mesmo vale para o `rename()`. Se quisermos renomer várias colunas, a partir de uma função, utilizamos o `rename_with()`.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
-  rename_with(toupper, contains("venda")) %&gt;% 
-  select(73:77)
-```
-
-```
-## # A tibble: 2,930 x 5
-##    VENDA_ANO VENDA_MES VENDA_TIPO VENDA_CONDICAO VENDA_VALOR
-##        &lt;int&gt;     &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;                &lt;int&gt;
-##  1      2010         5 "WD "      Normal              215000
-##  2      2010         6 "WD "      Normal              105000
-##  3      2010         6 "WD "      Normal              172000
-##  4      2010         4 "WD "      Normal              244000
-##  5      2010         3 "WD "      Normal              189900
-##  6      2010         6 "WD "      Normal              195500
-##  7      2010         4 "WD "      Normal              213500
-##  8      2010         1 "WD "      Normal              191500
-##  9      2010         3 "WD "      Normal              236500
-## 10      2010         6 "WD "      Normal              189000
-## # … with 2,920 more rows
-```
-
-
----
-## relocate()
-
-O `{dplyr}` possui agora uma função própria para reorganizar colunas: `relocate()`. Por padrão, ela coloca uma ou mais colunas no começo da base.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
-  relocate(venda_valor, venda_tipo) %&gt;% 
-  select(1:5)
-```
-
-```
-## # A tibble: 2,930 x 5
-##    venda_valor venda_tipo lote_fachada lote_area lote_formato
-##          &lt;int&gt; &lt;chr&gt;             &lt;int&gt;     &lt;int&gt; &lt;chr&gt;       
-##  1      215000 "WD "               141     31770 IR1         
-##  2      105000 "WD "                80     11622 Reg         
-##  3      172000 "WD "                81     14267 IR1         
-##  4      244000 "WD "                93     11160 Reg         
-##  5      189900 "WD "                74     13830 IR1         
-##  6      195500 "WD "                78      9978 IR1         
-##  7      213500 "WD "                41      4920 Reg         
-##  8      191500 "WD "                43      5005 IR1         
-##  9      236500 "WD "                39      5389 IR1         
-## 10      189000 "WD "                60      7500 Reg         
-## # … with 2,920 more rows
-```
-
-
----
-## 
-
-Podemos usar os argumentos `.after` e `.before` para fazer mudanças mais complexas.
-
-O código baixo coloca a coluna `venda_ano` depois da coluna `construcao_ano`.
-
-
-```r
-ames %&gt;%
-  relocate(venda_ano, .after = construcao_ano)
-```
-
-O código baixo coloca a coluna `venda_ano` antes da coluna `construcao_ano`.
-
-
-```r
-ames %&gt;%
-  relocate(venda_ano, .before = construcao_ano)
-```
-
----
-## rowwise()
-
-Por fim, vamos discutir operações feitas por linha. Tome como exemplo a tabela abaixo. Ela apresenta as notas de alunos em quatro provas.
-
-
-```r
-tab_notas &lt;- tibble(
-  student_id = 1:5,
-  prova1 = sample(0:10, 5),
-  prova2 = sample(0:10, 5),
-  prova3 = sample(0:10, 5),
-  prova4 = sample(0:10, 5)
-)
-
-tab_notas
-```
-
-```
-## # A tibble: 5 x 5
-##   student_id prova1 prova2 prova3 prova4
-##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
-## 1          1      4      8      1      1
-## 2          2      1      1      7     10
-## 3          3     10      9      3      9
-## 4          4      2      5      9      3
-## 5          5      8      6     10      0
-```
-
-
----
-## 
-
-Se quisermos gerar uma coluna com a nota média de cada aluno nas quatro provas, não poderíamos usar o `mutate()` diretamente.
-
-
-```r
-tab_notas %&gt;% mutate(media = mean(c(prova1, prova2, prova3, prova4)))
-```
-
-```
-## # A tibble: 5 x 6
-##   student_id prova1 prova2 prova3 prova4 media
-##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      4      8      1      1  5.35
-## 2          2      1      1      7     10  5.35
-## 3          3     10      9      3      9  5.35
-## 4          4      2      5      9      3  5.35
-## 5          5      8      6     10      0  5.35
-```
-
-Neste caso, todas as colunas estão sendo empilhadas e gerando uma única média, passada a todas as linhas da coluna `media`.
-
----
-## 
-
-Para fazermos a conta para cada aluno, podemos agrupar por aluno. Agora sim a média é calculada apenas nas notas de cada estudante.
-
-
-```r
-tab_notas %&gt;%
-  group_by(student_id) %&gt;%
-  mutate(media = mean(c(prova1, prova2, prova3, prova4)))
-```
-
-```
-## # A tibble: 5 x 6
-## # Groups:   student_id [5]
-##   student_id prova1 prova2 prova3 prova4 media
-##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      4      8      1      1  3.5 
-## 2          2      1      1      7     10  4.75
-## 3          3     10      9      3      9  7.75
-## 4          4      2      5      9      3  4.75
-## 5          5      8      6     10      0  6
-```
-
-
----
-## c_across()
-
-Também podemos nos aproveitar da sintaxe do `across()` neste caso. Para isso, precisamos substutir a função `c()` pela função `c_across()`.
-
-
-```r
-tab_notas %&gt;%
-  group_by(student_id) %&gt;%
-  mutate(media = mean(c_across(starts_with("prova"))))
-```
-
-```
-## # A tibble: 5 x 6
-## # Groups:   student_id [5]
-##   student_id prova1 prova2 prova3 prova4 media
-##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      4      8      1      1  3.5 
-## 2          2      1      1      7     10  4.75
-## 3          3     10      9      3      9  7.75
-## 4          4      2      5      9      3  4.75
-## 5          5      8      6     10      0  6
-```
-
-
----
-## 
-
-Equivalentemente ao `group_by()`, neste caso, podemos usar a função `rowwise()`.
-
-
-```r
-tab_notas %&gt;%
-  rowwise(student_id) %&gt;%
-  mutate(media = mean(c_across(starts_with("prova"))))
-```
-
-```
-## # A tibble: 5 x 6
-## # Rowwise:  student_id
-##   student_id prova1 prova2 prova3 prova4 media
-##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      4      8      1      1  3.5 
-## 2          2      1      1      7     10  4.75
-## 3          3     10      9      3      9  7.75
-## 4          4      2      5      9      3  4.75
-## 5          5      8      6     10      0  6
-```
-
-
----
-## 
-
-Ela é muito útil quando queremos fazer operação por linhas, mas não temos uma coluna de identificação. Por padrão, se não indicarmos nenhuma coluna, cada linha será um "grupo".
-
-
-```r
-tab_notas %&gt;%
-  rowwise() %&gt;%
-  mutate(media = mean(c_across(starts_with("prova"))))
-```
-
-```
-## # A tibble: 5 x 6
-## # Rowwise: 
-##   student_id prova1 prova2 prova3 prova4 media
-##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      4      8      1      1  3.5 
-## 2          2      1      1      7     10  4.75
-## 3          3     10      9      3      9  7.75
-## 4          4      2      5      9      3  4.75
-## 5          5      8      6     10      0  6
-```
-
-Veja que `student_id` não é passada para a função `rowwise()`. Não precisaríamos dessa coluna na base para reproduzir a geração da columa `media` neste caso.
 
 ---
 ## Miscelânea de funções úteis
@@ -846,8 +277,8 @@ case_when(
 ```
 
 ```
-##  [1] "negativo" "positivo" "negativo" "negativo" "positivo" "negativo"
-##  [7] "negativo" "zero"     "negativo" "positivo"
+##  [1] "positivo" "positivo" "positivo" "negativo" "positivo" "negativo"
+##  [7] "negativo" "positivo" "positivo" "negativo"
 ```
 
 Com `ifelse()`, precisaríamos usar a função duas vezes:
@@ -858,8 +289,8 @@ ifelse(x &lt; 0, "negativo", ifelse(x == 0, "zero", "positivo"))
 ```
 
 ```
-##  [1] "negativo" "positivo" "negativo" "negativo" "positivo" "negativo"
-##  [7] "negativo" "zero"     "negativo" "positivo"
+##  [1] "positivo" "positivo" "positivo" "negativo" "positivo" "negativo"
+##  [7] "negativo" "positivo" "positivo" "negativo"
 ```
 
 ---
@@ -1181,17 +612,17 @@ slice_sample(mtcars, n = 10)
 ```
 
 ```
-##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-## Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
-## Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
-## Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
-## Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-## Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
-## Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-## Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
-## Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
-## Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
-## Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+##                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Ferrari Dino      19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+## Toyota Corolla    33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+## Porsche 914-2     26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+## Mazda RX4 Wag     21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+## Duster 360        14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+## Chrysler Imperial 14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+## Honda Civic       30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+## Datsun 710        22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+## Maserati Bora     15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+## Dodge Challenger  15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
 ```
 
 ---
@@ -1205,23 +636,23 @@ slice_sample(mtcars, prop = 0.5)
 ```
 
 ```
-##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-## Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
-## Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
-## Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
-## Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
-## Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
-## Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-## Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-## Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
-## Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-## Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
-## Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-## Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
-## Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
-## Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-## Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+##                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Honda Civic        30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+## Merc 450SE         16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+## Merc 230           22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+## Pontiac Firebird   19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+## Fiat 128           32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+## Ferrari Dino       19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+## Camaro Z28         13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+## Toyota Corolla     33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+## Maserati Bora      15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+## Hornet 4 Drive     21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+## Mazda RX4 Wag      21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+## Cadillac Fleetwood 10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+## Duster 360         14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+## Dodge Challenger   15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+## Merc 240D          24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+## AMC Javelin        15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
 ```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

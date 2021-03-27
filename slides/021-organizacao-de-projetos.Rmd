@@ -228,8 +228,6 @@ A resposta para essa pergunta pode assustar: no código ideal, a função `libra
 
 Para escrever `dplyr::`, por exemplo, basta digitar `d`, `p`, `l` e apertar TAB uma vez. Com os `::`, as sugestões passarão a ser somente de funções daquele pacote.
 
-
-
 ---
 ## Vatangens dos quatro pontos
 

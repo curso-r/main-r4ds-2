@@ -170,3 +170,11 @@ table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
     left: 0 !important;
   }
 }
+
+.smaller {
+  font-size: 0.65em;
+}
+
+.remark-slide-content .smaller h2 {
+  font-size: 1.4em;
+}
