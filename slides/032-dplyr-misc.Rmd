@@ -33,33 +33,6 @@ class: titulo
 # O pacote dplyr
 
 ---
-## Verbos principais
-
-Já vimos que com os principais verbos do `{dplyr}` já conseguimos fazer diversas operações de manipulação de bases de dados.
-
-.pull-left[
-- Selecionar colunas: `select()`
-
-- Ordenar linhas: `arrange()`
-
-- Filtrar linhas: `filter()`
-
-- Criar ou modificar colunas: `mutate()`
-
-- Agrupar e sumarizar: `group_by()` + `summarise()`
-]
-
-.pull-right[
-```{r, out.width="100%", echo = FALSE}
-knitr::include_graphics("img/031-dplyr/arte_dplyr.png")
-```
-]
-
-<center>
-`r colorido("Mas o dplyr tem muito mais para oferecer. MUITO MAIS!")`
-</center>
-
----
 ## Miscelânea de funções úteis
 
 Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos conhecidas do `{dplyr}`.
