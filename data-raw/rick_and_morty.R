@@ -1,5 +1,9 @@
 ## code to prepare `rick_and_morty` dataset goes here
 
+# scrape
+
+library(magrittr)
+
 url <- "https://en.wikipedia.org/wiki/List_of_Rick_and_Morty_episodes"
 
 res <- httr::GET(url)
@@ -11,13 +15,15 @@ lista_tab <- wiki_page %>%
   magrittr::extract(2:5) %>%
   rvest::html_table(fill = TRUE) %>%
   purrr::map(janitor::clean_names) %>%
-  purrr::map(~dplyr::rename_with(.x, ~stringr::str_remove(.x, "_36")))
+  purrr::map(~dplyr::rename_with(.x, ~stringr::str_remove(.x, "_37")))
 
 num_temporadas <- 1:length(lista_tab)
 
 tab <- lista_tab %>%
-  purrr::map2(num_temporadas, ~mutate(.x, no_season = .y)) %>%
+  purrr::map2(num_temporadas, ~dplyr::mutate(.x, no_season = .y)) %>%
   dplyr::bind_rows()
+
+# tidy
 
 rick_and_morty <- tab %>%
   dplyr::relocate(no_season, .before = no_inseason) %>%
@@ -30,7 +36,7 @@ rick_and_morty <- tab %>%
     u_s_viewers_millions = as.numeric(u_s_viewers_millions),
     original_air_date = stringr::str_extract(
       original_air_date,
-      "\\(.*\\)"
+      "\\([0-9-]*\\)"
     ),
     original_air_date = stringr::str_remove_all(
       original_air_date,
