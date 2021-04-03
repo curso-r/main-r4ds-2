@@ -11,32 +11,51 @@ Inscreva-se no curso: <https://www.curso-r.com/cursos/r4ds-2/>
 abaixo**.
 
 | Turma          | Material                                  | Github                                     |
-| :------------- | :---------------------------------------- | :----------------------------------------- |
-| Agosto de 2020 | <https://curso-r.github.io/202008-r4ds-2> | <https://github.com/curso-r/202008-r4ds-2> |
-| Abril de 2020  | <https://curso-r.github.io/202004-r4ds-2> | <https://github.com/curso-r/202004-r4ds-2> |
+|:---------------|:------------------------------------------|:-------------------------------------------|
+| agosto de 2021 | <https://curso-r.github.io/202108-r4ds-2> | <https://github.com/curso-r/202108-r4ds-2> |
+| abril de 2021  | <https://curso-r.github.io/202104-r4ds-2> | <https://github.com/curso-r/202104-r4ds-2> |
+| agosto de 2020 | <https://curso-r.github.io/202008-r4ds-2> | <https://github.com/curso-r/202008-r4ds-2> |
 
-# Ementa
+## Ementa
 
-  - **Organização de projetos**
-      - Por que não usar `.RData` e `.Rhistory`
-      - Git e Github
-      - Funções e dependências
-      - Pacotes
-  - **Manipulação de dados**
-      - dplyr avançado: `across()`, `where()` e joins
-      - Manipulação de textos com o pacote `{stringr}`
-      - Manipulação de datas com o pacote `{lubridate}`
-  - **Visualização de dados**
-      - Extensões do pacote `{ggplot2}`
-      - Construindo mapas com o `geom_sf()`
-      - Construindo seu próprio tema no `{ggplot2}`
-  - **Programação funcional**
-      - Listas e list-columns
-      - Introdução ao pacote `{purrr}`
-      - Substituindo for e while pelas funções `map_()`
-  - **Comunicação**
-      - Introdução ao Shiny
-      - A lógica ui/server
-      - Inputs e outputs
-      - Hospedando um aplicativo no
-        [shinyapps.io](https://www.shinyapps.io/)
+**Organização de projetos**
+
+-   Por que não usar `.RData` e `.Rhistory`
+
+-   Git e Github
+
+-   Funções e dependências
+
+-   Pacotes
+
+**Manipulação de dados**
+
+-   `{dplyr}` avançado: `across()`, `where()` e joins
+
+-   `{tidyr}`: pivotagem
+
+**Textos**
+
+-   Manipulação de textos com o pacote `{stringr}`
+
+-   Expressões regulares (regex)
+
+**Datas e fatores**
+
+-   Manipulação de datas com o pacote `{lubridate}`
+
+-   Manipulação de fatores com o pacote `{forcats}`
+
+**Programação funcional**
+
+-   Listas e list-columns
+
+-   Introdução ao pacote `{purrr}`
+
+-   Substituindo for e while pelas funções `map_()`
+
+**Tidy-eval**
+
+-   NSE
+
+-   Curly-curly
