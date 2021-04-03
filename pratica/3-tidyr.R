@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------
 
 # Motivação: Descobrir o ator com o maior lucro médio na base IMDB,
-# considerando as 3 colunas de ator.
+# considerando as 3 colunas de elenco.
 
 library(tidyr)
 library(dplyr)
@@ -14,8 +14,58 @@ imdb %>%
     cols = starts_with("ator"),
     names_to = "posicao",
     values_to = "ator"
-  )
+  ) %>%
+  mutate(lucro = receita - orcamento) %>%
+  group_by(ator) %>%
+  summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
+  arrange(desc(lucro_medio))
 
+# usando slice
+
+imdb %>%
+  pivot_longer(
+    cols = starts_with("ator"),
+    names_to = "posicao",
+    values_to = "ator"
+  ) %>%
+  mutate(lucro = receita - orcamento) %>%
+  group_by(ator) %>%
+  summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
+  slice_max(lucro_medio, n = 1)
+
+# vendo número de filmes
+
+imdb %>%
+  pivot_longer(
+    cols = starts_with("ator"),
+    names_to = "posicao",
+    values_to = "ator"
+  ) %>%
+  mutate(lucro = receita - orcamento) %>%
+  group_by(ator) %>%
+  summarise(
+    lucro_medio = mean(lucro, na.rm = TRUE),
+    n_filmes = n()
+  ) %>%
+  slice_max(lucro_medio, n = 10)
+
+# pegando o maior lucro entre
+# quem fez mais de 10 filmes
+
+imdb %>%
+  pivot_longer(
+    cols = starts_with("ator"),
+    names_to = "posicao",
+    values_to = "ator"
+  ) %>%
+  mutate(lucro = receita - orcamento) %>%
+  group_by(ator) %>%
+  summarise(
+    lucro_medio = mean(lucro, na.rm = TRUE),
+    n_filmes = n()
+  ) %>%
+  filter(n_filmes > 10) %>%
+  slice_max(lucro_medio, n = 10)
 
 # -------------------------------------------------------------------------
 
