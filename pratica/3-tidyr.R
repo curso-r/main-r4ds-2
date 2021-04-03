@@ -78,13 +78,15 @@ library(ggplot2)
 
 imdb <- readr::read_rds("data/imdb.rds")
 
-mtcars %>%
+imdb %>%
+  mutate(lucro = receita - orcamento) %>%
+  select(where(is.numeric)) %>%
   pivot_longer(
-    cols = -mpg,
+    cols = -lucro,
     names_to = "variavel",
     values_to = "valor"
   ) %>%
-  ggplot(aes(x = valor, y = mpg)) +
+  ggplot(aes(x = valor, y = lucro)) +
   geom_point() +
   facet_wrap(~variavel, scales = "free")
 
@@ -93,19 +95,79 @@ mtcars %>%
 # -------------------------------------------------------------------------
 
 # Motivação: fazer uma tabela do lucro médio anual dos filmes
-# de comédia, ação e romance
+# de comédia, ação e romance (2000 a 2016)
 
 library(dplyr)
 library(tidyr)
+library(stringr)
 
+imdb <- readr::read_rds("data/imdb.rds")
+
+imdb %>%
+  filter(ano >= 2000) %>%
+  mutate(
+    lucro = receita - orcamento,
+    flag_comedia = str_detect(generos, "Comedy"),
+    flag_acao = str_detect(generos, "Action"),
+    flag_romance = str_detect(generos, "Romance")
+  ) %>%
+  select(ano, lucro, starts_with("flag")) %>%
+  pivot_longer(
+    starts_with("flag"),
+    names_to = "genero",
+    values_to = "flag"
+  ) %>%
+  filter(flag) %>%
+  group_by(genero, ano) %>%
+  summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
+  pivot_wider(names_from = ano, values_from = lucro_medio) %>%
+  View()
 
 # -------------------------------------------------------------------------
 
 
-# Motivação: calcular o lucro médio por gênero do filme na base IMDB.
+# Motivação: calcular o lucro médio por gênero do filme
+# na base IMDB.
 
 library(dplyr)
 library(tidyr)
+library(stringr)
 
 imdb <- readr::read_rds("data/imdb.rds")
 
+imdb %>%
+  mutate(
+    generos = str_split(generos, "\\|")
+  ) %>%
+  View()
+
+imdb %>%
+  mutate(
+    generos = str_split(generos, "\\|")
+  ) %>%
+  unnest(generos) %>%
+  View()
+
+imdb %>%
+  mutate(
+    lucro = receita - orcamento,
+    generos = str_split(generos, "\\|")
+  ) %>%
+  unnest(generos) %>%
+  group_by(generos) %>%
+  summarise(lucro_medio = mean(lucro, na.rm = TRUE))
+
+# Refazendo exemplo anterior
+
+imdb %>%
+  filter(ano >= 2000) %>%
+  mutate(
+    lucro = receita - orcamento,
+    generos = str_split(generos, "\\|")
+  ) %>%
+  unnest(generos) %>%
+  filter(generos %in% c("Action", "Comedy", "Romance")) %>%
+  group_by(generos, ano) %>%
+  summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
+  pivot_wider(names_from = ano, values_from = lucro_medio) %>%
+  View()
