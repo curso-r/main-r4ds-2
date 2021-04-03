@@ -83,18 +83,18 @@ Base de dados de venda de casas na cidade de Ames, nos Estados Unidos.
 
 - Cada linha corresponde a uma casa vendida e cada coluna a uma característica da casa ou da venda.
 
-- Versão traduzida: faça o download [clicando aqui](https://github.com/curso-r/main-r4ds2/raw/master/data/ames.rds).
+- Versão traduzida
+
+```{r, eval = FALSE}
+install.packages("remotes")
+remotes::install_github("cienciadedatos/dados")
+```
 
 - Base original:
 
 ```{r, eval = FALSE}
 install.packages("AmesHousing")
-
 data(ames_raw, package = "AmesHousing")
-```
-
-```{r, include=FALSE}
-ames <- readr::read_rds("../data/ames.rds")
 ```
 
 ---
@@ -103,7 +103,8 @@ ames <- readr::read_rds("../data/ames.rds")
 A função `across()` substitui a família de verbos `verbo_all()`, `verbo_if` e `verbo_at()`. A ideia é facilitar a aplicação de uma operação a diversas colunas da base. Para sumarizar a base para mais de uma variável, antigamente fazíamos
 
 ```{r}
-ames %>%
+casas <- dados::casas
+casas %>%
   group_by(geral_qualidade) %>%
   summarise(
     lote_area_media = mean(lote_area, na.rm = TRUE),
@@ -117,7 +118,7 @@ ames %>%
 Ou então
 
 ```{r}
-ames %>%
+casas %>%
   group_by(geral_qualidade) %>%
   summarise_at(
     .vars = vars(lote_area, venda_valor),
@@ -131,7 +132,7 @@ ames %>%
 Com a nova função `across()`, fazemos
 
 ```{r}
-ames %>%
+casas %>%
   group_by(geral_qualidade) %>%
   summarise(across(
     .cols = c(lote_area, venda_valor),
@@ -144,11 +145,11 @@ A sintaxe é parecida com a função `summarise_at()`, mas agora não precisamos
 ---
 ## 
 
-Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. Abaixo, calculamos o número de valores distintos para todas as variáveis da base `ames`.
+Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. Abaixo, calculamos o número de valores distintos para todas as variáveis da base `casas`.
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>% 
+casas %>% 
   summarise(across(.fns = n_distinct)) %>% 
   select(1:5) 
 ```
@@ -162,7 +163,7 @@ Anteriormente, utilizaríamos a função `summarise_all()`.
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>% 
+casas %>% 
   summarise_all(.funs = ~n_distinct(.x)) %>% 
   select(1:5) 
 ```
@@ -172,16 +173,16 @@ ames %>%
 
 Se quisermos selecionar as colunas a serem modificadas a partir de um teste lógico, utilizamos o ajudante `where()`.
 
-No exemplo abaixo, calculamos o número de valores distintos das colunas de texto.
+No exemplo abaixo, calculamos o número de valores distintos das colunas de categóricas.
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>%
+casas %>%
   summarise(across(where(is.character), n_distinct)) %>% 
   select(1:5)
 ```
 
-Todas as colunas da base resultante eram colunas com classe `character` na base `ames`.
+Todas as colunas da base resultante eram colunas com classe `character` na base `casas`.
 
 ---
 ## 
@@ -190,7 +191,7 @@ Antes, utilizávamos a função `summarise_if()`.
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>%
+casas %>%
   summarise_if(is.character, n_distinct) %>% 
   select(1:5)
 ```
@@ -199,8 +200,8 @@ Você também pode combinar as ações do `summarise_if()` e `summarise_at()` em
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>%
-  summarise(across(where(is.numeric) & contains("area"), mean, na.rm = TRUE)) %>% 
+casas %>%
+  summarise(across(where(is.numeric) & contains("_area"), mean, na.rm = TRUE)) %>% 
   select(1:5)
 ```
 
@@ -212,7 +213,7 @@ Com a função `across()`, podemos fazer sumarizações complexas.
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>%
+casas %>%
   group_by(fundacao_tipo) %>%
   summarise(
     across(contains("area"), mean, na.rm = TRUE),
@@ -229,7 +230,7 @@ Isso não era possível utilizando apenas as funções `summarise()`, `summarise
 
 Embora a nova sintaxe, usando `across()`, não seja muito diferente do que fazíamos antes, realizar sumarizações complexas não é a única vantagem desse novo *framework*.
 
-O `across()` pode ser utilizado em todos os verbos do `{dplyr}` (com exceção do `select()` e `rename()`, já que ele não trás vantagens com relação ao que já existe) e isso unifica o modo de fazermos essas operações no R. Em vez de termos uma família de funções para cada verbo, temos agora apenas o próprio verbo e o `across()`.
+O `across()` pode ser utilizado em todos os verbos do `{dplyr}` (com exceção do `select()` e `rename()`, já que ele não trás vantagens com relação ao que já podia ser feito) e isso unifica o modo de fazermos essas operações no `dplyr`. Em vez de termos uma família de funções para cada verbo, temos agora apenas o próprio verbo e o `across()`.
 
 Vamos ver um exemplo para o `mutate()` e para o `filter()`.
 
@@ -239,7 +240,7 @@ Vamos ver um exemplo para o `mutate()` e para o `filter()`.
 O código abaixo transforma todas as variáveis que possuem "area" no nome, passando os valores de pés quadrados para metros quadrados.
 
 ```{r, eval = FALSE}
-ames %>%
+casas %>%
   mutate(across(
     contains("area"),
     ~ .x / 10.764
@@ -249,7 +250,7 @@ ames %>%
 Já o código a seguir filtra apenas as casas que possuem varanda aberta, cerca e lareira.
 
 ```{r, eval = FALSE}
-ames %>%
+casas %>%
   filter(across(
     c(varanda_aberta_area, cerca_qualidade, lareira_qualidade),
     ~!is.na(.x)
@@ -263,7 +264,7 @@ Não precisamos do `across()` na hora de selecionar colunas. A função `select(
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>%
+casas %>%
   select(where(is.numeric)) %>% 
   select(1:5)
 ```
@@ -275,7 +276,7 @@ O mesmo vale para o `rename()`. Se quisermos renomer várias colunas, a partir d
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>%
+casas %>%
   rename_with(toupper, contains("venda")) %>% 
   select(73:77)
 ```
@@ -288,7 +289,7 @@ O `{dplyr}` possui agora uma função própria para reorganizar colunas: `reloca
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
-ames %>%
+casas %>%
   relocate(venda_valor, venda_tipo) %>% 
   select(1:5)
 ```
@@ -302,14 +303,14 @@ Podemos usar os argumentos `.after` e `.before` para fazer mudanças mais comple
 O código baixo coloca a coluna `venda_ano` depois da coluna `construcao_ano`.
 
 ```{r, eval = FALSE}
-ames %>%
+casas %>%
   relocate(venda_ano, .after = construcao_ano)
 ```
 
 O código baixo coloca a coluna `venda_ano` antes da coluna `construcao_ano`.
 
 ```{r, eval = FALSE}
-ames %>%
+casas %>%
   relocate(venda_ano, .before = construcao_ano)
 ```
 

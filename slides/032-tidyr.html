@@ -15,7 +15,7 @@ class: center, middle, inverse, title-slide
 # R para Ciência de Dados 2
 ## tidyr
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### Agosto de 2020
+### Abril de 2021
 
 ---
 
@@ -176,22 +176,22 @@ imdb %&gt;% select(starts_with("ator")) %&gt;% head(3)
 ---
 ## 
 
-Veja que agora a coluna `atores` possui os 3 atores concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
+Veja que agora a coluna `elenco` possui os 3 atores/atrizes concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
 
 
 ```r
 imdb %&gt;% 
   unite(
-*   col = "atores",
+*   col = "elenco",
 *   starts_with("ator"),
 *   sep = " - "
   ) %&gt;% 
-  select(atores)
+  select(elenco)
 ```
 
 ```
 ## # A tibble: 3,713 x 1
-##    atores                                                  
+##    elenco                                                  
 ##    &lt;chr&gt;                                                   
 ##  1 CCH Pounder - Joel David Moore - Wes Studi              
 ##  2 Johnny Depp - Orlando Bloom - Jack Davenport            
@@ -230,29 +230,29 @@ Antigamente, utilizávamos as funções `gather()` e `spread()` para fazer as op
 ---
 ## pivot_longer()
 
-Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_nome` e `ator_protagonismo`.
+Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_atriz` e `protagonismo`.
 
 
 ```r
 imdb %&gt;% 
   pivot_longer(
     cols = starts_with("ator"), 
-    names_to = "ator_protagonismo",
-    values_to = "ator_nome"
+    names_to = "protagonismo",
+    values_to = "ator_atriz"
   ) %&gt;% 
-  select(titulo, ator_nome, ator_protagonismo) %&gt;% 
+  select(titulo, ator_atriz, protagonismo) %&gt;% 
   head(6)
 ```
 
 ```
 ## # A tibble: 6 x 3
-##   titulo                                   ator_nome        ator_protagonismo
-##   &lt;chr&gt;                                    &lt;chr&gt;            &lt;chr&gt;            
-## 1 Avatar                                   CCH Pounder      ator_1           
-## 2 Avatar                                   Joel David Moore ator_2           
-## 3 Avatar                                   Wes Studi        ator_3           
-## 4 Pirates of the Caribbean: At World's End Johnny Depp      ator_1           
-## 5 Pirates of the Caribbean: At World's End Orlando Bloom    ator_2           
+##   titulo                                   ator_atriz       protagonismo
+##   &lt;chr&gt;                                    &lt;chr&gt;            &lt;chr&gt;       
+## 1 Avatar                                   CCH Pounder      ator_1      
+## 2 Avatar                                   Joel David Moore ator_2      
+## 3 Avatar                                   Wes Studi        ator_3      
+## 4 Pirates of the Caribbean: At World's End Johnny Depp      ator_1      
+## 5 Pirates of the Caribbean: At World's End Orlando Bloom    ator_2      
 ## 6 Pirates of the Caribbean: At World's End Jack Davenport   ator_3
 ```
 

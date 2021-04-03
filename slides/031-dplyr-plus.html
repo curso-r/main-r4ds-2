@@ -74,18 +74,21 @@ Base de dados de venda de casas na cidade de Ames, nos Estados Unidos.
 
 - Cada linha corresponde a uma casa vendida e cada coluna a uma característica da casa ou da venda.
 
-- Versão traduzida: faça o download [clicando aqui](https://github.com/curso-r/main-r4ds2/raw/master/data/ames.rds).
+- Versão traduzida
+
+
+```r
+install.packages("remotes")
+remotes::install_github("cienciadedatos/dados")
+```
 
 - Base original:
 
 
 ```r
 install.packages("AmesHousing")
-
 data(ames_raw, package = "AmesHousing")
 ```
-
-
 
 ---
 ## across()
@@ -94,7 +97,8 @@ A função `across()` substitui a família de verbos `verbo_all()`, `verbo_if` e
 
 
 ```r
-ames %&gt;%
+casas &lt;- dados::casas
+casas %&gt;%
   group_by(geral_qualidade) %&gt;%
   summarise(
     lote_area_media = mean(lote_area, na.rm = TRUE),
@@ -105,17 +109,17 @@ ames %&gt;%
 ```
 ## # A tibble: 10 x 3
 ##    geral_qualidade lote_area_media venda_valor_medio
-##              &lt;int&gt;           &lt;dbl&gt;             &lt;dbl&gt;
-##  1               1          15214.            48725 
-##  2               2           9326.            52325.
-##  3               3           9439.            83186.
-##  4               4           8464.           106485.
-##  5               5           9995.           134753.
-##  6               6           9788.           162130.
-##  7               7          10309.           205026.
-##  8               8          10618.           270914.
-##  9               9          12777.           368337.
-## 10              10          18071.           450217.
+##    &lt;chr&gt;                     &lt;dbl&gt;             &lt;dbl&gt;
+##  1 abaixo da média           8464.           106485.
+##  2 acima da média            9788.           162130.
+##  3 boa                      10309.           205026.
+##  4 excelente                12777.           368337.
+##  5 média                     9995.           134753.
+##  6 muito boa                10618.           270914.
+##  7 Muito excelente          18071.           450217.
+##  8 muito ruim               15214.            48725 
+##  9 regular                   9439.            83186.
+## 10 ruim                      9326.            52325.
 ```
 
 ---
@@ -125,7 +129,7 @@ Ou então
 
 
 ```r
-ames %&gt;%
+casas %&gt;%
   group_by(geral_qualidade) %&gt;%
   summarise_at(
     .vars = vars(lote_area, venda_valor),
@@ -136,17 +140,17 @@ ames %&gt;%
 ```
 ## # A tibble: 10 x 3
 ##    geral_qualidade lote_area venda_valor
-##              &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-##  1               1    15214.      48725 
-##  2               2     9326.      52325.
-##  3               3     9439.      83186.
-##  4               4     8464.     106485.
-##  5               5     9995.     134753.
-##  6               6     9788.     162130.
-##  7               7    10309.     205026.
-##  8               8    10618.     270914.
-##  9               9    12777.     368337.
-## 10              10    18071.     450217.
+##    &lt;chr&gt;               &lt;dbl&gt;       &lt;dbl&gt;
+##  1 abaixo da média     8464.     106485.
+##  2 acima da média      9788.     162130.
+##  3 boa                10309.     205026.
+##  4 excelente          12777.     368337.
+##  5 média               9995.     134753.
+##  6 muito boa          10618.     270914.
+##  7 Muito excelente    18071.     450217.
+##  8 muito ruim         15214.      48725 
+##  9 regular             9439.      83186.
+## 10 ruim                9326.      52325.
 ```
 
 ---
@@ -156,7 +160,7 @@ Com a nova função `across()`, fazemos
 
 
 ```r
-ames %&gt;%
+casas %&gt;%
   group_by(geral_qualidade) %&gt;%
   summarise(across(
     .cols = c(lote_area, venda_valor),
@@ -167,17 +171,17 @@ ames %&gt;%
 ```
 ## # A tibble: 10 x 3
 ##    geral_qualidade lote_area venda_valor
-##              &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-##  1               1    15214.      48725 
-##  2               2     9326.      52325.
-##  3               3     9439.      83186.
-##  4               4     8464.     106485.
-##  5               5     9995.     134753.
-##  6               6     9788.     162130.
-##  7               7    10309.     205026.
-##  8               8    10618.     270914.
-##  9               9    12777.     368337.
-## 10              10    18071.     450217.
+##    &lt;chr&gt;               &lt;dbl&gt;       &lt;dbl&gt;
+##  1 abaixo da média     8464.     106485.
+##  2 acima da média      9788.     162130.
+##  3 boa                10309.     205026.
+##  4 excelente          12777.     368337.
+##  5 média               9995.     134753.
+##  6 muito boa          10618.     270914.
+##  7 Muito excelente    18071.     450217.
+##  8 muito ruim         15214.      48725 
+##  9 regular             9439.      83186.
+## 10 ruim                9326.      52325.
 ```
 
 A sintaxe é parecida com a função `summarise_at()`, mas agora não precisamos mais usar a função `vars()` e nem usar `list(nome_da_funcao)` ou `~nome_da_funcao(.x)` para definir a função aplicada nas colunas.
@@ -185,21 +189,21 @@ A sintaxe é parecida com a função `summarise_at()`, mas agora não precisamos
 ---
 ## 
 
-Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. Abaixo, calculamos o número de valores distintos para todas as variáveis da base `ames`.
+Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. Abaixo, calculamos o número de valores distintos para todas as variáveis da base `casas`.
 
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;% 
+casas %&gt;% 
   summarise(across(.fns = n_distinct)) %&gt;% 
   select(1:5) 
 ```
 
 ```
 ## # A tibble: 1 x 5
-##   lote_fachada lote_area lote_formato lote_config terreno_contorno
-##          &lt;int&gt;     &lt;int&gt;        &lt;int&gt;       &lt;int&gt;            &lt;int&gt;
-## 1          129      1960            4           5                4
+##   ordem   pid moradia_classe moradia_zoneamento lote_fachada
+##   &lt;int&gt; &lt;int&gt;          &lt;int&gt;              &lt;int&gt;        &lt;int&gt;
+## 1  2930  2930             16                  7          129
 ```
 
 O padrão do parâmetro `.cols` é `everithing()`, que representa "todas as colunas".
@@ -212,16 +216,16 @@ Anteriormente, utilizaríamos a função `summarise_all()`.
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;% 
+casas %&gt;% 
   summarise_all(.funs = ~n_distinct(.x)) %&gt;% 
   select(1:5) 
 ```
 
 ```
 ## # A tibble: 1 x 5
-##   lote_fachada lote_area lote_formato lote_config terreno_contorno
-##          &lt;int&gt;     &lt;int&gt;        &lt;int&gt;       &lt;int&gt;            &lt;int&gt;
-## 1          129      1960            4           5                4
+##   ordem   pid moradia_classe moradia_zoneamento lote_fachada
+##   &lt;int&gt; &lt;int&gt;          &lt;int&gt;              &lt;int&gt;        &lt;int&gt;
+## 1  2930  2930             16                  7          129
 ```
 
 ---
@@ -229,24 +233,24 @@ ames %&gt;%
 
 Se quisermos selecionar as colunas a serem modificadas a partir de um teste lógico, utilizamos o ajudante `where()`.
 
-No exemplo abaixo, calculamos o número de valores distintos das colunas de texto.
+No exemplo abaixo, calculamos o número de valores distintos das colunas de categóricas.
 
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
+casas %&gt;%
   summarise(across(where(is.character), n_distinct)) %&gt;% 
   select(1:5)
 ```
 
 ```
 ## # A tibble: 1 x 5
-##   lote_formato lote_config terreno_contorno terreno_declive rua_tipo
-##          &lt;int&gt;       &lt;int&gt;            &lt;int&gt;           &lt;int&gt;    &lt;int&gt;
-## 1            4           5                4               3        2
+##     pid moradia_classe moradia_zoneamento rua_tipo beco_tipo
+##   &lt;int&gt;          &lt;int&gt;              &lt;int&gt;    &lt;int&gt;     &lt;int&gt;
+## 1  2930             16                  7        2         3
 ```
 
-Todas as colunas da base resultante eram colunas com classe `character` na base `ames`.
+Todas as colunas da base resultante eram colunas com classe `character` na base `casas`.
 
 ---
 ## 
@@ -256,16 +260,16 @@ Antes, utilizávamos a função `summarise_if()`.
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
+casas %&gt;%
   summarise_if(is.character, n_distinct) %&gt;% 
   select(1:5)
 ```
 
 ```
 ## # A tibble: 1 x 5
-##   lote_formato lote_config terreno_contorno terreno_declive rua_tipo
-##          &lt;int&gt;       &lt;int&gt;            &lt;int&gt;           &lt;int&gt;    &lt;int&gt;
-## 1            4           5                4               3        2
+##     pid moradia_classe moradia_zoneamento rua_tipo beco_tipo
+##   &lt;int&gt;          &lt;int&gt;              &lt;int&gt;    &lt;int&gt;     &lt;int&gt;
+## 1  2930             16                  7        2         3
 ```
 
 Você também pode combinar as ações do `summarise_if()` e `summarise_at()` em um único `across()`. Calculamos as áreas médias, garantindo que pegamos apenas variáveis numéricas.
@@ -273,8 +277,8 @@ Você também pode combinar as ações do `summarise_if()` e `summarise_at()` em
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
-  summarise(across(where(is.numeric) &amp; contains("area"), mean, na.rm = TRUE)) %&gt;% 
+casas %&gt;%
+  summarise(across(where(is.numeric) &amp; contains("_area"), mean, na.rm = TRUE)) %&gt;% 
   select(1:5)
 ```
 
@@ -294,7 +298,7 @@ Com a função `across()`, podemos fazer sumarizações complexas.
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
+casas %&gt;%
   group_by(fundacao_tipo) %&gt;%
   summarise(
     across(contains("area"), mean, na.rm = TRUE),
@@ -306,14 +310,14 @@ ames %&gt;%
 
 ```
 ## # A tibble: 6 x 5
-##   fundacao_tipo lote_area alvenaria_area porao_area_com_acabamento_1 n_obs
-##   &lt;chr&gt;             &lt;dbl&gt;          &lt;dbl&gt;                       &lt;dbl&gt; &lt;int&gt;
-## 1 BrkTil            8712.           10.2                       151.    311
-## 2 CBlock           10616.           85.0                       468.   1244
-## 3 PConc            10054.          144.                        506.   1310
-## 4 Slab             10250.           35.2                         0      49
-## 5 Stone             8659.            0                          43.9    11
-## 6 Wood              9838.           16                         812.      5
+##   fundacao_tipo       lote_area alvenaria_area porao_area_com_acabamento_1 n_obs
+##   &lt;chr&gt;                   &lt;dbl&gt;          &lt;dbl&gt;                       &lt;dbl&gt; &lt;int&gt;
+## 1 bloco de concreto      10616.           85.0                       468.   1244
+## 2 concreto derrramado    10054.          144.                        506.   1310
+## 3 laje                   10250.           35.2                         0      49
+## 4 madeira                 9838.           16                         812.      5
+## 5 pedra                   8659.            0                          43.9    11
+## 6 tijolo e telha          8712.           10.2                       151.    311
 ```
 
 Isso não era possível utilizando apenas as funções `summarise()`, `summarise_if()` e `summarise_at()`.
@@ -323,7 +327,7 @@ Isso não era possível utilizando apenas as funções `summarise()`, `summarise
 
 Embora a nova sintaxe, usando `across()`, não seja muito diferente do que fazíamos antes, realizar sumarizações complexas não é a única vantagem desse novo *framework*.
 
-O `across()` pode ser utilizado em todos os verbos do `{dplyr}` (com exceção do `select()` e `rename()`, já que ele não trás vantagens com relação ao que já existe) e isso unifica o modo de fazermos essas operações no R. Em vez de termos uma família de funções para cada verbo, temos agora apenas o próprio verbo e o `across()`.
+O `across()` pode ser utilizado em todos os verbos do `{dplyr}` (com exceção do `select()` e `rename()`, já que ele não trás vantagens com relação ao que já podia ser feito) e isso unifica o modo de fazermos essas operações no `dplyr`. Em vez de termos uma família de funções para cada verbo, temos agora apenas o próprio verbo e o `across()`.
 
 Vamos ver um exemplo para o `mutate()` e para o `filter()`.
 
@@ -334,7 +338,7 @@ O código abaixo transforma todas as variáveis que possuem "area" no nome, pass
 
 
 ```r
-ames %&gt;%
+casas %&gt;%
   mutate(across(
     contains("area"),
     ~ .x / 10.764
@@ -345,7 +349,7 @@ Já o código a seguir filtra apenas as casas que possuem varanda aberta, cerca 
 
 
 ```r
-ames %&gt;%
+casas %&gt;%
   filter(across(
     c(varanda_aberta_area, cerca_qualidade, lareira_qualidade),
     ~!is.na(.x)
@@ -360,25 +364,25 @@ Não precisamos do `across()` na hora de selecionar colunas. A função `select(
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
+casas %&gt;%
   select(where(is.numeric)) %&gt;% 
   select(1:5)
 ```
 
 ```
 ## # A tibble: 2,930 x 5
-##    lote_fachada lote_area construcao_ano remodelacao_ano geral_qualidade
-##           &lt;int&gt;     &lt;int&gt;          &lt;int&gt;           &lt;int&gt;           &lt;int&gt;
-##  1          141     31770           1960            1960               6
-##  2           80     11622           1961            1961               5
-##  3           81     14267           1958            1958               6
-##  4           93     11160           1968            1968               7
-##  5           74     13830           1997            1998               5
-##  6           78      9978           1998            1998               6
-##  7           41      4920           2001            2001               8
-##  8           43      5005           1992            1992               8
-##  9           39      5389           1995            1996               8
-## 10           60      7500           1999            1999               7
+##    ordem lote_fachada lote_area construcao_ano remodelacao_ano
+##    &lt;int&gt;        &lt;int&gt;     &lt;int&gt;          &lt;int&gt;           &lt;int&gt;
+##  1     1          141     31770           1960            1960
+##  2     2           80     11622           1961            1961
+##  3     3           81     14267           1958            1958
+##  4     4           93     11160           1968            1968
+##  5     5           74     13830           1997            1998
+##  6     6           78      9978           1998            1998
+##  7     7           41      4920           2001            2001
+##  8     8           43      5005           1992            1992
+##  9     9           39      5389           1995            1996
+## 10    10           60      7500           1999            1999
 ## # … with 2,920 more rows
 ```
 
@@ -390,26 +394,26 @@ O mesmo vale para o `rename()`. Se quisermos renomer várias colunas, a partir d
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
+casas %&gt;%
   rename_with(toupper, contains("venda")) %&gt;% 
   select(73:77)
 ```
 
 ```
 ## # A tibble: 2,930 x 5
-##    VENDA_ANO VENDA_MES VENDA_TIPO VENDA_CONDICAO VENDA_VALOR
-##        &lt;int&gt;     &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;                &lt;int&gt;
-##  1      2010         5 "WD "      Normal              215000
-##  2      2010         6 "WD "      Normal              105000
-##  3      2010         6 "WD "      Normal              172000
-##  4      2010         4 "WD "      Normal              244000
-##  5      2010         3 "WD "      Normal              189900
-##  6      2010         6 "WD "      Normal              195500
-##  7      2010         4 "WD "      Normal              213500
-##  8      2010         1 "WD "      Normal              191500
-##  9      2010         3 "WD "      Normal              236500
-## 10      2010         6 "WD "      Normal              189000
-## # … with 2,920 more rows
+##    piscina_area piscina_qualida… cerca_qualidade funcionalidades…
+##           &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;           &lt;chr&gt;           
+##  1            0 &lt;NA&gt;             &lt;NA&gt;            &lt;NA&gt;            
+##  2            0 &lt;NA&gt;             mínima privaci… &lt;NA&gt;            
+##  3            0 &lt;NA&gt;             &lt;NA&gt;            segunda garagem 
+##  4            0 &lt;NA&gt;             &lt;NA&gt;            &lt;NA&gt;            
+##  5            0 &lt;NA&gt;             mínima privaci… &lt;NA&gt;            
+##  6            0 &lt;NA&gt;             &lt;NA&gt;            &lt;NA&gt;            
+##  7            0 &lt;NA&gt;             &lt;NA&gt;            &lt;NA&gt;            
+##  8            0 &lt;NA&gt;             &lt;NA&gt;            &lt;NA&gt;            
+##  9            0 &lt;NA&gt;             &lt;NA&gt;            &lt;NA&gt;            
+## 10            0 &lt;NA&gt;             &lt;NA&gt;            &lt;NA&gt;            
+## # … with 2,920 more rows, and 1 more variable: funcionalidades_valor &lt;int&gt;
 ```
 
 
@@ -421,25 +425,25 @@ O `{dplyr}` possui agora uma função própria para reorganizar colunas: `reloca
 
 ```r
 # Pegando apenas 5 colunas por questão de espaço
-ames %&gt;%
+casas %&gt;%
   relocate(venda_valor, venda_tipo) %&gt;% 
   select(1:5)
 ```
 
 ```
 ## # A tibble: 2,930 x 5
-##    venda_valor venda_tipo lote_fachada lote_area lote_formato
-##          &lt;int&gt; &lt;chr&gt;             &lt;int&gt;     &lt;int&gt; &lt;chr&gt;       
-##  1      215000 "WD "               141     31770 IR1         
-##  2      105000 "WD "                80     11622 Reg         
-##  3      172000 "WD "                81     14267 IR1         
-##  4      244000 "WD "                93     11160 Reg         
-##  5      189900 "WD "                74     13830 IR1         
-##  6      195500 "WD "                78      9978 IR1         
-##  7      213500 "WD "                41      4920 Reg         
-##  8      191500 "WD "                43      5005 IR1         
-##  9      236500 "WD "                39      5389 IR1         
-## 10      189000 "WD "                60      7500 Reg         
+##    venda_valor venda_tipo ordem pid      moradia_classe                         
+##          &lt;int&gt; &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;                                  
+##  1      215000 "WD "          1 0526301… 020                                    
+##  2      105000 "WD "          2 0526350… 020                                    
+##  3      172000 "WD "          3 0526351… 020                                    
+##  4      244000 "WD "          4 0526353… 020                                    
+##  5      189900 "WD "          5 0527105… 060                                    
+##  6      195500 "WD "          6 0527105… 060                                    
+##  7      213500 "WD "          7 0527127… desenvolvimento de unidade planejada d…
+##  8      191500 "WD "          8 0527145… desenvolvimento de unidade planejada d…
+##  9      236500 "WD "          9 0527146… desenvolvimento de unidade planejada d…
+## 10      189000 "WD "         10 0527162… 060                                    
 ## # … with 2,920 more rows
 ```
 
@@ -453,7 +457,7 @@ O código baixo coloca a coluna `venda_ano` depois da coluna `construcao_ano`.
 
 
 ```r
-ames %&gt;%
+casas %&gt;%
   relocate(venda_ano, .after = construcao_ano)
 ```
 
@@ -461,7 +465,7 @@ O código baixo coloca a coluna `venda_ano` antes da coluna `construcao_ano`.
 
 
 ```r
-ames %&gt;%
+casas %&gt;%
   relocate(venda_ano, .before = construcao_ano)
 ```
 
@@ -487,11 +491,11 @@ tab_notas
 ## # A tibble: 5 x 5
 ##   student_id prova1 prova2 prova3 prova4
 ##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
-## 1          1      3      1      2      3
-## 2          2      2      9     10      2
-## 3          3      8      7      5      6
-## 4          4      9      2      3      1
-## 5          5      4      5      1      4
+## 1          1      4      2      0      6
+## 2          2      5      0      7      7
+## 3          3      7      1      6      9
+## 4          4     10      6      1      1
+## 5          5      9      3      9      5
 ```
 
 
@@ -509,11 +513,11 @@ tab_notas %&gt;% mutate(media = mean(c(prova1, prova2, prova3, prova4)))
 ## # A tibble: 5 x 6
 ##   student_id prova1 prova2 prova3 prova4 media
 ##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      3      1      2      3  4.35
-## 2          2      2      9     10      2  4.35
-## 3          3      8      7      5      6  4.35
-## 4          4      9      2      3      1  4.35
-## 5          5      4      5      1      4  4.35
+## 1          1      4      2      0      6   4.9
+## 2          2      5      0      7      7   4.9
+## 3          3      7      1      6      9   4.9
+## 4          4     10      6      1      1   4.9
+## 5          5      9      3      9      5   4.9
 ```
 
 Neste caso, todas as colunas estão sendo empilhadas e gerando uma única média, passada a todas as linhas da coluna `media`.
@@ -535,11 +539,11 @@ tab_notas %&gt;%
 ## # Groups:   student_id [5]
 ##   student_id prova1 prova2 prova3 prova4 media
 ##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      3      1      2      3  2.25
-## 2          2      2      9     10      2  5.75
-## 3          3      8      7      5      6  6.5 
-## 4          4      9      2      3      1  3.75
-## 5          5      4      5      1      4  3.5
+## 1          1      4      2      0      6  3   
+## 2          2      5      0      7      7  4.75
+## 3          3      7      1      6      9  5.75
+## 4          4     10      6      1      1  4.5 
+## 5          5      9      3      9      5  6.5
 ```
 
 
@@ -560,11 +564,11 @@ tab_notas %&gt;%
 ## # Groups:   student_id [5]
 ##   student_id prova1 prova2 prova3 prova4 media
 ##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      3      1      2      3  2.25
-## 2          2      2      9     10      2  5.75
-## 3          3      8      7      5      6  6.5 
-## 4          4      9      2      3      1  3.75
-## 5          5      4      5      1      4  3.5
+## 1          1      4      2      0      6  3   
+## 2          2      5      0      7      7  4.75
+## 3          3      7      1      6      9  5.75
+## 4          4     10      6      1      1  4.5 
+## 5          5      9      3      9      5  6.5
 ```
 
 
@@ -585,11 +589,11 @@ tab_notas %&gt;%
 ## # Rowwise:  student_id
 ##   student_id prova1 prova2 prova3 prova4 media
 ##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      3      1      2      3  2.25
-## 2          2      2      9     10      2  5.75
-## 3          3      8      7      5      6  6.5 
-## 4          4      9      2      3      1  3.75
-## 5          5      4      5      1      4  3.5
+## 1          1      4      2      0      6  3   
+## 2          2      5      0      7      7  4.75
+## 3          3      7      1      6      9  5.75
+## 4          4     10      6      1      1  4.5 
+## 5          5      9      3      9      5  6.5
 ```
 
 
@@ -610,11 +614,11 @@ tab_notas %&gt;%
 ## # Rowwise: 
 ##   student_id prova1 prova2 prova3 prova4 media
 ##        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-## 1          1      3      1      2      3  2.25
-## 2          2      2      9     10      2  5.75
-## 3          3      8      7      5      6  6.5 
-## 4          4      9      2      3      1  3.75
-## 5          5      4      5      1      4  3.5
+## 1          1      4      2      0      6  3   
+## 2          2      5      0      7      7  4.75
+## 3          3      7      1      6      9  5.75
+## 4          4     10      6      1      1  4.5 
+## 5          5      9      3      9      5  6.5
 ```
 
 Veja que `student_id` não é passada para a função `rowwise()`. Não precisaríamos dessa coluna na base para reproduzir a geração da columa `media` neste caso.

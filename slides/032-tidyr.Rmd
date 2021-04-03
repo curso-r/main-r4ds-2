@@ -128,16 +128,16 @@ imdb %>% select(starts_with("ator")) %>% head(3)
 ---
 ## 
 
-Veja que agora a coluna `atores` possui os 3 atores concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
+Veja que agora a coluna `elenco` possui os 3 atores/atrizes concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
 
 ```{r}
 imdb %>% 
   unite(
-    col = "atores", #<<
+    col = "elenco", #<<
     starts_with("ator"), #<<
     sep = " - " #<<
   ) %>% 
-  select(atores)
+  select(elenco)
 ```
 
 
@@ -166,16 +166,16 @@ knitr::include_graphics("img/032-tidyr/pivotagem.gif")
 ---
 ## pivot_longer()
 
-Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_nome` e `ator_protagonismo`.
+Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_atriz` e `protagonismo`.
 
 ```{r}
 imdb %>% 
   pivot_longer(
     cols = starts_with("ator"), 
-    names_to = "ator_protagonismo",
-    values_to = "ator_nome"
+    names_to = "protagonismo",
+    values_to = "ator_atriz"
   ) %>% 
-  select(titulo, ator_nome, ator_protagonismo) %>% 
+  select(titulo, ator_atriz, protagonismo) %>% 
   head(6)
 ```
 
