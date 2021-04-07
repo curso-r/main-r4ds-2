@@ -25,7 +25,7 @@ class: middle, center, inverse
 # Introdução
 
 ---
-## Organizando projetos
+# Organizando projetos
 
 Existem diversas formas de organizar projetos de ciência de dados. Todas com vantagens e desvantagens.
 
@@ -34,7 +34,7 @@ Na prática, tudo fica bagunçado e confuso.
 &lt;img src="img/02-organizacao-projeto/confused.gif" style="display: block; margin: auto;" /&gt;
 
 ---
-## O maior problema: coesão
+# O maior problema: coesão
 
 Uma forma de organizar projetos pode ser excelente para um tipo de projeto específico, mas ruim para outros. Isso sugeriria que, para cada projeto, deveríamos ter uma estrutura diferente de arquivos.
 
@@ -45,7 +45,7 @@ Mais importante do que discutir qual é a estrutura ideal para um caso específi
 Isso tira da nossa mente a necessidade de pensar sobre a estrutura, para que possamos colocar nosso foco na análise de dados.
 
 ---
-## Primeiro passo: ferramentas
+# Primeiro passo: ferramentas
 
 O fluxo ideal de análise de dados começa na escolha da ferramenta. Por ser uma linguagem especializada em estatística, o R é a primeira escolha de muitos usuários.
 
@@ -70,7 +70,7 @@ O R, em combinação com o RStudio, possui um conjunto de funcionalidades cuja i
 Entretanto, isso acaba deixando os programadores de R mal acostumados.
 
 ---
-## Organizando projetos no RStudio
+# Organizando projetos no RStudio
 
 Inicialmente, vamos tirar do RStudio o melhor que ele pode oferecer no que se trata de organização de projetos. Falaremos de:
 
@@ -81,22 +81,22 @@ Inicialmente, vamos tirar do RStudio o melhor que ele pode oferecer no que se tr
 - Git (versionamento): como usar ferramentas de controle de versão para que você não corra o risco de perder seu progresso;
 
 ---
-## Simplificando tudo: usethis
+# Simplificando tudo: usethis
 
-O pacote `{usethis}` ajuda com todo o fluxo de desenvolvimento em R.
+O pacote `usethis` ajuda com todo o fluxo de desenvolvimento em R.
 
 Ele ajuda a criar arquivos, projetos, usar o Git, criar repositórios no GitHub e muito mais.
 
 &lt;img src="img/02-organizacao-projeto/usethis.png" width="15%" style="display: block; margin: auto;" /&gt;
 
-Apresentaremos várias funções do `{usethis}` ao longo deste tópico.
+Apresentaremos várias funções do `usethis` ao longo deste tópico.
 
 ---
 class: middle, center, inverse
 # .RData e .Rhistory
 
 ---
-## Os arquivos .RData e .Rhistory 
+# Os arquivos .RData e .Rhistory 
 
 Em sua configuração padrão, a IDE manterá na "memória" todos os últimos comandos executados, todos os dados utilizados e todos os objetos criados. 
 
@@ -107,33 +107,33 @@ O primeiro abriga absolutamente todos os objetos criados por uma sessão R, enqu
 Ao reabrir o RStudio, o conteúdo armazenados nestes arquivos será carregado no ambiente de trabalho atual como se nada tivesse acontecido.
 
 ---
-## Por que desistir do .RData e .Rhistory 
+# Por que desistir do .RData e .Rhistory 
 
-- Se todos os resultados parciais de uma análise estiverem disponíveis a qualquer momento, <span style="color:#6495ed; font-weight: bold;">diminui o incentivo para a escrita de código reprodutível</span>.
+- Se todos os resultados parciais de uma análise estiverem disponíveis a qualquer momento, **diminui o incentivo para a escrita de código reprodutível**.
 
-- Ao dependermos ativamente do `.Rdata`, <span style="color:#6495ed; font-weight: bold;">se acidentalmente sobrescrevemos um objeto</span> relevante e o código para recriá-lo não estiver mais acessível, <span style="color:#6495ed; font-weight: bold;">não haverá nenhuma forma confiável de recuperá-lo</span>.
+- Ao dependermos ativamente do `.Rdata`, **se acidentalmente sobrescrevemos um objeto** relevante e o código para recriá-lo não estiver mais acessível, **não haverá nenhuma forma confiável de recuperá-lo**.
 
-- A menos que pretendamos sentar com colegas para explicar como utilizar os objetos do `.RData` e do `.Rhistory`, <span style="color:#6495ed; font-weight: bold;">não pode-se esperar que outra pessoa seja capaz de reproduzir uma análise</span>.
+- A menos que pretendamos sentar com colegas para explicar como utilizar os objetos do `.RData` e do `.Rhistory`, **não pode-se esperar que outra pessoa seja capaz de reproduzir uma análise**.
 
-- O R trata todos os objetos guardados na memória igualmente. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão. Assim, <span style="color:#6495ed; font-weight: bold;">o</span> `.RData` <span style="color:#6495ed; font-weight: bold;">pode ser um arquivo de múltiplos gigabytes</span>.
+- O R trata todos os objetos guardados na memória igualmente. Isso significa que ele também irá armazenar nos arquivos ocultos todas as bases de dados da sessão. Assim, **o** `.RData` **pode ser um arquivo de múltiplos gigabytes**.
 
 ---
 class: middle, center, inverse
 # Rproj e diretórios
 
 ---
-## Projetos
+# Projetos
 
 Um programador iniciante corre o risco de não gerenciar seus projetos. 
 
 Muitas vezes seus arquivos de código ficarão espalhados pelos infinitos diretórios de seu computador, esperando a primeira oportunidade de sumir para sempre.
 
-<span style="color:#6495ed; font-weight: bold;">Felizmente o RStudio possui uma ferramenta incrível que auxilia na tarefa de consolidar todos os recursos necessários para uma análise.</span> 
+**Felizmente o RStudio possui uma ferramenta incrível que auxilia na tarefa de consolidar todos os recursos necessários para uma análise.** 
 
 Denominados "projetos", eles não passam de pastas comuns com um arquivo `.Rproj`.
 
 ---
-## Criando um projeto
+# Criando um projeto
 
 O código abaixo demonstra como criar um projeto no RStudio. Basta apenas um comando e ele já fará tudo que for necessário para preparar o seu ambiente de desenvolvimento.
 
@@ -154,14 +154,14 @@ A regra então passa a ser manter todos os arquivos dos quais a sua análise dep
 Cada linha da saída do comando representa uma tarefa que a função `usethis::create_project()` fez para preparar o projeto. A mais importe é a quarta.
 
 ---
-## Diretório de trabalho
+# Diretório de trabalho
 
 O arquivo `Proj.Rproj` indica para o RStudio que aquele diretório será a raiz de um projeto e que, sempre que o projeto estiver aberto, será utilizado por padrão como o diretório de trabalho.
 
 Fixar o diretório de trabalho como a pasta raiz do projeto, ao lado da regra de manter todos os arquivos dentro da pasta do projeto, garante que sua análise poderá ser executada por qualquer pessoa e em qualquer computador sem a preocupação de ajustar caminhos até os arquivos utilizados ou criados pelo seu código.
 
 ---
-## Organização dos arquivos
+# Organização dos arquivos
 
 Antes de falarmos de Git e versionamento, precisamos discutir sobre a organização dos nossos códigos dentro de arquivos e dos nossos arquivos dentro do nosso projeto.
 
@@ -172,20 +172,19 @@ class: middle, center, inverse
 # Funções e dependências
 
 ---
-## Funções
+# Funções
 
 Quando uma tarefa de análise de dados aumenta em complexidade, o número de funções e arquivos necessários para manter tudo em ordem cresce exponencialmente. 
 
 Um arquivo para ler os dados, outro para limpar os nomes das colunas, mais um para fazer joins… Cada um deles com incontáveis blocos de código que rapidamente se transformam em uma [macarronada](https://pt.wikipedia.org/wiki/C%C3%B3digo_espaguete).
 
-<span style="color:#6495ed; font-weight: bold;">O primeiro passo para sair dessa situação é transformar tudo em funções</span>.
+**O primeiro passo para sair dessa situação é transformar tudo em funções**.
 
 Funções têm argumentos e saídas, enquanto código solto pode modificar globais e criar resultados tardios que são impossíveis de acompanhar sem conhecer profundamente a tarefa sendo realizada.
 
 No mundo ideal, na pasta `R/` do seu projeto haverá uma coleção de arquivos, cada um com uma coleção de funções relacionadas e bem documentadas, e apenas alguns arquivos que utilizam essas funções para realizar a análise em si. 
-
 ---
-## Vantagens de usar funções
+# Vantagens de usar funções
 
 - Um código bem encapsulado reduz a necessidade de objetos intermediários ( `base_tratada`, `base_filtrada` etc.) pois para gerar um deles basta a aplicação de uma função.
 
@@ -194,7 +193,7 @@ No mundo ideal, na pasta `R/` do seu projeto haverá uma coleção de arquivos, 
 - Ao encontrar um bug, haverá apenas um lugar para concertar; se surgir a necessidade de modificar uma propriedade, haverá apenas um lugar para editar; se aquele código se tornar obsoleto, haverá apenas um lugar para deletar.
 
 ---
-## Dependências
+# Dependências
 
 Sem os inúmeros pacotes criados pela comunidade, o R provavelmente já estaria no porão da Ciência de Dados. 
 
@@ -202,10 +201,10 @@ Por isso, é a primeira coisa que escrevemos nos nossos *scripts* quase sempre �
 
 No entanto, conforme nosso código vai crescendo, acabamos utilizando cada vez mais pacotes e, conforme nosso código vai mudando, fica impossível saber se um pacote listado no começo do *script* ainda está sendo utilizado ou não.
 
-<span style="color:#6495ed; font-weight: bold;">Qual a melhor maneira de se ter controle sobre os pacotes utilizados na nossa análise?</span>
+**Qual a melhor maneira de se ter controle sobre os pacotes utilizados na nossa análise?**
 
 ---
-## Quatro pontos
+# Quatro pontos
 
 A resposta para essa pergunta pode assustar: no código ideal, a função `library()` nunca seria chamada, todas as funções teriam seus pacotes de origem explicitamente referenciados pelo operador `::`.
 
@@ -216,7 +215,7 @@ A resposta para essa pergunta pode assustar: no código ideal, a função `libra
 Para escrever `dplyr::`, por exemplo, basta digitar `d`, `p`, `l` e apertar TAB uma vez. Com os `::`, as sugestões passarão a ser somente de funções daquele pacote.
 
 ---
-## Vatangens dos quatro pontos
+# Vatangens dos quatro pontos
 
 - O código, no total, executa um pouco mais rápido porque são carregadas menos funções no ambiente global (isso é especialmente importante em aplicações interativas feitas em Shiny).
 
@@ -230,14 +229,14 @@ class: middle, center, inverse
 # Organização dos arquivos
 
 ---
-## A pasta data/
+# A pasta data/
 
 Vamos salvar os dados estruturados (aqueles prontos para serem analisados e gerar resultados) dentro de uma pasta chamada `/data`.
 
 Dentro dela, salvaremos dados no formato `.rds`.
 
 ---
-## A pasta data-raw/
+# A pasta data-raw/
 
 As bases que salvaremos na pasta `/data` serão resultado de um processo de importação, arrumação e manipulação. Os códigos desses processos serão salvos na pasta `data-raw`.
 
@@ -248,14 +247,14 @@ Uma sugestão interessante para quando tempos muito arquivos de dados é dividi-
 Nesta pasta, também podemos guardar rascunhos da nossa análise.
 
 ---
-## A pasta R/
+# A pasta R/
 
 A pasta `R/` só pode ter scripts `.R` com funções.
 
 A ideia da pasta `R/` é guardar em um local comum tudo aquilo que nós utilizamos como ferramenta interna para nossas análises, bem como aquilo que queremos que outras pessoas possam usar no futuro.
 
 ---
-## Qual a diferença entre R/ e data-raw/?
+# Qual a diferença entre R/ e data-raw/?
 
 `data-raw`
 
@@ -270,17 +269,17 @@ A ideia da pasta `R/` é guardar em um local comum tudo aquilo que nós utilizam
 - Dentro dessa pasta é recomendado não carregar outros pacotes com `library()`, mas sim usar o operador `::`.
 
 ---
-## A pasta docs/
+# A pasta docs/
 
 Se você precisar construir sites, relatórios, dashboards estáticos (flexdashboard) dentro do seu projeto, você pode criar uma pasta chamada `docs/` na raiz do seu projeto para guardar esses arquivos.
 
 ---
-## A pasta inst/
+# A pasta inst/
 
 Qualquer outro tipo de arquivo que não couber nas pastas anteriores pode ser colocado na pasta `inst/`.
 
 ---
-## Documentação
+# Documentação
 
 Se você quiser documentar as suas funções, uma boa forma de fazer isso é seguir o formato abaixo. 
 
@@ -305,7 +304,7 @@ class: middle, center, inverse
 # Git e Github
 
 ---
-## Git
+# Git
 
 - Git é um **sistema de versionamento**, criado por Linus Torvalds, autor do Linux.
 
@@ -315,14 +314,14 @@ class: middle, center, inverse
 
 - Torna-se importante à medida que seu trabalho é __colaborativo__.
 
-- <span style="color:#6495ed; font-weight: bold;">Git é um software que você instala no computador.</span>
+- **Git é um software que você instala no computador.**
 
 &lt;br&gt;
 
 &lt;img src="img/02-organizacao-projeto/git.png" width="30%" style="display: block; margin: auto;" /&gt;
 
 ---
-## GitHub
+# GitHub
 
 - GitHub é um site onde você coloca e compartilha repositórios Git.
 
@@ -332,34 +331,34 @@ class: middle, center, inverse
 
 - Existem alternativas, como [GitLab](https://about.gitlab.com/) e [BitBucket](https://bitbucket.org/product).
 
-- <span style="color:#6495ed; font-weight: bold;">GitHub é um site que você acessa na internet.</span>
+- **GitHub é um site que você acessa na internet.**
 
 &lt;br&gt;
 
 &lt;img src="img/02-organizacao-projeto/github.png" width="40%" style="display: block; margin: auto;" /&gt;
 
 ---
-## Projetos e GitHub
+# Projetos e GitHub
 
 No nosso caso, projeto e repositório serão termos equivalentes.
 
-<span style="color:#6495ed; font-weight: bold;">Projetos do R e repositórios do GitHub são melhores amigos.</span>
+**Projetos do R e repositórios do GitHub são melhores amigos.**
 
 &lt;img src="img/02-organizacao-projeto/hug.gif" width="40%" style="display: block; margin: auto;" /&gt;
 
 &lt;br&gt;
 
-O grande cupido dessa amizade é o `{usethis}`.
+O grande cupido dessa amizade é o `usethis`.
 
 ---
-## Fluxo de trabalho
+# Fluxo de trabalho
 
 O diagrama abaixo exemplifica o fluxo de trabalho de um projeto com versionamento.
 
 &lt;img src="img/02-organizacao-projeto/fluxo_github_rstudio.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 ---
-## Passo 1: crie e configure seu projeto
+# Passo 1: crie e configure seu projeto
 
 
 ```r
@@ -375,7 +374,7 @@ Quanto aos nomes dos projetos, recomenda-se:
 - não acabar com ponto.
 
 ---
-## Passo 2: adicione o Git
+# Passo 2: adicione o Git
 
 
 ```r
@@ -388,7 +387,7 @@ apareceu) você adiciona controle de versão.
 - Você receberá algumas instruções para seguir, mas está tudo certo.
 
 ---
-## Passo 2½: Configure seu usuário do Git
+# Passo 2½: Configure seu usuário do Git
 
 
 ```r
@@ -403,7 +402,7 @@ usethis::use_git_config(
 - O `user.email` precisa ser o que está vinculado à sua conta do GitHub.
 
 ---
-## Passo 3: Adicione o GitHub
+# Passo 3: Adicione o GitHub
 
 
 ```r
@@ -415,7 +414,7 @@ usethis::use_github()
 - Mais uma vez, você receberá algumas instruções, mas lembre-se apenas de selecionar o método de autenticação `https`.
 
 ---
-## Personal Access Token
+# Personal Access Token
 
 - Ao conectar com o GitHub, você será instruída(o) a criar um *Personal Access Token* (PAT).
 
@@ -428,7 +427,7 @@ usethis::use_github()
 Leia [aqui](https://curso-r.github.io/zen-do-r/git-github.html).
 
 ---
-## Passo 4: Stage &amp; Commit
+# Passo 4: Stage &amp; Commit
 
 &lt;img src="img/02-organizacao-projeto/passo_3_commit_1.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
@@ -438,7 +437,7 @@ Leia [aqui](https://curso-r.github.io/zen-do-r/git-github.html).
 
 ---
 
-## Passo 5: Push
+# Passo 5: Push
 
 &lt;img src="img/02-organizacao-projeto/passo_4_push.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
@@ -446,7 +445,7 @@ Leia [aqui](https://curso-r.github.io/zen-do-r/git-github.html).
 
 ---
 
-## Passo Extra: Pull
+# Passo Extra: Pull
 
 &lt;img src="img/02-organizacao-projeto/passo_5_pull.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
@@ -458,7 +457,6 @@ Leia [aqui](https://curso-r.github.io/zen-do-r/git-github.html).
 - [Zen do R](https://curso-r.github.io/zen-do-r/), livro em desenvolvimento pela Curso-R.
 
 - [Apresentação da Bea Milz](https://beatrizmilz.github.io/RLadies-Git-RStudio-2019).
-
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
