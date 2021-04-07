@@ -30,26 +30,26 @@ h1, h2, h3 {
 }
 .remark-slide-content {
   background-color: #ffffff;
-  font-size: 24px;
+  font-size: 20px;
 
 
 
   padding: 1em 4em 1em 4em;
 }
 .remark-slide-content h1 {
-    font-size: 55px;
-}
-.remark-slide-content h2 {
     font-size: 45px;
 }
-.remark-slide-content h3 {
+.remark-slide-content h2 {
     font-size: 35px;
+}
+.remark-slide-content h3 {
+    font-size: 25px;
 }
 .remark-code, .remark-inline-code {
   font-family: 'Source Code Pro', monospace;
 }
 .remark-code {
-  font-size: 0.75em;
+  font-size: 1em;
 }
 .remark-inline-code {
   font-size: 1em;

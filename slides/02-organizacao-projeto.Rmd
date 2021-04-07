@@ -356,10 +356,6 @@ No nosso caso, projeto e repositório serão termos equivalentes.
 knitr::include_graphics("img/02-organizacao-projeto/hug.gif")
 ```
 
-<br>
-
-O grande cupido dessa amizade é o `usethis`.
-
 ---
 # Fluxo de trabalho
 
