@@ -1,37 +1,27 @@
 ---
 title: "R para Ciência de Dados 2"
-subtitle: "tidyr"
+subtitle: "Tidyr"
 author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
 date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
   xaringan::moon_reader:
-    css: ["default", "default-fonts", "css/custom-intro.css"]
     lib_dir: libs
+    css: "css/xaringan-themer.css"
     nature:
+      ratio: '16:9'
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
-      ratio: "4:3"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning = FALSE)
-
 library(dplyr)
 library(tidyr)
-library(ggplot2)
-
-colorido <- function(x, cor = "#6495ed") {
-  glue::glue(
-    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
-
-options(width = 80)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = "#>")
+options(dplyr.print_min = 5, dplyr.print_max = 5)
 ```
 
-## Dados arrumados
+# Dados arrumados
 
 Dentro do `tidyverse`, uma base *tidy* é uma base fácil de se trabalhar, isto é, fácil de se fazer manipulação de dados, fácil de se criar visualizações, fácil de se ajustar modelos e por aí vai.
 
@@ -39,16 +29,16 @@ Na prática, uma base *tidy* é aquela que se encaixa bem no *framework* do `tid
 
 As duas propriedades mais importantes de uma base *tidy* são:
 
-- cada coluna é uma variável;
+- Cada coluna é uma variável;
 
-- cada linha é uma observação.
+- Cada linha é uma observação.
 
 Essa definição proporciona uma maneira consistente de se referir a variáveis (nomes de colunas) e observações (índices das linhas).
 
 ---
-## O pacote {tidyr}
+# O pacote tidyr
 
-O pacote `{tidyr}` possui funções que nos ajudam a deixar uma base bagunçada em uma base *tidy*. Ou então, nos ajudam a bagunçar um pouquinho a nossa base quando isso nos ajudar a produzir o resultados que queremos.
+O pacote `tidyr` possui funções que nos ajudam a deixar uma base bagunçada em uma base *tidy*. Ou então, nos ajudam a bagunçar um pouquinho a nossa base quando isso nos ajudar a produzir o resultados que queremos.
 
 Vamos ver aqui algumas de suas principais funções:
 
@@ -59,90 +49,57 @@ Vamos ver aqui algumas de suas principais funções:
 - `nest()` e `unnest()`: para criar *list columns*.
 
 ---
-## Motivação
+# Motivação
 
 Como motivação para utilizar esssas funções, vamos utilizar a nossa boa e velha base `imdb`.
 
 ```{r}
 imdb <- readr::read_rds("../data/imdb.rds")
 
-head(imdb)
+imdb
 ```
-
 
 ---
-## separate()
+# separate()
 
-A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. A sintaxe da função está apresentada abaixo.
-
-```{r eval=FALSE}
-dados %>% 
-  separate( 
-    col = coluna_velha,  #<<
-    into = c("colunas", "novas"),  #<<
-    sep = "separador" #<<
-  )
-```
-
-Como exemplo, vamos transformar a coluna `generos` da base IMDB em três colunas, cada uma com um dos gêneros do filme. Lembrando que os valores da coluna `generos` estão no seguinte formato:
+A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. Como exemplo, vamos transformar a coluna `generos` da base IMDB em três colunas, cada uma com um dos gêneros do filme. Lembrando que os valores da coluna `generos` estão no seguinte formato:
 
 ```{r}
 imdb %>% pull(generos) %>% head()
 ```
 
-
 ---
-## 
+# separate()
 
 Veja que agora, temos 3 colunas de gênero. Filmes com menos de 3 gêneros recebem `NA` na coluna `genero2` e/ou `genero3`. Os gêneros sobressalentes são descartados, assim como a coluna `generos` original.
 
 ```{r}
 imdb %>% 
-  separate( 
-    col = generos,  #<<
-    into = c("genero1", "genero2", "genero3"),  #<<
-    sep = "\\|" #<<
-  )
+  separate(col = generos, into = c("genero1", "genero2", "genero3"), sep = "\\|")
 ```
 
 ---
-## unite()
+# unite()
 
-A função `unite()` realiza a operação inversa da função `separate()`. Ela concatena os valores de várias variáveis em uma única coluna. A sintaxe é a seguinte:
-
-```{r eval=FALSE, echo=TRUE}
-dados %>% 
-  unite(
-    col = coluna_nova,  #<<
-    colunas_para_juntar, #<<
-    sep = "separador" #<<
-  )
-```
-
-Como exemplo, vamos agora transformar as colunas `ator1`, `ator2` e `ator3` em uma única coluna `atores`. Lembrando que essas colunas estão no formato abaixo.
+A função `unite()` realiza a operação inversa da função `separate()`. Como exemplo, vamos agora transformar as colunas `ator1`, `ator2` e `ator3` em uma única coluna `atores`. Lembrando que essas colunas estão no formato abaixo.
 
 ```{r}
-imdb %>% select(starts_with("ator")) %>% head(3)
+imdb %>% select(starts_with("ator"))
 ```
 
 ---
-## 
+# unite()
 
 Veja que agora a coluna `elenco` possui os 3 atores/atrizes concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
 
 ```{r}
 imdb %>% 
-  unite(
-    col = "elenco", #<<
-    starts_with("ator"), #<<
-    sep = " - " #<<
-  ) %>% 
+  unite(col = "elenco", starts_with("ator"), sep = " - ") %>%
   select(elenco)
 ```
 
-
 ---
-## Pivotagem
+# Pivotagem
 
 O conceito de pivotagem no *tidyverse* se refere a mudança da estrutura da base, geralmente para alcançar o formato *tidy*. 
 
@@ -155,7 +112,7 @@ Uma base no formato *long* possui mais linhas e pode ter menos colunas, enquanto
 Esses formatos são sempre relativos às colunas que estão sendo pivotadas, sendo que uma base *tidy* pode estar tanto no formato *long* quanto *wide*.
 
 ---
-## 
+# Pivotagem
 
 Antigamente, utilizávamos as funções `gather()` e `spread()` para fazer as operações de pivotagem. A fonte da imagem é [este site](https://www.garrickadenbuie.com/project/tidyexplain/#spread-and-gather").
 
@@ -164,7 +121,7 @@ knitr::include_graphics("img/032-tidyr/pivotagem.gif")
 ```
 
 ---
-## pivot_longer()
+# pivot_longer()
 
 Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_atriz` e `protagonismo`.
 
@@ -175,85 +132,42 @@ imdb %>%
     names_to = "protagonismo",
     values_to = "ator_atriz"
   ) %>% 
-  select(titulo, ator_atriz, protagonismo) %>% 
-  head(6)
+  select(titulo, ator_atriz, protagonismo)
 ```
 
 ---
-## 
+# pivot_longer()
 
 Se considerarmos que na análise da base IMDB cada observação deve ser um filme, então essa nova base já não mais *tidy*, pois agora cada filme aparece em três linhas diferentes, uma vez para cada um de seus atores.
 
 Nesse sentido, embora possa parecer que a variável `ator_protagonismo` estava implícita na base original, ela não é uma variável de fato. Todos filmes tem um `ator_1`, um `ator_2` e um `ator_3`. Não existe nenhuma informação sobre o filme que podemos tirar da coluna `ator_protagonismo`, pois ela qualifica apenas os atores, não o filme em si.
 
-
 ---
-## pivot_wider()
+# pivot_wider()
 
 A função `pivot_wider()` faz a operação inversa da `pivot_longer()`. Sem aplicarmos as duas funções em sequência, voltamos para a base original.
 
-```{r}
-imdb %>% 
+```{r, echo=FALSE}
+imdb_long <- imdb %>% 
   pivot_longer(
     cols = starts_with("ator"), 
     names_to = "ator_protagonismo",
     values_to = "ator_nome"
-  ) %>% 
-  pivot_wider(
-    names_from = "ator_protagonismo",
-    values_from = "ator_nome"
-  ) %>% 
-  head(4)
-```
-
----
-## 
-
-A base `imdb` não possui nenhuma variável que faça sentido aplicarmos direto a função `pivot_wider()`. Vamos então considerar a seguinte tabela derivada da base `imdb`:
-
-```{r}
-tab_romance_terror <- imdb %>%
-  filter(ano >= 2010) %>%
-  mutate(
-    genero = case_when(
-      stringr::str_detect(generos, "Romance") ~ "Romance",
-      stringr::str_detect(generos, "Horror") ~ "Horror",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  filter(!is.na(genero)) %>%
-  group_by(ano, genero) %>%
-  summarise(receita_media = mean(receita, na.rm = TRUE))
-```
-
-Essa tabela possui a receita média dos filmes de romance e terror nos anos de 2010 a 2016.
-
----
-## 
-
-Pode ser que, para apresentá-la em uma reunião, fique mais agradável ter os anos nas colunas e não nas linhas. Para isso, basta utilizarmos a função `pivot_wider()`.
-
-```{r}
-# Tabela original
-tab_romance_terror
-```
-
----
-## 
-
-```{r}
-# Tabela com os anos nas colunas
-tab_romance_terror %>% 
-  pivot_wider(
-    names_from = ano,
-    values_from = receita_media
   )
 ```
 
-Esse é um caso que *bagunçar* um pouquinho a tabela nos trouxe um resultado desejado.
+
+```{r}
+imdb_long %>% 
+  pivot_wider(
+    names_from = "ator_protagonismo",
+    values_from = "ator_nome"
+  ) %>%
+  select(1:3, starts_with("ator"))
+```
 
 ---
-## List columns
+# List columns
 
 Um terceiro conceito de dados *tidy* é que cada célula da tabela possui um valor. No entanto, quando estamos programando, muitas vezes vale apena abandonar essa definição e guardarmos objetos mais complexos nas células de uma tabela.
 
@@ -268,7 +182,7 @@ Uma forma de trabalhar com *list columns* consiste em utilizarmos as funções
 Se você não estiver familiarizado com o conceito de listas dentro do R, leia o [capítulo de listas do nosso livro](https://livro.curso-r.com/3-9-listas.html).
 
 ---
-## nest()
+# nest()
 
 A forma mais simples de utilizarmos uma *list column* é *aninhar* a nossa base com relação a uma variável.
 
@@ -278,11 +192,11 @@ imdb_nest <- imdb %>%
   nest() %>% 
   arrange(ano)
 
-head(imdb_nest, 8)
+imdb_nest
 ```
 
 ---
-## 
+# nest()
 
 A base `imdb_nest` possui duas colunas `ano` e `data` e uma linha para cada ano. Na coluna `data`, temos o restante da base `imdb`, recortada para cada um dos anos.
 
@@ -297,49 +211,35 @@ Imagine que queiramos fazer, para cada ano, um gráfico de dispersão da receita
 Com a base no formato de *list columns*, basta criarmos uma função para gerar o gráfico e utilizarmos a função `purrr::map()`.
 
 ---
-## 
+# nest()
 
 Abaixo, construímos a função `fazer_grafico_dispersao()`, que será aplicada a cada uma das bases contidas na coluna `data` da base `imdb_nest`. Os gráficos, respectivamos a cada ano, são salvos na coluna `grafico`.
 
 ```{r}
 fazer_grafico_dispersao <- function(tab) {
   tab %>%
-    ggplot(aes(x = orcamento, y = receita)) +
-    geom_point()
+    filter(!is.na(orcamento), !is.na(receita)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = orcamento, y = receita)) +
+    ggplot2::geom_point()
 }
 
 imdb_graficos <- imdb_nest %>% 
-  mutate(
-    grafico = purrr::map(data, fazer_grafico_dispersao)
-  )
-
-head(imdb_graficos, 6)
+  mutate(grafico = purrr::map(data, fazer_grafico_dispersao))
 ```
 
 ---
-## 
+# nest()
 
-Para acessar cada um dos gráficos, basta rodar o código abaixo.
+Para acessar cada um dos gráficos, basta escolher diretamente pelo ano:
 
-```{r, fig.height=5, fig.width=5, fig.align="center"}
-# Pegando o gráfico referente ao ano de 2000
-imdb_graficos$grafico[[74]]
-```
-
----
-## 
-
-Ou, escolhendo diretamente pelo ano
-
-```{r, fig.height=5, fig.width=5, fig.align="center"}
+```{r, fig.height=4, fig.width=4, fig.align="center"}
 imdb_graficos %>% 
   filter(ano == 2000) %>% 
   pull(grafico)
 ```
 
-
 ---
-## unnest()
+# unnest()
 
 A função `unnest()` remove a estrutura de *list column*. Fazendo a operação abaixo, voltamos para a base `imdb` original.
 
@@ -347,7 +247,6 @@ A função `unnest()` remove a estrutura de *list column*. Fazendo a operação 
 imdb_nest %>%
   unnest(cols = "data")
 ```
-
 
 ---
 # Referências

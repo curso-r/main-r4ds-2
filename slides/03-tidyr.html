@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R para Ciência de Dados 2
+## Tidyr
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+### abril de 2021
+
+---
+
+
+
+
+# Dados arrumados
+
+Dentro do `tidyverse`, uma base *tidy* é uma base fácil de se trabalhar, isto é, fácil de se fazer manipulação de dados, fácil de se criar visualizações, fácil de se ajustar modelos e por aí vai.
+
+Na prática, uma base *tidy* é aquela que se encaixa bem no *framework* do `tidyverse`, pois os pacotes como o `dplyr` e o `ggplot2` foram desenvolvidos para funcionar bem com bases *tidy*. E assim como esses pacotes motivaram o uso de bases *tidy*, o conceito *tidy* motiva o surgimento de novos *frameworks*, como o `tidymodels` para modelagem.
+
+As duas propriedades mais importantes de uma base *tidy* são:
+
+- Cada coluna é uma variável;
+
+- Cada linha é uma observação.
+
+Essa definição proporciona uma maneira consistente de se referir a variáveis (nomes de colunas) e observações (índices das linhas).
+
+---
+# O pacote tidyr
+
+O pacote `tidyr` possui funções que nos ajudam a deixar uma base bagunçada em uma base *tidy*. Ou então, nos ajudam a bagunçar um pouquinho a nossa base quando isso nos ajudar a produzir o resultados que queremos.
+
+Vamos ver aqui algumas de suas principais funções:
+
+- `separate()` e `unite()`: para separar variáveis concatenadas em uma única coluna ou uni-las.
+
+- `pivot_wider()` e `pivot_longer()`: para pirvotar a base.
+
+- `nest()` e `unnest()`: para criar *list columns*.
+
+---
+# Motivação
+
+Como motivação para utilizar esssas funções, vamos utilizar a nossa boa e velha base `imdb`.
+
+
+```r
+imdb &lt;- readr::read_rds("../data/imdb.rds")
+
+imdb
+```
+
+```
+#&gt; # A tibble: 3,713 x 15
+#&gt;   titulo      ano diretor  duracao cor   generos   pais  classificacao orcamento
+#&gt;   &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;      &lt;int&gt; &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
+#&gt; 1 Avatar     2009 James C…     178 Color Action|A… USA   A partir de … 237000000
+#&gt; 2 Pirates …  2007 Gore Ve…     169 Color Action|A… USA   A partir de … 300000000
+#&gt; 3 The Dark…  2012 Christo…     164 Color Action|T… USA   A partir de … 250000000
+#&gt; 4 John Car…  2012 Andrew …     132 Color Action|A… USA   A partir de … 263700000
+#&gt; 5 Spider-M…  2007 Sam Rai…     156 Color Action|A… USA   A partir de … 258000000
+#&gt; # … with 3,708 more rows, and 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
+#&gt; #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
+```
+
+---
+# separate()
+
+A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. Como exemplo, vamos transformar a coluna `generos` da base IMDB em três colunas, cada uma com um dos gêneros do filme. Lembrando que os valores da coluna `generos` estão no seguinte formato:
+
+
+```r
+imdb %&gt;% pull(generos) %&gt;% head()
+```
+
+```
+#&gt; [1] "Action|Adventure|Fantasy|Sci-Fi"                          
+#&gt; [2] "Action|Adventure|Fantasy"                                 
+#&gt; [3] "Action|Thriller"                                          
+#&gt; [4] "Action|Adventure|Sci-Fi"                                  
+#&gt; [5] "Action|Adventure|Romance"                                 
+#&gt; [6] "Adventure|Animation|Comedy|Family|Fantasy|Musical|Romance"
+```
+
+---
+# separate()
+
+Veja que agora, temos 3 colunas de gênero. Filmes com menos de 3 gêneros recebem `NA` na coluna `genero2` e/ou `genero3`. Os gêneros sobressalentes são descartados, assim como a coluna `generos` original.
+
+
+```r
+imdb %&gt;% 
+  separate(col = generos, into = c("genero1", "genero2", "genero3"), sep = "\\|")
+```
+
+```
+#&gt; # A tibble: 3,713 x 17
+#&gt;   titulo   ano diretor duracao cor   genero1 genero2 genero3 pais  classificacao
+#&gt;   &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;        
+#&gt; 1 Avatar  2009 James …     178 Color Action  Advent… Fantasy USA   A partir de …
+#&gt; 2 Pirat…  2007 Gore V…     169 Color Action  Advent… Fantasy USA   A partir de …
+#&gt; 3 The D…  2012 Christ…     164 Color Action  Thrill… &lt;NA&gt;    USA   A partir de …
+#&gt; 4 John …  2012 Andrew…     132 Color Action  Advent… Sci-Fi  USA   A partir de …
+#&gt; 5 Spide…  2007 Sam Ra…     156 Color Action  Advent… Romance USA   A partir de …
+#&gt; # … with 3,708 more rows, and 7 more variables: orcamento &lt;int&gt;, receita &lt;int&gt;,
+#&gt; #   nota_imdb &lt;dbl&gt;, likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;,
+#&gt; #   ator_3 &lt;chr&gt;
+```
+
+---
+# unite()
+
+A função `unite()` realiza a operação inversa da função `separate()`. Como exemplo, vamos agora transformar as colunas `ator1`, `ator2` e `ator3` em uma única coluna `atores`. Lembrando que essas colunas estão no formato abaixo.
+
+
+```r
+imdb %&gt;% select(starts_with("ator"))
+```
+
+```
+#&gt; # A tibble: 3,713 x 3
+#&gt;   ator_1       ator_2           ator_3              
+#&gt;   &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;               
+#&gt; 1 CCH Pounder  Joel David Moore Wes Studi           
+#&gt; 2 Johnny Depp  Orlando Bloom    Jack Davenport      
+#&gt; 3 Tom Hardy    Christian Bale   Joseph Gordon-Levitt
+#&gt; 4 Daryl Sabara Samantha Morton  Polly Walker        
+#&gt; 5 J.K. Simmons James Franco     Kirsten Dunst       
+#&gt; # … with 3,708 more rows
+```
+
+---
+# unite()
+
+Veja que agora a coluna `elenco` possui os 3 atores/atrizes concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
+
+
+```r
+imdb %&gt;% 
+  unite(col = "elenco", starts_with("ator"), sep = " - ") %&gt;%
+  select(elenco)
+```
+
+```
+#&gt; # A tibble: 3,713 x 1
+#&gt;   elenco                                           
+#&gt;   &lt;chr&gt;                                            
+#&gt; 1 CCH Pounder - Joel David Moore - Wes Studi       
+#&gt; 2 Johnny Depp - Orlando Bloom - Jack Davenport     
+#&gt; 3 Tom Hardy - Christian Bale - Joseph Gordon-Levitt
+#&gt; 4 Daryl Sabara - Samantha Morton - Polly Walker    
+#&gt; 5 J.K. Simmons - James Franco - Kirsten Dunst      
+#&gt; # … with 3,708 more rows
+```
+
+---
+# Pivotagem
+
+O conceito de pivotagem no *tidyverse* se refere a mudança da estrutura da base, geralmente para alcançar o formato *tidy*. 
+
+Geralmente realizamos pivotagem quando nossas linhas não são unidades observacionais ou nossas colunas não são variáveis. Ela é similiar à pivotagem do Excel, mas um pouco mais complexa.
+
+O ato de pivotar resulta em transformar uma base de dados *long* em *wide* e vice-versa. 
+
+Uma base no formato *long* possui mais linhas e pode ter menos colunas, enquanto no formato *wide* poussi menos linhas e pode ter mais colunas
+
+Esses formatos são sempre relativos às colunas que estão sendo pivotadas, sendo que uma base *tidy* pode estar tanto no formato *long* quanto *wide*.
+
+---
+# Pivotagem
+
+Antigamente, utilizávamos as funções `gather()` e `spread()` para fazer as operações de pivotagem. A fonte da imagem é [este site](https://www.garrickadenbuie.com/project/tidyexplain/#spread-and-gather").
+
+&lt;img src="img/032-tidyr/pivotagem.gif" style="display: block; margin: auto;" /&gt;
+
+---
+# pivot_longer()
+
+Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_atriz` e `protagonismo`.
+
+
+```r
+imdb %&gt;% 
+  pivot_longer(
+    cols = starts_with("ator"), 
+    names_to = "protagonismo",
+    values_to = "ator_atriz"
+  ) %&gt;% 
+  select(titulo, ator_atriz, protagonismo)
+```
+
+```
+#&gt; # A tibble: 11,139 x 3
+#&gt;   titulo                                   ator_atriz       protagonismo
+#&gt;   &lt;chr&gt;                                    &lt;chr&gt;            &lt;chr&gt;       
+#&gt; 1 Avatar                                   CCH Pounder      ator_1      
+#&gt; 2 Avatar                                   Joel David Moore ator_2      
+#&gt; 3 Avatar                                   Wes Studi        ator_3      
+#&gt; 4 Pirates of the Caribbean: At World's End Johnny Depp      ator_1      
+#&gt; 5 Pirates of the Caribbean: At World's End Orlando Bloom    ator_2      
+#&gt; # … with 11,134 more rows
+```
+
+---
+# pivot_longer()
+
+Se considerarmos que na análise da base IMDB cada observação deve ser um filme, então essa nova base já não mais *tidy*, pois agora cada filme aparece em três linhas diferentes, uma vez para cada um de seus atores.
+
+Nesse sentido, embora possa parecer que a variável `ator_protagonismo` estava implícita na base original, ela não é uma variável de fato. Todos filmes tem um `ator_1`, um `ator_2` e um `ator_3`. Não existe nenhuma informação sobre o filme que podemos tirar da coluna `ator_protagonismo`, pois ela qualifica apenas os atores, não o filme em si.
+
+---
+# pivot_wider()
+
+A função `pivot_wider()` faz a operação inversa da `pivot_longer()`. Sem aplicarmos as duas funções em sequência, voltamos para a base original.
+
+
+
+
+
+```r
+imdb_long %&gt;% 
+  pivot_wider(
+    names_from = "ator_protagonismo",
+    values_from = "ator_nome"
+  ) %&gt;%
+  select(1:3, starts_with("ator"))
+```
+
+```
+#&gt; # A tibble: 3,713 x 6
+#&gt;   titulo                    ano diretor      ator_1    ator_2      ator_3       
+#&gt;   &lt;chr&gt;                   &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;        
+#&gt; 1 Avatar                   2009 James Camer… CCH Poun… Joel David… Wes Studi    
+#&gt; 2 Pirates of the Caribbe…  2007 Gore Verbin… Johnny D… Orlando Bl… Jack Davenpo…
+#&gt; 3 The Dark Knight Rises    2012 Christopher… Tom Hardy Christian … Joseph Gordo…
+#&gt; 4 John Carter              2012 Andrew Stan… Daryl Sa… Samantha M… Polly Walker 
+#&gt; 5 Spider-Man 3             2007 Sam Raimi    J.K. Sim… James Fran… Kirsten Dunst
+#&gt; # … with 3,708 more rows
+```
+
+---
+# List columns
+
+Um terceiro conceito de dados *tidy* é que cada célula da tabela possui um valor. No entanto, quando estamos programando, muitas vezes vale apena abandonar essa definição e guardarmos objetos mais complexos nas células de uma tabela.
+
+Utilizando as chamadas *list columns* podemos guardar virtualmente qualquer objeto em nossas *tibbles*, como gráficos, resultados de modelos ou até mesmo outras tabelas.
+
+Uma forma de trabalhar com *list columns* consiste em utilizarmos as funções
+
+- `nest()`: para criar uma *list column*;
+
+- `unnest()`: para desfazer uma *list column*.
+
+Se você não estiver familiarizado com o conceito de listas dentro do R, leia o [capítulo de listas do nosso livro](https://livro.curso-r.com/3-9-listas.html).
+
+---
+# nest()
+
+A forma mais simples de utilizarmos uma *list column* é *aninhar* a nossa base com relação a uma variável.
+
+
+```r
+imdb_nest &lt;- imdb %&gt;%
+  group_by(ano) %&gt;%
+  nest() %&gt;% 
+  arrange(ano)
+
+imdb_nest
+```
+
+```
+#&gt; # A tibble: 91 x 2
+#&gt; # Groups:   ano [91]
+#&gt;     ano data                  
+#&gt;   &lt;int&gt; &lt;list&gt;                
+#&gt; 1  1916 &lt;tibble[,14] [1 × 14]&gt;
+#&gt; 2  1920 &lt;tibble[,14] [1 × 14]&gt;
+#&gt; 3  1925 &lt;tibble[,14] [1 × 14]&gt;
+#&gt; 4  1929 &lt;tibble[,14] [1 × 14]&gt;
+#&gt; 5  1930 &lt;tibble[,14] [1 × 14]&gt;
+#&gt; # … with 86 more rows
+```
+
+---
+# nest()
+
+A base `imdb_nest` possui duas colunas `ano` e `data` e uma linha para cada ano. Na coluna `data`, temos o restante da base `imdb`, recortada para cada um dos anos.
+
+Abaixo, acessmos os dados do único filme de 1916 (primeira linha da base `imdb_nest`).
+
+
+```r
+imdb_nest$data[[1]]
+```
+
+```
+#&gt; # A tibble: 1 x 14
+#&gt;   titulo    diretor  duracao cor   generos pais  classificacao orcamento receita
+#&gt;   &lt;chr&gt;     &lt;chr&gt;      &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;   &lt;int&gt;
+#&gt; 1 Intolera… D.W. Gr…     123 Blac… Drama|… USA   Outros           385907      NA
+#&gt; # … with 5 more variables: nota_imdb &lt;dbl&gt;, likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;,
+#&gt; #   ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
+```
+
+Imagine que queiramos fazer, para cada ano, um gráfico de dispersão da receita contra o orçamento dos filmes lançados no ano.
+
+Com a base no formato de *list columns*, basta criarmos uma função para gerar o gráfico e utilizarmos a função `purrr::map()`.
+
+---
+# nest()
+
+Abaixo, construímos a função `fazer_grafico_dispersao()`, que será aplicada a cada uma das bases contidas na coluna `data` da base `imdb_nest`. Os gráficos, respectivamos a cada ano, são salvos na coluna `grafico`.
+
+
+```r
+fazer_grafico_dispersao &lt;- function(tab) {
+  tab %&gt;%
+    filter(!is.na(orcamento), !is.na(receita)) %&gt;%
+    ggplot2::ggplot(ggplot2::aes(x = orcamento, y = receita)) +
+    ggplot2::geom_point()
+}
+
+imdb_graficos &lt;- imdb_nest %&gt;% 
+  mutate(grafico = purrr::map(data, fazer_grafico_dispersao))
+```
+
+---
+# nest()
+
+Para acessar cada um dos gráficos, basta escolher diretamente pelo ano:
+
+
+```r
+imdb_graficos %&gt;% 
+  filter(ano == 2000) %&gt;% 
+  pull(grafico)
+```
+
+```
+#&gt; [[1]]
+```
+
+&lt;img src="03-tidyr_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# unnest()
+
+A função `unnest()` remove a estrutura de *list column*. Fazendo a operação abaixo, voltamos para a base `imdb` original.
+
+
+```r
+imdb_nest %&gt;%
+  unnest(cols = "data")
+```
+
+```
+#&gt; # A tibble: 3,713 x 15
+#&gt; # Groups:   ano [91]
+#&gt;     ano titulo     diretor  duracao cor    generos pais  classificacao orcamento
+#&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
+#&gt; 1  1916 Intoleran… D.W. Gr…     123 Black… Drama|… USA   Outros           385907
+#&gt; 2  1920 Over the … Harry F…     110 Black… Crime|… USA   Outros           100000
+#&gt; 3  1925 The Big P… King Vi…     151 Black… Drama|… USA   Outros           245000
+#&gt; 4  1929 The Broad… Harry B…     100 Black… Musica… USA   Outros           379000
+#&gt; 5  1930 Hell's An… Howard …      96 Black… Drama|… USA   Outros          3950000
+#&gt; # … with 3,708 more rows, and 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
+#&gt; #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
+```
+
+---
+# Referências
+
+- [Material de tidyverse da UFPR](http://www.leg.ufpr.br/~walmes/ensino/dsbd-linprog/slides/02-r-tidyverse.html#1)
+
+- [Livro da Curso-R](https://livro.curso-r.com/7-manipulacao.html)
+
+- [Apresentação Garret Grolemund](https://github.com/rstudio/webinars/blob/master/05-Data-Wrangling-with-R-and-RStudio/wrangling-webinar.pdf)
+
+- [Excelente blog post sobre manipulação de bases](https://www.garrickadenbuie.com/project/tidyexplain/#spread-and-gather%22)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
