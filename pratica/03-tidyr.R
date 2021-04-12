@@ -171,3 +171,22 @@ imdb %>%
   summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
   pivot_wider(names_from = ano, values_from = lucro_medio) %>%
   View()
+
+
+# -------------------------------------------------------------------------
+
+# Motivação: número de espécies em cada filme do Star Wars
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+glimpse(starwars)
+
+starwars %>%
+  select(films, species) %>%
+  unnest(films) %>%
+  count(films) %>%
+  mutate(films = forcats::fct_reorder(films, n)) %>%
+  ggplot(aes(y = films, x = n)) +
+  geom_col()
