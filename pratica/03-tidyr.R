@@ -122,7 +122,7 @@ imdb %>%
   summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
   pivot_wider(names_from = ano, values_from = lucro_medio) %>%
   View()
-
+stringr::str_subset()
 # -------------------------------------------------------------------------
 
 
