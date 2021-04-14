@@ -52,7 +52,7 @@ now()
 ```
 
 ```
-#&gt; [1] "2021-04-14 17:31:24 -03"
+#&gt; [1] "2021-04-14 18:22:31 -03"
 ```
 
 ```r
@@ -60,7 +60,7 @@ as.numeric(now())
 ```
 
 ```
-#&gt; [1] 1618432284
+#&gt; [1] 1618435352
 ```
 
 - O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
@@ -78,22 +78,22 @@ second_
 
 
 ```r
-dmy_hms("27/08/2020 02:25:00")
+dmy_hms("15/04/2021 02:25:00")
 ```
 
 ```
-#&gt; [1] "2020-08-27 02:25:00 UTC"
+#&gt; [1] "2021-04-15 02:25:00 UTC"
 ```
 
 - Também é possível trabalhar só com datas usando a mesma lógica das unidades
 
 
 ```r
-dmy("27/08/2020")
+dmy("15/04/2021")
 ```
 
 ```
-#&gt; [1] "2020-08-27"
+#&gt; [1] "2021-04-15"
 ```
 
 ---
@@ -103,19 +103,19 @@ dmy("27/08/2020")
 
 
 ```r
-dmy("27 de agosto de 2020", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1252
+dmy("15 de abril de 2021", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1252
 ```
 
 ```
-#&gt; [1] "2020-08-27"
+#&gt; [1] "2021-04-15"
 ```
 
 ```r
-mdy("August 27th 2020", locale = "en_US.UTF-8") # Mês-dia-ano
+mdy("April 15th 2021", locale = "en_US.UTF-8")     # Mês-dia-ano
 ```
 
 ```
-#&gt; [1] "2020-08-27"
+#&gt; [1] "2021-04-15"
 ```
 
 - Às vezes o Excel salva datas como o número de dias desde 01/01/1970, mas nem
@@ -123,11 +123,11 @@ isso pode vencer o `{lubridate}`
 
 
 ```r
-as_date(18501)
+as_date(18732)
 ```
 
 ```
-#&gt; [1] "2020-08-27"
+#&gt; [1] "2021-04-15"
 ```
 
 ---
@@ -143,7 +143,7 @@ now(tzone = "Europe/London")
 ```
 
 ```
-#&gt; [1] "2021-04-14 21:31:24 BST"
+#&gt; [1] "2021-04-14 22:22:32 BST"
 ```
 
 - Nem o horário de verão consegue atrapalhar um cálculo preciso: com a função
@@ -167,11 +167,11 @@ componentes de uma data
 
 
 ```r
-month("2020-08-27")
+month("2021-04-15")
 ```
 
 ```
-#&gt; [1] 8
+#&gt; [1] 4
 ```
 
 - Obs.: Note como não foi necessário converter a string para data porque ela já
@@ -186,7 +186,7 @@ now() + days(5)
 ```
 
 ```
-#&gt; [1] "2021-04-19 17:31:24 -03"
+#&gt; [1] "2021-04-19 18:22:32 -03"
 ```
 
 ---
@@ -197,12 +197,12 @@ distâncias entre datas e horas
 
 
 ```r
-dif &lt;- dmy("27/08/2020") - dmy("25/08/2020")
+dif &lt;- dmy("15/04/2021") - dmy("24/08/2020")
 dif
 ```
 
 ```
-#&gt; Time difference of 2 days
+#&gt; Time difference of 234 days
 ```
 
 - Podemos transformar um objeto de diferença temporal em qualquer unidade que
@@ -214,7 +214,7 @@ as.period(dif) / minutes(1)
 ```
 
 ```
-#&gt; [1] 2880
+#&gt; [1] 336960
 ```
 
 - Para diferenças entre data-horas pode ser importante usar os fusos
@@ -224,35 +224,35 @@ as.period(dif) / minutes(1)
 
 
 ```r
-dmy_hms("27/08/2020 02:25:30") # Data-hora
+dmy_hms("15/04/2021 02:25:30") # Data-hora
 ```
 
 ```
-#&gt; [1] "2020-08-27 02:25:30 UTC"
-```
-
-```r
-dmy_hm("27/08/2020 02:25")     # Sem segundo
-```
-
-```
-#&gt; [1] "2020-08-27 02:25:00 UTC"
+#&gt; [1] "2021-04-15 02:25:30 UTC"
 ```
 
 ```r
-dmy_h("27/08/2020 02")         # Sem minuto
+dmy_hm("15/04/2021 02:25")     # Sem segundo
 ```
 
 ```
-#&gt; [1] "2020-08-27 02:00:00 UTC"
+#&gt; [1] "2021-04-15 02:25:00 UTC"
 ```
 
 ```r
-as_datetime(1598539497)        # Numérico
+dmy_h("15/04/2021 02")         # Sem minuto
 ```
 
 ```
-#&gt; [1] "2020-08-27 14:44:57 UTC"
+#&gt; [1] "2021-04-15 02:00:00 UTC"
+```
+
+```r
+as_datetime(1618453530)        # Numérico
+```
+
+```
+#&gt; [1] "2021-04-15 02:25:30 UTC"
 ```
 
 ---
@@ -260,35 +260,35 @@ as_datetime(1598539497)        # Numérico
 
 
 ```r
-mdy_hms("8/27/20 2:25:30 PM")                                # Americano
+mdy_hms("4/15/21 2:25:30 PM")                                # Americano
 ```
 
 ```
-#&gt; [1] "2020-08-27 14:25:30 UTC"
-```
-
-```r
-dmy_hms("27/08/2020 02:25:30", tz = "Europe/London")         # Com fuso
-```
-
-```
-#&gt; [1] "2020-08-27 02:25:30 BST"
+#&gt; [1] "2021-04-15 14:25:30 UTC"
 ```
 
 ```r
-now() - dmy_hms("27/08/2020 02:25:30")                       # Diferença
+dmy_hms("15/04/2021 02:25:30", tz = "Europe/London")         # Com fuso
 ```
 
 ```
-#&gt; Time difference of 230.7541 days
+#&gt; [1] "2021-04-15 02:25:30 BST"
 ```
 
 ```r
-now() - dmy_hms("27/08/2020 02:25:30", tz = "Europe/London") # Com fuso
+now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
 ```
 
 ```
-#&gt; Time difference of 230.7958 days
+#&gt; Time difference of -5.049405 hours
+```
+
+```r
+now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
+```
+
+```
+#&gt; Time difference of -4.049404 hours
 ```
 
 ---
@@ -296,7 +296,7 @@ now() - dmy_hms("27/08/2020 02:25:30", tz = "Europe/London") # Com fuso
 
 
 ```r
-minute("2020-08-27 02:25:30")                                           # Minuto
+minute("2021-04-15 02:25:30")                   # Minuto
 ```
 
 ```
@@ -304,15 +304,15 @@ minute("2020-08-27 02:25:30")                                           # Minuto
 ```
 
 ```r
-year("2020-08-27")                                                      # Ano
+year("2021-04-15")                              # Ano
 ```
 
 ```
-#&gt; [1] 2020
+#&gt; [1] 2021
 ```
 
 ```r
-wday("2020-08-27")                                                      # Dia da semana
+wday("2021-04-15")                              # Dia da semana
 ```
 
 ```
@@ -320,11 +320,11 @@ wday("2020-08-27")                                                      # Dia da
 ```
 
 ```r
-month("2020-08-27", label = TRUE, abbr = FALSE, locale = "pt_BR.UTF-8") # Mês (sem abrev.)
+month("2021-04-15", label = TRUE, abbr = FALSE) # Mês (sem abrev.)
 ```
 
 ```
-#&gt; [1] agosto
+#&gt; [1] abril
 #&gt; 12 Levels: janeiro &lt; fevereiro &lt; março &lt; abril &lt; maio &lt; junho &lt; ... &lt; dezembro
 ```
 
@@ -345,7 +345,7 @@ now() + seconds(5)                               # Segundo
 ```
 
 ```
-#&gt; [1] "2021-04-14 17:31:29 -03"
+#&gt; [1] "2021-04-14 18:22:37 -03"
 ```
 
 ```r
@@ -353,15 +353,15 @@ now() + days(5)                                  # Dia
 ```
 
 ```
-#&gt; [1] "2021-04-19 17:31:24 -03"
+#&gt; [1] "2021-04-19 18:22:32 -03"
 ```
 
 ```r
-as.period(today() - dmy("01/01/2020")) / days(1) # Dia - dia
+as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
 ```
 
 ```
-#&gt; [1] 469
+#&gt; [1] 103
 ```
 
 ---
@@ -369,8 +369,8 @@ as.period(today() - dmy("01/01/2020")) / days(1) # Dia - dia
 
 
 ```r
-t1 &lt;- dmy_hms("27/08/2020 02:25:00", tz = "America/Sao_Paulo")
-t2 &lt;- dmy_hms("27/08/2020 02:25:00")
+t1 &lt;- dmy_hms("15/04/2021 02:25:00", tz = "America/Sao_Paulo")
+t2 &lt;- dmy_hms("15/04/2021 02:25:00")
 t1 - t2
 ```
 
@@ -379,8 +379,8 @@ t1 - t2
 ```
 
 ```r
-t1 &lt;- dmy_hms("27/08/2020 02:25:00", tz = "America/Sao_Paulo")
-t2 &lt;- dmy_hms("27/08/2020 02:25:00", tz = "Europe/London")
+t1 &lt;- dmy_hms("15/04/2021 02:25:00", tz = "America/Sao_Paulo")
+t2 &lt;- dmy_hms("15/04/2021 02:25:00", tz = "Europe/London")
 t1 - t2
 ```
 
@@ -395,6 +395,42 @@ head(OlsonNames())
 ```
 #&gt; [1] "Africa/Abidjan"     "Africa/Accra"       "Africa/Addis_Ababa"
 #&gt; [4] "Africa/Algiers"     "Africa/Asmara"      "Africa/Asmera"
+```
+
+---
+# Extra: {clock}
+
+- Como não existe o dia 31/02/2021 (fevereiro tem menos dias), o `{lubridate}`
+simplesmente considera a operação inválida e não nos avisa!
+
+
+```r
+x &lt;- ymd("2021-01-31")
+x + months(1)
+```
+
+```
+#&gt; [1] NA
+```
+
+```r
+# No {clock}, 31/01/2021 + 1 mês é um erro que deve ser corrigido
+library(clock)
+add_months(x, 1)
+```
+
+```
+#&gt; Error: Invalid date found at location 1.
+#&gt; ℹ Resolve invalid date issues by specifying the `invalid` argument.
+```
+
+```r
+# Agora podemos especificar uma estratégia de correção
+add_months(x, 1, invalid = "overflow")
+```
+
+```
+#&gt; [1] "2021-03-03"
 ```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
