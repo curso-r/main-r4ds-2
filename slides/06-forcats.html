@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R para Ciência de Dados 2
+## Lubridate
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+### abril de 2021
+
+---
+
+
+
+
+# Motivação
+
+No R, um dos tipos de dado mais importante é o fator: se você está vindo do R
+antigo, provavelmente já teve que usar o argumento `stringsAsFactors = FALSE`.
+Mas qual é a razão por trás da existência dos fatores? Não seria melhor tudo ser
+string como em outras linguagens?
+
+A resposta simples é: não. Fatores são a forma do R lidar com variáveis
+categóricas (ordenadas ou não) e eles podem facilitar muito a vida, tanto na
+modelagem quanto na visualização dos dados. Hoje em dia é menos comum ter
+variáveis categóricas em uma base do que variáveis textuais (por isso o ódio
+pelo `stringsAsFactors`), mas isso não quer dizer que fatores não sejam uma
+ferramenta incrível.
+
+Para nos ajudar a trabalhar com fatores, temos o pacote `{forcats}` (_**for**
+**cat**egorial variable**s**_). As suas principais funções servem para alterar
+a **ordem** e modificar os **níveis** de um fator.
+
+---
+# Introdução
+
+- Por padrão, quando criamos um fator manualmente, a função `as_factor()` recebe
+strings que denotam as categorias. As categorias são guardadas na ordem em que
+aparecem (o que é diferente do `{base}`):
+
+
+```r
+library(forcats)
+
+x &lt;- as_factor(c("baixo", "médio", "baixo", "alto", NA))
+x
+```
+
+```
+#&gt; [1] baixo médio baixo alto  &lt;NA&gt; 
+#&gt; Levels: baixo médio alto
+```
+
+- Formalmente, um fator não passa de um **vetor numérico** com níveis
+(_levels_): os nomes de cada categoria
+
+
+```r
+typeof(x)
+```
+
+```
+#&gt; [1] "integer"
+```
+
+---
+# Vantagens
+
+- Como já aludido, os fatores são úteis na modelagem estatística: no ANOVA, por
+exemplo, é útil e adequado interpretar um vetor de textos como um vetor de
+números inteiros
+
+- Fatores também ocupam significativamente menos espaço em memória do que
+strings (quando seu uso for apropriado) já que são armazenados como inteiros,
+mas podem ser trabalhados como strings
+
+
+```r
+x[x != "médio"]
+```
+
+```
+#&gt; [1] baixo baixo alto  &lt;NA&gt; 
+#&gt; Levels: baixo médio alto
+```
+
+- Mais interessante ainda é trabalhar com fatores ordenados, que facilitam muito
+a criação de gráficos porque permitem ordenar variáveis não-alfabeticamente
+
+
+```r
+lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE)
+```
+
+```
+#&gt; [1] abril
+#&gt; 12 Levels: janeiro &lt; fevereiro &lt; março &lt; abril &lt; maio &lt; junho &lt; ... &lt; dezembro
+```
+
+---
+# Principais funções
+
+
+```r
+# Remover níveis sem representantes
+fct_drop(x[x != "médio"])
+```
+
+```
+#&gt; [1] baixo baixo alto  &lt;NA&gt; 
+#&gt; Levels: baixo alto
+```
+
+```r
+# Re-rotular os níveis com uma função
+fct_relabel(x, stringr::str_to_upper)
+```
+
+```
+#&gt; [1] BAIXO MÉDIO BAIXO ALTO  &lt;NA&gt; 
+#&gt; Levels: BAIXO MÉDIO ALTO
+```
+
+```r
+# Concatenar fatores
+fct_c(x, as_factor(c("altíssimo", "perigoso")))
+```
+
+```
+#&gt; [1] baixo     médio     baixo     alto      &lt;NA&gt;      altíssimo perigoso 
+#&gt; Levels: baixo médio alto altíssimo perigoso
+```
+
+---
+# Principais funções
+
+
+```r
+# Re-nívelar fator (trazer níveis para frente)
+( x2 &lt;- fct_relevel(x, "alto", "médio") )
+```
+
+```
+#&gt; [1] baixo médio baixo alto  &lt;NA&gt; 
+#&gt; Levels: alto médio baixo
+```
+
+```r
+# Transformar a ordem dos elementos no ordenamento do fator
+fct_inorder(x2, ordered = TRUE)
+```
+
+```
+#&gt; [1] baixo médio baixo alto  &lt;NA&gt; 
+#&gt; Levels: baixo &lt; médio &lt; alto
+```
+
+```r
+# Transformar a ordem dos níveis no ordenamento do fator
+as.ordered(x2)
+```
+
+```
+#&gt; [1] baixo médio baixo alto  &lt;NA&gt; 
+#&gt; Levels: alto &lt; médio &lt; baixo
+```
+
+---
+# Principais funções
+
+
+```r
+# Transformar NA em um fator explícito
+fct_explicit_na(x, na_level = "(vazio)")
+```
+
+```
+#&gt; [1] baixo   médio   baixo   alto    (vazio)
+#&gt; Levels: baixo médio alto (vazio)
+```
+
+```r
+# Juntar fatores com poucas ocorrências
+fct_lump_min(x, min = 2, other_level = "outros")
+```
+
+```
+#&gt; [1] baixo  outros baixo  outros &lt;NA&gt;  
+#&gt; Levels: baixo outros
+```
+
+```r
+# Inverter a ordem dos níveis
+fct_rev(x)
+```
+
+```
+#&gt; [1] baixo médio baixo alto  &lt;NA&gt; 
+#&gt; Levels: alto médio baixo
+```
+
+---
+# Principais funções
+
+
+
+```r
+# Usar um vetor para reordenar (útil no mutate())
+fct_reorder(x, c(2, 1, 3, 10, 0), .fun = max)
+```
+
+```
+#&gt; [1] baixo médio baixo alto  &lt;NA&gt; 
+#&gt; Levels: médio baixo alto
+```
+
+```r
+# Alterar manualmente os níveis
+lvls_revalue(x, c("P", "M", "G"))
+```
+
+```
+#&gt; [1] P    M    P    G    &lt;NA&gt;
+#&gt; Levels: P M G
+```
+
+```r
+# Alterar manualmente a ordem dos níveis
+lvls_reorder(x, c(3, 2, 1))
+```
+
+```
+#&gt; [1] baixo médio baixo alto  &lt;NA&gt; 
+#&gt; Levels: alto médio baixo
+```
+
+---
+# Caso de uso
+
+.pull-left[
+
+```r
+starwars %&gt;%
+  group_by(sex) %&gt;%
+  summarise(n = n()) %&gt;%
+  ggplot(aes(sex, n)) +
+  geom_col() +
+  theme_custom()
+```
+
+- Um simples gráfico de barras já é ótimo para demonstrar o poder do
+`{forcats}`
+
+- Note que, ao lado, as barras estão ordenadas pela **ordem alfabética** do sexo
+]
+
+.pull-right[
+![](06-forcats_files/figure-html/plot1-1.png)&lt;!-- --&gt;
+]
+
+---
+# Caso de uso
+
+.pull-left[
+
+```r
+starwars %&gt;%
+  mutate(
+*   sex = as_factor(sex)
+  ) %&gt;%
+  group_by(sex) %&gt;%
+  summarise(n = n()) %&gt;%
+  ggplot(aes(sex, n)) +
+  geom_col() +
+  theme_custom()
+```
+
+- Transformando a coluna em fator, agora as barras ficam ordenadas pela
+**precedência na coluna**
+]
+
+.pull-right[
+![](06-forcats_files/figure-html/plot2-1.png)&lt;!-- --&gt;
+]
+
+---
+# Caso de uso
+
+
+
+.pull-left[
+
+```r
+starwars %&gt;%
+  mutate(
+    sex = as_factor(sex),
+*   sex = fct_relabel(sex, traduzir)
+  ) %&gt;%
+  group_by(sex) %&gt;%
+  summarise(n = n()) %&gt;%
+  ggplot(aes(sex, n)) +
+  geom_col() +
+  theme_custom()
+```
+
+- Para traduzir os níveis, basta uma **pequena função** que retorna o nome em
+português quando ela recebe o nome em inglês
+]
+
+.pull-right[
+![](06-forcats_files/figure-html/plot3-1.png)&lt;!-- --&gt;
+]
+
+---
+# Caso de uso
+
+.pull-left[
+
+```r
+starwars %&gt;%
+  mutate(
+    sex = as_factor(sex),
+    sex = fct_relabel(sex, traduzir),
+*   sex = fct_explicit_na(sex, "?")
+  ) %&gt;%
+  group_by(sex) %&gt;%
+  summarise(n = n()) %&gt;%
+  ggplot(aes(sex, n)) +
+  geom_col() +
+  theme_custom()
+```
+
+- Fazer com que o `NA` **se torne um fator** também é simples com
+`fct_explicit_na()`
+]
+
+.pull-right[
+![](06-forcats_files/figure-html/plot4-1.png)&lt;!-- --&gt;
+]
+
+---
+# Caso de uso
+
+.pull-left[
+
+```r
+starwars %&gt;%
+  mutate(
+    sex = as_factor(sex),
+    sex = fct_relabel(sex, traduzir),
+    sex = fct_explicit_na(sex, "?"),
+*   sex = fct_lump_n(sex, 2)
+  ) %&gt;%
+  group_by(sex) %&gt;%
+  summarise(n = n()) %&gt;%
+  ggplot(aes(sex, n)) +
+  geom_col() +
+  theme_custom()
+```
+
+- Se não quisermos todos os níveis, podemos **agrupar os menos frequentes** com
+a família de funções `fct_lump_***()`
+]
+
+.pull-right[
+![](06-forcats_files/figure-html/plot5-1.png)&lt;!-- --&gt;
+]
+
+---
+# Caso de uso
+
+.pull-left[
+
+```r
+starwars %&gt;%
+  mutate(
+    sex = as_factor(sex),
+    sex = fct_relabel(sex, traduzir),
+    sex = fct_explicit_na(sex, "?"),
+    sex = fct_lump_n(sex, 2)
+  ) %&gt;%
+  group_by(sex) %&gt;%
+  summarise(n = n()) %&gt;%
+* mutate(sex = fct_reorder(sex, n)) %&gt;%
+  ggplot(aes(sex, n)) +
+  geom_col() +
+  theme_custom()
+```
+
+- Para **ordenar as barras** de acordo com outra variável, podemos simplesmente
+usar `fct_reorder()` (trocando o argumento `.fun` quando necessário)
+]
+
+.pull-right[
+![](06-forcats_files/figure-html/plot6-1.png)&lt;!-- --&gt;
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
