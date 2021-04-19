@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R para Ciência de Dados 2
+## Lubridate
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+### abril de 2021
+
+---
+
+
+
+
+# Motivação
+
+É difícil encontrar um tipo de dado mais delicado do que datas (e horas):
+diferentemente de textos e erros de _encoding_, erros de _locale_ podem passar
+desapercebidos e estragar uma análise inteira.
+
+Operações com tempo são complicadas, pois envolvem precisão e diversos fatores
+que variam de um lugar para o outro (fuso horário, horário de verão, anos
+bissextos, formato da data, etc.).
+
+Além das variações normais de como cada país escreve suas datas, cada computador
+tem seu jeito de interpretá-las e cada programa tem seu jeito de salvá-las.
+
+Entender como é a representação de tempo dentro de linguagens de programação é
+muito valioso porque isso é um problema relevante independentemente da
+ferramenta sendo utilizada.
+
+---
+# Introdução
+
+- Como representar datas em um universo cheio de fusos e calendários diferentes?
+Estabelecendo um momento universal e contando os segundos que se passaram desde
+lá
+
+
+```r
+library(lubridate)
+now()
+```
+
+```
+#&gt; [1] "2021-04-14 18:22:31 -03"
+```
+
+```r
+as.numeric(now())
+```
+
+```
+#&gt; [1] 1618435352
+```
+
+- O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
+ano novo de 1970 em Londres (01/01/1970 00:00:00 UTC)
+
+---
+# O pacote {lubridate}
+
+- O pacote `{lubridate}` vai nos possibilitar trabalhar com datas e data-horas
+fora do ISO 8601 (`ano-mês-dia hora:minuto:segundo`)
+
+- Para converter uma data-hora do formato brasileiro para o padrão universal,
+pensamos na ordem das unidades em inglês: _day, month, year, hour, minute,
+second_
+
+
+```r
+dmy_hms("15/04/2021 02:25:00")
+```
+
+```
+#&gt; [1] "2021-04-15 02:25:00 UTC"
+```
+
+- Também é possível trabalhar só com datas usando a mesma lógica das unidades
+
+
+```r
+dmy("15/04/2021")
+```
+
+```
+#&gt; [1] "2021-04-15"
+```
+
+---
+# Você acredita em mágica?
+
+- O `{lubridate}` é tão poderoso que pode parecer mágica
+
+
+```r
+dmy("15 de abril de 2021", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1252
+```
+
+```
+#&gt; [1] "2021-04-15"
+```
+
+```r
+mdy("April 15th 2021", locale = "en_US.UTF-8")     # Mês-dia-ano
+```
+
+```
+#&gt; [1] "2021-04-15"
+```
+
+- Às vezes o Excel salva datas como o número de dias desde 01/01/1970, mas nem
+isso pode vencer o `{lubridate}`
+
+
+```r
+as_date(18732)
+```
+
+```
+#&gt; [1] "2021-04-15"
+```
+
+---
+# Fusos
+
+- É mais raro precisar lidar com fusos horários porque normalmente trabalhamos
+com data-horas de um mesmo fuso, mas o `{lubridate}` permite lidar com isso
+também
+
+
+```r
+now(tzone = "Europe/London")
+```
+
+```
+#&gt; [1] "2021-04-14 22:22:32 BST"
+```
+
+- Nem o horário de verão consegue atrapalhar um cálculo preciso: com a função
+`dst()` é possível saber se em um dado dia aquele lugar estava no horário de
+verão
+
+
+```r
+dst(now(tzone = "Europe/London"))
+```
+
+```
+#&gt; [1] TRUE
+```
+
+---
+# Componentes
+
+- As funções `year()`, `month()`, `day()`... (**no singular**) podem extrair os
+componentes de uma data
+
+
+```r
+month("2021-04-15")
+```
+
+```
+#&gt; [1] 4
+```
+
+- Obs.: Note como não foi necessário converter a string para data porque ela já
+está no formato esperado pelo `{lubridate}`
+
+- As funções `years()`, `months()`, `days()`... (**no plural**) permitem fazer
+contas com datas e data-horas
+
+
+```r
+now() + days(5)
+```
+
+```
+#&gt; [1] "2021-04-19 18:22:32 -03"
+```
+
+---
+# Operações
+
+- Com os operadores matemáticos normais também somos capazes de calcular
+distâncias entre datas e horas
+
+
+```r
+dif &lt;- dmy("15/04/2021") - dmy("24/08/2020")
+dif
+```
+
+```
+#&gt; Time difference of 234 days
+```
+
+- Podemos transformar um objeto de diferença temporal em qualquer unidade que
+queiramos usando as funções no plural
+
+
+```r
+as.period(dif) / minutes(1)
+```
+
+```
+#&gt; [1] 336960
+```
+
+- Para diferenças entre data-horas pode ser importante usar os fusos
+
+---
+# Exemplos intermináveis
+
+
+```r
+dmy_hms("15/04/2021 02:25:30") # Data-hora
+```
+
+```
+#&gt; [1] "2021-04-15 02:25:30 UTC"
+```
+
+```r
+dmy_hm("15/04/2021 02:25")     # Sem segundo
+```
+
+```
+#&gt; [1] "2021-04-15 02:25:00 UTC"
+```
+
+```r
+dmy_h("15/04/2021 02")         # Sem minuto
+```
+
+```
+#&gt; [1] "2021-04-15 02:00:00 UTC"
+```
+
+```r
+as_datetime(1618453530)        # Numérico
+```
+
+```
+#&gt; [1] "2021-04-15 02:25:30 UTC"
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+
+```r
+mdy_hms("4/15/21 2:25:30 PM")                                # Americano
+```
+
+```
+#&gt; [1] "2021-04-15 14:25:30 UTC"
+```
+
+```r
+dmy_hms("15/04/2021 02:25:30", tz = "Europe/London")         # Com fuso
+```
+
+```
+#&gt; [1] "2021-04-15 02:25:30 BST"
+```
+
+```r
+now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
+```
+
+```
+#&gt; Time difference of -5.049405 hours
+```
+
+```r
+now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
+```
+
+```
+#&gt; Time difference of -4.049404 hours
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+
+```r
+minute("2021-04-15 02:25:30")                   # Minuto
+```
+
+```
+#&gt; [1] 25
+```
+
+```r
+year("2021-04-15")                              # Ano
+```
+
+```
+#&gt; [1] 2021
+```
+
+```r
+wday("2021-04-15")                              # Dia da semana
+```
+
+```
+#&gt; [1] 5
+```
+
+```r
+month("2021-04-15", label = TRUE, abbr = FALSE) # Mês (sem abrev.)
+```
+
+```
+#&gt; [1] abril
+#&gt; 12 Levels: janeiro &lt; fevereiro &lt; março &lt; abril &lt; maio &lt; junho &lt; ... &lt; dezembro
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+
+```r
+today() + months(5)                              # Dia
+```
+
+```
+#&gt; [1] "2021-09-14"
+```
+
+```r
+now() + seconds(5)                               # Segundo
+```
+
+```
+#&gt; [1] "2021-04-14 18:22:37 -03"
+```
+
+```r
+now() + days(5)                                  # Dia
+```
+
+```
+#&gt; [1] "2021-04-19 18:22:32 -03"
+```
+
+```r
+as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
+```
+
+```
+#&gt; [1] 103
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+
+```r
+t1 &lt;- dmy_hms("15/04/2021 02:25:00", tz = "America/Sao_Paulo")
+t2 &lt;- dmy_hms("15/04/2021 02:25:00")
+t1 - t2
+```
+
+```
+#&gt; Time difference of 3 hours
+```
+
+```r
+t1 &lt;- dmy_hms("15/04/2021 02:25:00", tz = "America/Sao_Paulo")
+t2 &lt;- dmy_hms("15/04/2021 02:25:00", tz = "Europe/London")
+t1 - t2
+```
+
+```
+#&gt; Time difference of 4 hours
+```
+
+```r
+head(OlsonNames())
+```
+
+```
+#&gt; [1] "Africa/Abidjan"     "Africa/Accra"       "Africa/Addis_Ababa"
+#&gt; [4] "Africa/Algiers"     "Africa/Asmara"      "Africa/Asmera"
+```
+
+---
+# Extra: {clock}
+
+- Como não existe o dia 31/02/2021 (fevereiro tem menos dias), o `{lubridate}`
+simplesmente considera a operação inválida e não nos avisa!
+
+
+```r
+x &lt;- ymd("2021-01-31")
+x + months(1)
+```
+
+```
+#&gt; [1] NA
+```
+
+```r
+# No {clock}, 31/01/2021 + 1 mês é um erro que deve ser corrigido
+library(clock)
+add_months(x, 1)
+```
+
+```
+#&gt; Error: Invalid date found at location 1.
+#&gt; ℹ Resolve invalid date issues by specifying the `invalid` argument.
+```
+
+```r
+# Agora podemos especificar uma estratégia de correção
+add_months(x, 1, invalid = "overflow")
+```
+
+```
+#&gt; [1] "2021-03-03"
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

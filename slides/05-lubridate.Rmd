@@ -1,6 +1,6 @@
 ---
 title: "R para Ciência de Dados 2"
-subtitle: "Manipulando datas (lubridate)"
+subtitle: "Lubridate"
 author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
 date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
@@ -15,24 +15,8 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-`%>%` <- magrittr::`%>%`
-
-blue <- function(x) {
-  glue::glue(
-    '<span style="color:#6495ed; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
-
-colorido <- function(x, cor) {
-  glue::glue(
-    '<span style="color:{cor}; font-weight: bold;">{x}</span>'
-  ) %>% 
-    htmltools::HTML()
-}
-
-options(width = 85)
-knitr::opts_chunk$set(comment = "#>")
+library(magrittr)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = "#>")
 options(dplyr.print_min = 5, dplyr.print_max = 5)
 ```
 
@@ -80,13 +64,13 @@ pensamos na ordem das unidades em inglês: _day, month, year, hour, minute,
 second_
 
 ```{r}
-dmy_hms("27/08/2020 02:25:00")
+dmy_hms("15/04/2021 02:25:00")
 ```
 
 - Também é possível trabalhar só com datas usando a mesma lógica das unidades
 
 ```{r}
-dmy("27/08/2020")
+dmy("15/04/2021")
 ```
 
 ---
@@ -95,15 +79,15 @@ dmy("27/08/2020")
 - O `{lubridate}` é tão poderoso que pode parecer mágica
 
 ```{r}
-dmy("27 de agosto de 2020", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1252
-mdy("August 27th 2020", locale = "en_US.UTF-8") # Mês-dia-ano
+dmy("15 de abril de 2021", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1252
+mdy("April 15th 2021", locale = "en_US.UTF-8")     # Mês-dia-ano
 ```
 
 - Às vezes o Excel salva datas como o número de dias desde 01/01/1970, mas nem
 isso pode vencer o `{lubridate}`
 
 ```{r}
-as_date(18501)
+as_date(18732)
 ```
 
 ---
@@ -132,7 +116,7 @@ dst(now(tzone = "Europe/London"))
 componentes de uma data
 
 ```{r}
-month("2020-08-27")
+month("2021-04-15")
 ```
 
 - Obs.: Note como não foi necessário converter a string para data porque ela já
@@ -152,7 +136,7 @@ now() + days(5)
 distâncias entre datas e horas
 
 ```{r}
-dif <- dmy("27/08/2020") - dmy("25/08/2020")
+dif <- dmy("15/04/2021") - dmy("24/08/2020")
 dif
 ```
 
@@ -169,30 +153,30 @@ as.period(dif) / minutes(1)
 # Exemplos intermináveis
 
 ```{r}
-dmy_hms("27/08/2020 02:25:30") # Data-hora
-dmy_hm("27/08/2020 02:25")     # Sem segundo
-dmy_h("27/08/2020 02")         # Sem minuto
-as_datetime(1598539497)        # Numérico
+dmy_hms("15/04/2021 02:25:30") # Data-hora
+dmy_hm("15/04/2021 02:25")     # Sem segundo
+dmy_h("15/04/2021 02")         # Sem minuto
+as_datetime(1618453530)        # Numérico
 ```
 
 ---
 # Exemplos intermináveis (cont.)
 
 ```{r}
-mdy_hms("8/27/20 2:25:30 PM")                                # Americano
-dmy_hms("27/08/2020 02:25:30", tz = "Europe/London")         # Com fuso
-now() - dmy_hms("27/08/2020 02:25:30")                       # Diferença
-now() - dmy_hms("27/08/2020 02:25:30", tz = "Europe/London") # Com fuso
+mdy_hms("4/15/21 2:25:30 PM")                                # Americano
+dmy_hms("15/04/2021 02:25:30", tz = "Europe/London")         # Com fuso
+now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
+now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
 ```
 
 ---
 # Exemplos intermináveis (cont.)
 
 ```{r}
-minute("2020-08-27 02:25:30")                                           # Minuto
-year("2020-08-27")                                                      # Ano
-wday("2020-08-27")                                                      # Dia da semana
-month("2020-08-27", label = TRUE, abbr = FALSE, locale = "pt_BR.UTF-8") # Mês (sem abrev.)
+minute("2021-04-15 02:25:30")                   # Minuto
+year("2021-04-15")                              # Ano
+wday("2021-04-15")                              # Dia da semana
+month("2021-04-15", label = TRUE, abbr = FALSE) # Mês (sem abrev.)
 ```
 
 ---
@@ -202,18 +186,36 @@ month("2020-08-27", label = TRUE, abbr = FALSE, locale = "pt_BR.UTF-8") # Mês (
 today() + months(5)                              # Dia
 now() + seconds(5)                               # Segundo
 now() + days(5)                                  # Dia
-as.period(today() - dmy("01/01/2020")) / days(1) # Dia - dia
+as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
 ```
 
 ---
 # Exemplos intermináveis (cont.)
 
 ```{r}
-t1 <- dmy_hms("27/08/2020 02:25:00", tz = "America/Sao_Paulo")
-t2 <- dmy_hms("27/08/2020 02:25:00")
+t1 <- dmy_hms("15/04/2021 02:25:00", tz = "America/Sao_Paulo")
+t2 <- dmy_hms("15/04/2021 02:25:00")
 t1 - t2
-t1 <- dmy_hms("27/08/2020 02:25:00", tz = "America/Sao_Paulo")
-t2 <- dmy_hms("27/08/2020 02:25:00", tz = "Europe/London")
+t1 <- dmy_hms("15/04/2021 02:25:00", tz = "America/Sao_Paulo")
+t2 <- dmy_hms("15/04/2021 02:25:00", tz = "Europe/London")
 t1 - t2
 head(OlsonNames())
+```
+
+---
+# Extra: {clock}
+
+- Como não existe o dia 31/02/2021 (fevereiro tem menos dias), o `{lubridate}`
+simplesmente considera a operação inválida e não nos avisa!
+
+```{r, error=TRUE}
+x <- ymd("2021-01-31")
+x + months(1)
+
+# No {clock}, 31/01/2021 + 1 mês é um erro que deve ser corrigido
+library(clock)
+add_months(x, 1)
+
+# Agora podemos especificar uma estratégia de correção
+add_months(x, 1, invalid = "overflow")
 ```
