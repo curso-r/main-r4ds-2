@@ -118,8 +118,8 @@ starwars %>% filter_na(col = birth_year) %>% nrow()
 ---
 # Curly-curly
 
-- O operador que vai resolver nosso problema é o `{{` (lê-se _curly curly_), que
-permite interpolar o código, ou seja, avaliá-lo antes da captura.
+- O operador que vai resolver nosso problema é o `{{ }}` (lê-se _curly curly_),
+que permite interpolar o código, ou seja, avaliá-lo antes da captura.
 
 ```{r}
 # O objetivo é filtrar uma coluna especificada pelo usuário
