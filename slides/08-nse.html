@@ -80,10 +80,10 @@ R, `print(1 + 2)` é diferente de `print(3)`, mas nas outras linguagens isso nã
 # Tidy evaluation
 
 A faceta da NSE que nos interessa no momento é a chamada _tidy evaluation_, ou
-**tidyeval**, a avaliação não-padrão utilizada pelas funções do `{tidyverse}` e
+**tidy eval**, a avaliação não-padrão utilizada pelas funções do `{tidyverse}` e
 outros pacotes feitos para trabalhar com o mesmo paradigma.
 
-- O mundo sem tidyeval é extremamente verborrágico, pois a tabela precisa ser
+- O mundo sem tidy eval é extremamente verborrágico, pois a tabela precisa ser
 especificada toda vez que nos referirmos a uma coluna:
 
 
@@ -176,7 +176,7 @@ stringr::str_glue("Interpolando '{col}'!")
 # Múltiplos argumentos
 
 - Para passar múltiplos argumentos nem é necessário usar o curly-curly já que a
-reticência já possui as capacidades de tidyeval:
+reticência já possui as capacidades de tidy eval:
 
 .pull-left[
 
@@ -239,7 +239,7 @@ summarise_mean(starwars, "media", "height")
 ---
 # Strings na esquerda
 
-- Quando o "lado esquerdo" (**antes de um igual**) de uma expressão com tidyeval
+- Quando o "lado esquerdo" (**antes de um igual**) de uma expressão com tidy eval
 é uma string (ou se tornará uma quando avaliado), precisamos apenas usar o
 operador `:=` (lê-se _walrus_, "morsa"):
 
@@ -266,7 +266,7 @@ summarise_mean(starwars, "media", "height")
 
 - Quando uma string (ou algo que se tornará uma quando avaliado) está no "lado
 direito" (**depois de um igual ou quando não há igual**) de uma expressão com
-tidyeval, precisamos apenas usar o pronome `.data`:
+tidy eval, precisamos apenas usar o pronome `.data`:
 
 
 ```r
@@ -292,7 +292,7 @@ sentido dentro da expressão, usamos `.data`.
 ---
 # Referências
 
-- Para saber mais sobre NSE, tidyeval e metaprogramação, dê uma olhada nos
+- Para saber mais sobre NSE, tidy eval e metaprogramação, dê uma olhada nos
 materiais disponibilizados pelo time `{rlang}`:
 
    - [rlang 0.4.0](https://www.tidyverse.org/blog/2019/06/rlang-0-4-0/)
