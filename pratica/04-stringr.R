@@ -1,5 +1,5 @@
 
-# Motivação: descobrir a quantos gêneros cada filme pertence
+# Motivação: descobrir a quantos gêneros cada filme pertence ***
 
 library(dplyr)
 library(stringr)
@@ -14,7 +14,7 @@ imdb %>%
 
 # -------------------------------------------------------------------------
 
-# Motivação: extrair o subtítulos dos filmes
+# Motivação: extrair o subtítulos dos filmes ***
 
 library(dplyr)
 library(stringr)
@@ -31,7 +31,7 @@ imdb %>%
 # -------------------------------------------------------------------------
 
 # Motivação: criar uma tabela apenas com filmes cujo
-# título comece com um número
+# título comece com um número ***
 
 library(dplyr)
 library(stringr)
@@ -43,7 +43,7 @@ imdb %>%
 
 # -------------------------------------------------------------------------
 
-# Motivação: qual a idade mínima para ver cada filme?
+# Motivação: qual a idade mínima para ver cada filme? ***
 
 library(dplyr)
 library(stringr)

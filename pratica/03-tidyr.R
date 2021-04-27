@@ -70,7 +70,7 @@ imdb %>%
 # -------------------------------------------------------------------------
 
 # Motivação: Fazer gráficos de dispersão do lucro vs todas as
-# outras variáveis núméricas da base IMDB
+# outras variáveis núméricas da base IMDB ***
 
 library(tidyr)
 library(dplyr)
@@ -95,7 +95,7 @@ imdb %>%
 # -------------------------------------------------------------------------
 
 # Motivação: fazer uma tabela do lucro médio anual dos filmes
-# de comédia, ação e romance (2000 a 2016)
+# de comédia, ação e romance (2000 a 2016) ***
 
 library(dplyr)
 library(tidyr)
@@ -127,7 +127,7 @@ stringr::str_subset()
 
 
 # Motivação: calcular o lucro médio por gênero do filme
-# na base IMDB.
+# na base IMDB. ***
 
 library(dplyr)
 library(tidyr)
@@ -175,7 +175,7 @@ imdb %>%
 
 # -------------------------------------------------------------------------
 
-# Motivação: número de espécies em cada filme do Star Wars
+# Motivação: número de espécies em cada filme do Star Wars ***
 
 library(dplyr)
 library(tidyr)

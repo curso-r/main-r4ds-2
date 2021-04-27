@@ -141,6 +141,6 @@ Também temos um blog:
 ---
 # Extras
 
-- Teremos monitoria duas vezes pode semana, sempre 30 minutos antes do início das aulas.
+- Teremos monitoria sempre 30 minutos antes do início das aulas.
 
 - A gravação das aulas ficará disponível no Google Classroom por 1 ano após o final do curso.

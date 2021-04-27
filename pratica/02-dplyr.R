@@ -51,7 +51,7 @@ casas %>%
 
 # -------------------------------------------------------------------------
 # Motivação: ver o número de categorias
-# distintas em cada variável categórica
+# distintas em cada variável categórica ***
 
 library(dplyr)
 
@@ -74,7 +74,7 @@ casas %>%
 
 # -------------------------------------------------------------------------
 # Motivação: substituir todos os NAs das variáveis
-# categóricas por "sem informação"
+# categóricas por "sem informação" ***
 
 casas %>%
   mutate(

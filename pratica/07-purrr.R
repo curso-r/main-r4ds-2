@@ -97,7 +97,7 @@ map(textos, verifica_texto)
 # -------------------------------------------------------------------------
 
 # Motivação: criar coluna de pontos do time da casa
-# ganhos a partir de um placar ({brasileirao})
+# ganhos a partir de um placar ({brasileirao}) ***
 
 library(purrr)
 library(dplyr)
