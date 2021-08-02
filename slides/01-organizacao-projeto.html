@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.9/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 # R para Ciência de Dados 2
 ## Organização de projetos
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### abril de 2021
+### Agosto de 2021
 
 ---
 
@@ -169,7 +169,7 @@ Para isso, vamos introduzir como organizar arquivos, funções e dependências p
 
 ---
 class: middle, center, inverse
-# Funções e dependências
+# Funções
 
 ---
 # Funções
@@ -191,38 +191,6 @@ No mundo ideal, na pasta `R/` do seu projeto haverá uma coleção de arquivos, 
 - Programas com funções normalmente são muito mais enxutos e limpos do que *scripts* soltos, pois estes estimulam repetição de código. 
 
 - Ao encontrar um bug, haverá apenas um lugar para concertar; se surgir a necessidade de modificar uma propriedade, haverá apenas um lugar para editar; se aquele código se tornar obsoleto, haverá apenas um lugar para deletar.
-
----
-# Dependências
-
-Sem os inúmeros pacotes criados pela comunidade, o R provavelmente já estaria no porão da Ciência de Dados. 
-
-Por isso, é a primeira coisa que escrevemos nos nossos *scripts* quase sempre é `library(algumPacoteLegal)`.
-
-No entanto, conforme nosso código vai crescendo, acabamos utilizando cada vez mais pacotes e, conforme nosso código vai mudando, fica impossível saber se um pacote listado no começo do *script* ainda está sendo utilizado ou não.
-
-**Qual a melhor maneira de se ter controle sobre os pacotes utilizados na nossa análise?**
-
----
-# Quatro pontos
-
-A resposta para essa pergunta pode assustar: no código ideal, a função `library()` nunca seria chamada, todas as funções teriam seus pacotes de origem explicitamente referenciados pelo operador `::`.
-
-**É excessivamente preciosista pedir para que qualquer análise em R seja feita sem a invocação de nenhuma biblioteca, apenas com chamadas do tipo** `biblioteca::funcao()`. 
-
-**Mas existem vantagens de se fazer isso**. E, se serve como consolo, **o RStudio facilita muito esse tipo de programação** por causa da sua capacidade de sugerir continuações para código interativamente. 
-
-Para escrever `dplyr::`, por exemplo, basta digitar `d`, `p`, `l` e apertar TAB uma vez. Com os `::`, as sugestões passarão a ser somente de funções daquele pacote.
-
----
-# Vatangens dos quatro pontos
-
-- O código, no total, executa um pouco mais rápido porque são carregadas menos funções no ambiente global (isso é especialmente importante em aplicações interativas feitas em Shiny).
-
-- As dependências do código estão sempre atualizadas porque elas estão diretamente atreladas às próprias funções sendo utilizadas.
-
-- O uso do `::` será fundamental na criação e organização de pacotes.
-
 
 ---
 class: middle, center, inverse
@@ -277,27 +245,6 @@ Se você precisar construir sites, relatórios, dashboards estáticos (flexdashb
 # A pasta inst/
 
 Qualquer outro tipo de arquivo que não couber nas pastas anteriores pode ser colocado na pasta `inst/`.
-
----
-# Documentação
-
-Se você quiser documentar as suas funções, uma boa forma de fazer isso é seguir o formato abaixo. 
-
-
-```r
-#' Título da função
-#'
-#' Descrição da função
-#' 
-#' @param a primeiro parâmetro
-#' @param b segundo parâmetro
-#' 
-#' @return descrição do resultado
-#' 
-fun &lt;- function(a, b) { 
-  a + b
-}
-```
 
 ---
 class: middle, center, inverse
@@ -416,11 +363,11 @@ usethis::use_github()
 
 - O PAT serve para autenticar ao github, podendo ser utilizado como senha de acesso ou internamente para automatizar tarefas (como criar um repositório).
 
-- Para acessar seu PAT, rode `usethis::github_token()`. 
+- Para criar seu PAT, rode `usethis::create_github_token()`. 
 
-- Se quiser editá-lo, rode `usethis::edit_r_environ()` e lembre-se de reiniciar sua sessão do R.
+- Para conectá-lo ao R, rode `gitcreds::gitcreds_set()` e cole o seu token no console quando ele for requisitado.
 
-Leia [aqui](https://curso-r.github.io/zen-do-r/git-github.html).
+Veja [aqui](https://curso-r.github.io/zen-do-r/git-github.html) um passo-a-passo mais detalhado.
 
 ---
 # Passo 4: Stage &amp; Commit
