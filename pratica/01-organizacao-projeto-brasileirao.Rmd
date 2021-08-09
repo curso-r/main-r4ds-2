@@ -4,7 +4,7 @@ Motivação: fazer análises sobre os resultados dos jogos do Brasileirão.
 Passo 1: criar um projeto.
 
 ```{r}
-usethis::create_project("analiseRickMorty")
+usethis::create_project("analiseBrasileirao")
 ```
 
 Passo 2: configurar o GIT
