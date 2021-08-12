@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -12,9 +12,9 @@
 class: center, middle, inverse, title-slide
 
 # R para Ciência de Dados 2
-## Dplyr++
+## Dplyr+
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### abril de 2021
+### agosto de 2021
 
 ---
 
@@ -98,41 +98,14 @@ casas %&gt;%
 ```
 
 ```
-#&gt; # A tibble: 10 x 3
+#&gt; # A tibble: 10 × 3
 #&gt;   geral_qualidade lote_area_media venda_valor_medio
 #&gt;   &lt;chr&gt;                     &lt;dbl&gt;             &lt;dbl&gt;
 #&gt; 1 abaixo da média           8464.           106485.
 #&gt; 2 acima da média            9788.           162130.
 #&gt; 3 boa                      10309.           205026.
 #&gt; 4 excelente                12777.           368337.
-#&gt; 5 média                     9995.           134753.
-#&gt; # … with 5 more rows
-```
-
----
-# across()
-
-Ou então:
-
-
-```r
-casas %&gt;%
-  group_by(geral_qualidade) %&gt;%
-  summarise_at(
-    .vars = vars(lote_area, venda_valor), # Variáveis
-    .funs = ~mean(.x, na.rm = TRUE)       # Função
-  )
-```
-
-```
-#&gt; # A tibble: 10 x 3
-#&gt;   geral_qualidade lote_area venda_valor
-#&gt;   &lt;chr&gt;               &lt;dbl&gt;       &lt;dbl&gt;
-#&gt; 1 abaixo da média     8464.     106485.
-#&gt; 2 acima da média      9788.     162130.
-#&gt; 3 boa                10309.     205026.
-#&gt; 4 excelente          12777.     368337.
-#&gt; 5 média               9995.     134753.
+#&gt; 5 média                     9996.           134753.
 #&gt; # … with 5 more rows
 ```
 
@@ -152,14 +125,14 @@ casas %&gt;%
 ```
 
 ```
-#&gt; # A tibble: 10 x 3
+#&gt; # A tibble: 10 × 3
 #&gt;   geral_qualidade lote_area venda_valor
 #&gt;   &lt;chr&gt;               &lt;dbl&gt;       &lt;dbl&gt;
 #&gt; 1 abaixo da média     8464.     106485.
 #&gt; 2 acima da média      9788.     162130.
 #&gt; 3 boa                10309.     205026.
 #&gt; 4 excelente          12777.     368337.
-#&gt; 5 média               9995.     134753.
+#&gt; 5 média               9996.     134753.
 #&gt; # … with 5 more rows
 ```
 
@@ -177,13 +150,13 @@ casas %&gt;%
 ```
 
 ```
-#&gt; # A tibble: 1 x 5
+#&gt; # A tibble: 1 × 5
 #&gt;   ordem   pid moradia_classe moradia_zoneamento lote_fachada
 #&gt;   &lt;int&gt; &lt;int&gt;          &lt;int&gt;              &lt;int&gt;        &lt;int&gt;
 #&gt; 1  2930  2930             16                  7          129
 ```
 
-O padrão do parâmetro `.cols` é `everithing()`, que representa "todas as colunas". Anteriormente, teríamos que utilizar a função `summarise_all()`.
+O padrão do parâmetro `.cols` é `everything()`, que representa "todas as colunas". Anteriormente, teríamos que utilizar a função `summarise_all()`.
 
 ---
 # across()
@@ -199,7 +172,7 @@ casas %&gt;%
 ```
 
 ```
-#&gt; # A tibble: 1 x 5
+#&gt; # A tibble: 1 × 5
 #&gt;     pid moradia_classe moradia_zoneamento rua_tipo beco_tipo
 #&gt;   &lt;int&gt;          &lt;int&gt;              &lt;int&gt;    &lt;int&gt;     &lt;int&gt;
 #&gt; 1  2930             16                  7        2         3
@@ -221,7 +194,7 @@ casas %&gt;%
 ```
 
 ```
-#&gt; # A tibble: 1 x 5
+#&gt; # A tibble: 1 × 5
 #&gt;   lote_area alvenaria_area porao_area_com_ac… porao_area_com_a… porao_area_sem_…
 #&gt;       &lt;dbl&gt;          &lt;dbl&gt;              &lt;dbl&gt;             &lt;dbl&gt;            &lt;dbl&gt;
 #&gt; 1    10148.           102.               443.              49.7             559.
@@ -241,18 +214,18 @@ casas %&gt;%
     across(where(is.character), ~sum(is.na(.x))),
     n_obs = n(),
   ) %&gt;% 
-  select(1:4, n_obs)
+  select(1:2, 19:20, n_obs)
 ```
 
 ```
-#&gt; # A tibble: 6 x 5
-#&gt;   fundacao_tipo       lote_area alvenaria_area porao_area_com_acabamento_1 n_obs
-#&gt;   &lt;chr&gt;                   &lt;dbl&gt;          &lt;dbl&gt;                       &lt;dbl&gt; &lt;int&gt;
-#&gt; 1 bloco de concreto      10616.           85.0                       468.   1244
-#&gt; 2 concreto derrramado    10054.          144.                        506.   1310
-#&gt; 3 laje                   10250.           35.2                         0      49
-#&gt; 4 madeira                 9838.           16                         812.      5
-#&gt; 5 pedra                   8659.            0                          43.9    11
+#&gt; # A tibble: 6 × 5
+#&gt;   fundacao_tipo       lote_area   pid moradia_classe n_obs
+#&gt;   &lt;chr&gt;                   &lt;dbl&gt; &lt;int&gt;          &lt;int&gt; &lt;int&gt;
+#&gt; 1 bloco de concreto      10616.     0              0  1244
+#&gt; 2 concreto derrramado    10054.     0              0  1310
+#&gt; 3 laje                   10250.     0              0    49
+#&gt; 4 madeira                 9838.     0              0     5
+#&gt; 5 pedra                   8659.     0              0    11
 #&gt; # … with 1 more row
 ```
 
@@ -304,7 +277,7 @@ casas %&gt;%
 ```
 
 ```
-#&gt; # A tibble: 2,930 x 5
+#&gt; # A tibble: 2,930 × 5
 #&gt;   ordem lote_fachada lote_area construcao_ano remodelacao_ano
 #&gt;   &lt;int&gt;        &lt;int&gt;     &lt;int&gt;          &lt;int&gt;           &lt;int&gt;
 #&gt; 1     1          141     31770           1960            1960
@@ -325,19 +298,19 @@ O mesmo vale para o `rename()`. Se quisermos renomer várias colunas, a partir d
 # Pegando apenas 5 colunas por questão de espaço
 casas %&gt;%
   rename_with(toupper, contains("venda")) %&gt;% 
-  select(73:77)
+  select(contains("VENDA"))
 ```
 
 ```
-#&gt; # A tibble: 2,930 x 5
-#&gt;   piscina_area piscina_qualidade cerca_qualidade    funcionalidades_diversas
-#&gt;          &lt;int&gt; &lt;chr&gt;             &lt;chr&gt;              &lt;chr&gt;                   
-#&gt; 1            0 &lt;NA&gt;              &lt;NA&gt;               &lt;NA&gt;                    
-#&gt; 2            0 &lt;NA&gt;              mínima privacidade &lt;NA&gt;                    
-#&gt; 3            0 &lt;NA&gt;              &lt;NA&gt;               segunda garagem         
-#&gt; 4            0 &lt;NA&gt;              &lt;NA&gt;               &lt;NA&gt;                    
-#&gt; 5            0 &lt;NA&gt;              mínima privacidade &lt;NA&gt;                    
-#&gt; # … with 2,925 more rows, and 1 more variable: funcionalidades_valor &lt;int&gt;
+#&gt; # A tibble: 2,930 × 5
+#&gt;   VENDA_MES VENDA_ANO VENDA_TIPO VENDA_CONDICAO VENDA_VALOR
+#&gt;       &lt;int&gt;     &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;                &lt;int&gt;
+#&gt; 1         5      2010 "WD "      venda normal        215000
+#&gt; 2         6      2010 "WD "      venda normal        105000
+#&gt; 3         6      2010 "WD "      venda normal        172000
+#&gt; 4         4      2010 "WD "      venda normal        244000
+#&gt; 5         3      2010 "WD "      venda normal        189900
+#&gt; # … with 2,925 more rows
 ```
 
 ---
@@ -354,7 +327,7 @@ casas %&gt;%
 ```
 
 ```
-#&gt; # A tibble: 2,930 x 5
+#&gt; # A tibble: 2,930 × 5
 #&gt;   venda_valor venda_tipo ordem pid        moradia_classe
 #&gt;         &lt;int&gt; &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;         
 #&gt; 1      215000 "WD "          1 0526301100 020           
@@ -405,14 +378,14 @@ tab_notas
 ```
 
 ```
-#&gt; # A tibble: 5 x 5
+#&gt; # A tibble: 5 × 5
 #&gt;   student_id prova1 prova2 prova3 prova4
 #&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
-#&gt; 1          1      4      2      7      6
-#&gt; 2          2      9      9      8      0
-#&gt; 3          3      0      7      2      5
-#&gt; 4          4      2      1      3      3
-#&gt; 5          5     10      6      5     10
+#&gt; 1          1      5      9     10      3
+#&gt; 2          2      4      5      1      9
+#&gt; 3          3      7      6      8     10
+#&gt; 4          4      3      7      4      1
+#&gt; 5          5      0      2      6      6
 ```
 
 ---
@@ -426,14 +399,14 @@ tab_notas %&gt;% mutate(media = mean(c(prova1, prova2, prova3, prova4)))
 ```
 
 ```
-#&gt; # A tibble: 5 x 6
+#&gt; # A tibble: 5 × 6
 #&gt;   student_id prova1 prova2 prova3 prova4 media
 #&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      4      2      7      6  4.95
-#&gt; 2          2      9      9      8      0  4.95
-#&gt; 3          3      0      7      2      5  4.95
-#&gt; 4          4      2      1      3      3  4.95
-#&gt; 5          5     10      6      5     10  4.95
+#&gt; 1          1      5      9     10      3   5.3
+#&gt; 2          2      4      5      1      9   5.3
+#&gt; 3          3      7      6      8     10   5.3
+#&gt; 4          4      3      7      4      1   5.3
+#&gt; 5          5      0      2      6      6   5.3
 ```
 
 Neste caso, todas as colunas estão sendo empilhadas e gerando uma única média, passada a todas as linhas da coluna `media`.
@@ -451,15 +424,40 @@ tab_notas %&gt;%
 ```
 
 ```
-#&gt; # A tibble: 5 x 6
+#&gt; # A tibble: 5 × 6
 #&gt; # Groups:   student_id [5]
 #&gt;   student_id prova1 prova2 prova3 prova4 media
 #&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      4      2      7      6  4.75
-#&gt; 2          2      9      9      8      0  6.5 
-#&gt; 3          3      0      7      2      5  3.5 
-#&gt; 4          4      2      1      3      3  2.25
-#&gt; 5          5     10      6      5     10  7.75
+#&gt; 1          1      5      9     10      3  6.75
+#&gt; 2          2      4      5      1      9  4.75
+#&gt; 3          3      7      6      8     10  7.75
+#&gt; 4          4      3      7      4      1  3.75
+#&gt; 5          5      0      2      6      6  3.5
+```
+
+---
+# rowwise()
+
+E se não tivermos uma coluna ID? Então basta usarmos a `rowwise()`, uma função
+que automaticamente agrupa pelo identificador das linhas.
+
+
+```r
+tab_notas %&gt;%
+  rowwise() %&gt;%
+  mutate(media = mean(c(prova1, prova2, prova3, prova4)))
+```
+
+```
+#&gt; # A tibble: 5 × 6
+#&gt; # Rowwise: 
+#&gt;   student_id prova1 prova2 prova3 prova4 media
+#&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
+#&gt; 1          1      5      9     10      3  6.75
+#&gt; 2          2      4      5      1      9  4.75
+#&gt; 3          3      7      6      8     10  7.75
+#&gt; 4          4      3      7      4      1  3.75
+#&gt; 5          5      0      2      6      6  3.5
 ```
 
 ---
@@ -470,71 +468,21 @@ Também podemos nos aproveitar da sintaxe do `across()` neste caso. Para isso, p
 
 ```r
 tab_notas %&gt;%
-  group_by(student_id) %&gt;%
-  mutate(media = mean(c_across(starts_with("prova"))))
-```
-
-```
-#&gt; # A tibble: 5 x 6
-#&gt; # Groups:   student_id [5]
-#&gt;   student_id prova1 prova2 prova3 prova4 media
-#&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      4      2      7      6  4.75
-#&gt; 2          2      9      9      8      0  6.5 
-#&gt; 3          3      0      7      2      5  3.5 
-#&gt; 4          4      2      1      3      3  2.25
-#&gt; 5          5     10      6      5     10  7.75
-```
-
----
-# c_across()
-
-Equivalentemente ao `group_by()`, neste caso, podemos usar a função `rowwise()`.
-
-
-```r
-tab_notas %&gt;%
-  rowwise(student_id) %&gt;%
-  mutate(media = mean(c_across(starts_with("prova"))))
-```
-
-```
-#&gt; # A tibble: 5 x 6
-#&gt; # Rowwise:  student_id
-#&gt;   student_id prova1 prova2 prova3 prova4 media
-#&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      4      2      7      6  4.75
-#&gt; 2          2      9      9      8      0  6.5 
-#&gt; 3          3      0      7      2      5  3.5 
-#&gt; 4          4      2      1      3      3  2.25
-#&gt; 5          5     10      6      5     10  7.75
-```
-
----
-# c_across()
-
-Ela é muito útil quando queremos fazer operação por linhas, mas não temos uma coluna de identificação. Por padrão, se não indicarmos nenhuma coluna, cada linha será um "grupo".
-
-
-```r
-tab_notas %&gt;%
   rowwise() %&gt;%
   mutate(media = mean(c_across(starts_with("prova"))))
 ```
 
 ```
-#&gt; # A tibble: 5 x 6
+#&gt; # A tibble: 5 × 6
 #&gt; # Rowwise: 
 #&gt;   student_id prova1 prova2 prova3 prova4 media
 #&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      4      2      7      6  4.75
-#&gt; 2          2      9      9      8      0  6.5 
-#&gt; 3          3      0      7      2      5  3.5 
-#&gt; 4          4      2      1      3      3  2.25
-#&gt; 5          5     10      6      5     10  7.75
+#&gt; 1          1      5      9     10      3  6.75
+#&gt; 2          2      4      5      1      9  4.75
+#&gt; 3          3      7      6      8     10  7.75
+#&gt; 4          4      3      7      4      1  3.75
+#&gt; 5          5      0      2      6      6  3.5
 ```
-
-Veja que `student_id` não é passada para a função `rowwise()`. Não precisaríamos dessa coluna na base para reproduzir a geração da columa `media` neste caso.
 
 ---
 class: middle, center, inverse
@@ -560,357 +508,6 @@ Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos 
 - `pull()`: para transformar uma coluna da base em um vetor.
 
 - `slice_sample`: para gerar amostras da base.
-
----
-# bind_rows()
-
-Vamos usar a função `bind_rows()` para juntarmos duas bases com as mesmas colunas. Neste caso, a função `bind_rows()` é equivalente à função `rbind()`.
-
-
-```r
-# Juntando duas bases
-imdb_2015 &lt;- readr::read_rds("../data/imdb_por_ano/imdb_2015.rds")
-imdb_2016 &lt;- readr::read_rds("../data/imdb_por_ano/imdb_2016.rds")
-
-bind_rows(imdb_2015, imdb_2016)
-```
-
-```
-#&gt; # A tibble: 248 x 15
-#&gt;   titulo     ano diretor  duracao cor   generos    pais  classificacao orcamento
-#&gt;   &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;      &lt;int&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
-#&gt; 1 Avenger…  2015 Joss Wh…     141 Color Action|Ad… USA   A partir de … 250000000
-#&gt; 2 Jurassi…  2015 Colin T…     124 Color Action|Ad… USA   A partir de … 150000000
-#&gt; 3 Furious…  2015 James W…     140 Color Action|Cr… USA   A partir de … 190000000
-#&gt; 4 The Goo…  2015 Peter S…      93 Color Adventure… USA   Livre                NA
-#&gt; 5 Jupiter…  2015 Lana Wa…     127 Color Action|Ad… USA   A partir de … 176000000
-#&gt; # … with 243 more rows, and 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
-#&gt; #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
-```
-
----
-# bind_rows()
-
-Podemos também usar a função `bind_rows()` para juntar várias tabelas. Aqui, todas as tabelas continuam tendo as mesmas colunas. Como a função `map()` devolve uma lista, a função `rbind()` não funcionaria.
-
-
-```r
-arquivos &lt;- list.files("../data/imdb_por_ano/", full.names = TRUE)
-
-arquivos %&gt;%
-  purrr::map(readr::read_rds) %&gt;%
-  bind_rows()
-```
-
-```
-#&gt; # A tibble: 3,733 x 15
-#&gt;   titulo       ano diretor  duracao cor    generos pais  classificacao orcamento
-#&gt;   &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
-#&gt; 1 Intoleran…  1916 D.W. Gr…     123 Black… Drama|… USA   Outros           385907
-#&gt; 2 Over the …  1920 Harry F…     110 Black… Crime|… USA   Outros           100000
-#&gt; 3 The Big P…  1925 King Vi…     151 Black… Drama|… USA   Outros           245000
-#&gt; 4 The Broad…  1929 Harry B…     100 Black… Musica… USA   Outros           379000
-#&gt; 5 Hell's An…  1930 Howard …      96 Black… Drama|… USA   Outros          3950000
-#&gt; # … with 3,728 more rows, and 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
-#&gt; #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
-```
-
----
-# bind_rows()
-
-Além disso, a função `bind_rows()` pode ser utilizada para empilhar bases com colunas diferentes (ao contrário da função `rbind()`).
-
-
-```r
-tab1 &lt;- tibble(v1 = c(1, 2, 3), v2 = c("a", "b", "c"), v3 = c(10, 20, 30))
-tab2 &lt;- tibble(v2 = c("d", "e", "f"), v1 = c(4, 5, 6))
-
-bind_rows(tab1, tab2)
-```
-
-```
-#&gt; # A tibble: 6 x 3
-#&gt;      v1 v2       v3
-#&gt;   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
-#&gt; 1     1 a        10
-#&gt; 2     2 b        20
-#&gt; 3     3 c        30
-#&gt; 4     4 d        NA
-#&gt; 5     5 e        NA
-#&gt; # … with 1 more row
-```
-
-**Extra**: o `dplyr` também possui a função `bind_cols()`, para juntar duas bases colocando suas colunas lado-a-lado.
-
----
-# case_when()
-
-A função `case_when()` generaliza a função `ifelse()`, permitindo colocar quantas condições quisermos.
-
-
-```r
-x &lt;- -5:5
-
-case_when(
-  x &lt; 0 ~ "negativo",
-  x == 0 ~ "zero",
-  x &gt; 0 ~ "positivo"
-)
-```
-
-```
-#&gt;  [1] "negativo" "negativo" "negativo" "negativo" "negativo" "zero"    
-#&gt;  [7] "positivo" "positivo" "positivo" "positivo" "positivo"
-```
-
-Com `ifelse()`, precisaríamos usar a função duas vezes:
-
-
-```r
-ifelse(x &lt; 0, "negativo", ifelse(x == 0, "zero", "positivo"))
-```
-
-```
-#&gt;  [1] "negativo" "negativo" "negativo" "negativo" "negativo" "zero"    
-#&gt;  [7] "positivo" "positivo" "positivo" "positivo" "positivo"
-```
-
----
-# case_when()
-
-A ordem das condições é importante no `case_when()`, pois os testes são realizados na ordem em que eles aparecem. A segunda condição pega os carros com `15 &lt;= mpg &lt; 25`
-
-
-```r
-mtcars %&gt;%
-  mutate(mpg_cat = case_when(
-    mpg &lt; 15 ~ "economico",
-    mpg &lt; 22 ~ "regular",
-    mpg &gt;= 22 ~ "bebe bem"
-  )) %&gt;% 
-  head(8)
-```
-
-```
-#&gt;                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb   mpg_cat
-#&gt; Mazda RX4         21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4   regular
-#&gt; Mazda RX4 Wag     21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4   regular
-#&gt; Datsun 710        22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1  bebe bem
-#&gt; Hornet 4 Drive    21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1   regular
-#&gt; Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2   regular
-#&gt; Valiant           18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1   regular
-#&gt; Duster 360        14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4 economico
-#&gt; Merc 240D         24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2  bebe bem
-```
-
----
-# case_when()
-
-Como a última condição é complementar, isto é, as observações que não entrarm nas condições anteriores com certeza entrarão na última condição, podemos substituí-la por um simples `TRUE`.
-
-
-```r
-mtcars %&gt;%
-  mutate(mpg_cat = case_when(
-    mpg &lt; 15 ~ "economico",
-    mpg &lt; 22 ~ "regular",
-    TRUE ~ "bebe bem"
-  )) %&gt;% 
-  head(8)
-```
-
-```
-#&gt;                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb   mpg_cat
-#&gt; Mazda RX4         21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4   regular
-#&gt; Mazda RX4 Wag     21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4   regular
-#&gt; Datsun 710        22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1  bebe bem
-#&gt; Hornet 4 Drive    21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1   regular
-#&gt; Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2   regular
-#&gt; Valiant           18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1   regular
-#&gt; Duster 360        14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4 economico
-#&gt; Merc 240D         24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2  bebe bem
-```
-
----
-# first(), last()
-
-Essas funções retornam o primeiro e último valor de um vetor. São funções quando temos algum tipo de ordem:
-
-
-```r
-mtcars %&gt;%
-  group_by(cyl) %&gt;%
-  arrange(mpg, .by_group = TRUE) %&gt;%
-  mutate(pior = first(mpg), melhor = last(mpg)) %&gt;%
-  select(mpg, cyl, pior, melhor)
-```
-
-```
-#&gt; # A tibble: 32 x 4
-#&gt; # Groups:   cyl [3]
-#&gt;     mpg   cyl  pior melhor
-#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
-#&gt; 1  21.4     4  21.4   33.9
-#&gt; 2  21.5     4  21.4   33.9
-#&gt; 3  22.8     4  21.4   33.9
-#&gt; 4  22.8     4  21.4   33.9
-#&gt; 5  24.4     4  21.4   33.9
-#&gt; # … with 27 more rows
-```
-
----
-# na_if()
-
-Transforma um valor especificado em `NA`.
-
-
-```r
-tab &lt;- tibble(
-  var = c(1, 10, 2, -99, 10, -99)
-)
-
-tab %&gt;%
-  mutate(var = na_if(var, -99))
-```
-
-```
-#&gt; # A tibble: 6 x 1
-#&gt;     var
-#&gt;   &lt;dbl&gt;
-#&gt; 1     1
-#&gt; 2    10
-#&gt; 3     2
-#&gt; 4    NA
-#&gt; 5    10
-#&gt; # … with 1 more row
-```
-
----
-# coalesce()
-
-A função `coalesce()` substitui os `NA`s de uma coluna pelos valores correspondentes de uma segunda coluna.No caso em que as duas colunas apresentavam `NA`, a coluna `var3` continuou com o `NA`.
-
-
-```r
-tab &lt;- tibble(
-  var1 = c(1, 2, NA, 10, NA, NA),
-  var2 = c(NA, 2, 2, 3, 0, NA)
-)
-
-tab %&gt;%
-  mutate(var3 = coalesce(var1, var2))
-```
-
-```
-#&gt; # A tibble: 6 x 3
-#&gt;    var1  var2  var3
-#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1     1    NA     1
-#&gt; 2     2     2     2
-#&gt; 3    NA     2     2
-#&gt; 4    10     3    10
-#&gt; 5    NA     0     0
-#&gt; # … with 1 more row
-```
-
----
-# coalesce()
-
-Você também pode usar para substituir `NA`s de uma variável por um único valor. Outra função que faz isso é a `tidyr::replace_na()`.
-
-
-```r
-tab %&gt;% mutate(var3 = coalesce(var1, 33))
-```
-
-```
-#&gt; # A tibble: 6 x 3
-#&gt;    var1  var2  var3
-#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1     1    NA     1
-#&gt; 2     2     2     2
-#&gt; 3    NA     2    33
-#&gt; 4    10     3    10
-#&gt; 5    NA     0    33
-#&gt; # … with 1 more row
-```
-
----
-# lag(), lead()
-
-Essas funções devolvem o valor anterior e valor seguinte.
-
-
-```r
-tab &lt;- tibble(tempo = c(1, 2, 3, 4, 5), var = c(1, 4, 10, 33, 20))
-
-tab %&gt;% 
-  dplyr::mutate(
-    var_lag = lag(var),
-    var_lead = lead(var)
-  )
-```
-
-```
-#&gt; # A tibble: 5 x 4
-#&gt;   tempo   var var_lag var_lead
-#&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1     1     1      NA        4
-#&gt; 2     2     4       1       10
-#&gt; 3     3    10       4       33
-#&gt; 4     4    33      10       20
-#&gt; 5     5    20      33       NA
-```
-
----
-# pull()
-
-Devolve uma coluna da base como vetor.
-
-
-```r
-mtcars %&gt;%
-  pull(mpg)
-```
-
-```
-#&gt;  [1] 21.0 21.0 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 17.8 16.4 17.3 15.2 10.4
-#&gt; [16] 10.4 14.7 32.4 30.4 33.9 21.5 15.5 15.2 13.3 19.2 27.3 26.0 30.4 15.8 19.7
-#&gt; [31] 15.0 21.4
-```
-
----
-# slice_sample()
-
-Essa função pode ser utilizada para pegarmos uma amostra de linhas da nossa base. No exemplo abaixo, pegamos uma amostra de tamanho 10 da base `mtcars`:
-
-
-```r
-slice_sample(mtcars, n = 5)
-```
-
-```
-#&gt;                mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-#&gt; Lotus Europa  30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
-#&gt; Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-#&gt; Merc 240D     24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
-#&gt; Merc 230      22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-#&gt; Porsche 914-2 26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-```
-
-Agora, pegamos 10% da base `mtcars`.
-
-
-```r
-slice_sample(mtcars, prop = 0.1)
-```
-
-```
-#&gt;                   mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-#&gt; Toyota Corona    21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
-#&gt; Dodge Challenger 15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
-#&gt; Duster 360       14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

@@ -46,8 +46,6 @@ Vamos ver aqui algumas de suas principais funções:
 
 - `pivot_wider()` e `pivot_longer()`: para pirvotar a base.
 
-- `nest()` e `unnest()`: para criar *list columns*.
-
 ---
 # Motivação
 
@@ -151,8 +149,8 @@ A função `pivot_wider()` faz a operação inversa da `pivot_longer()`. Sem apl
 imdb_long <- imdb %>% 
   pivot_longer(
     cols = starts_with("ator"), 
-    names_to = "ator_protagonismo",
-    values_to = "ator_nome"
+    names_to = "protagonismo",
+    values_to = "ator_atriz"
   )
 ```
 
@@ -160,92 +158,10 @@ imdb_long <- imdb %>%
 ```{r}
 imdb_long %>% 
   pivot_wider(
-    names_from = "ator_protagonismo",
-    values_from = "ator_nome"
+    names_from = "protagonismo",
+    values_from = "ator_atriz"
   ) %>%
   select(1:3, starts_with("ator"))
-```
-
----
-# List columns
-
-Um terceiro conceito de dados *tidy* é que cada célula da tabela possui um valor. No entanto, quando estamos programando, muitas vezes vale apena abandonar essa definição e guardarmos objetos mais complexos nas células de uma tabela.
-
-Utilizando as chamadas *list columns* podemos guardar virtualmente qualquer objeto em nossas *tibbles*, como gráficos, resultados de modelos ou até mesmo outras tabelas.
-
-Uma forma de trabalhar com *list columns* consiste em utilizarmos as funções
-
-- `nest()`: para criar uma *list column*;
-
-- `unnest()`: para desfazer uma *list column*.
-
-Se você não estiver familiarizado com o conceito de listas dentro do R, leia o [capítulo de listas do nosso livro](https://livro.curso-r.com/3-9-listas.html).
-
----
-# nest()
-
-A forma mais simples de utilizarmos uma *list column* é *aninhar* a nossa base com relação a uma variável.
-
-```{r}
-imdb_nest <- imdb %>%
-  group_by(ano) %>%
-  nest() %>% 
-  arrange(ano)
-
-imdb_nest
-```
-
----
-# nest()
-
-A base `imdb_nest` possui duas colunas `ano` e `data` e uma linha para cada ano. Na coluna `data`, temos o restante da base `imdb`, recortada para cada um dos anos.
-
-Abaixo, acessmos os dados do único filme de 1916 (primeira linha da base `imdb_nest`).
-
-```{r}
-imdb_nest$data[[1]]
-```
-
-Imagine que queiramos fazer, para cada ano, um gráfico de dispersão da receita contra o orçamento dos filmes lançados no ano.
-
-Com a base no formato de *list columns*, basta criarmos uma função para gerar o gráfico e utilizarmos a função `purrr::map()`.
-
----
-# nest()
-
-Abaixo, construímos a função `fazer_grafico_dispersao()`, que será aplicada a cada uma das bases contidas na coluna `data` da base `imdb_nest`. Os gráficos, respectivamos a cada ano, são salvos na coluna `grafico`.
-
-```{r}
-fazer_grafico_dispersao <- function(tab) {
-  tab %>%
-    filter(!is.na(orcamento), !is.na(receita)) %>%
-    ggplot2::ggplot(ggplot2::aes(x = orcamento, y = receita)) +
-    ggplot2::geom_point()
-}
-
-imdb_graficos <- imdb_nest %>% 
-  mutate(grafico = purrr::map(data, fazer_grafico_dispersao))
-```
-
----
-# nest()
-
-Para acessar cada um dos gráficos, basta escolher diretamente pelo ano:
-
-```{r, fig.height=4, fig.width=4, fig.align="center"}
-imdb_graficos %>% 
-  filter(ano == 2000) %>% 
-  pull(grafico)
-```
-
----
-# unnest()
-
-A função `unnest()` remove a estrutura de *list column*. Fazendo a operação abaixo, voltamos para a base `imdb` original.
-
-```{r}
-imdb_nest %>%
-  unnest(cols = "data")
 ```
 
 ---
