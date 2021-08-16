@@ -98,7 +98,7 @@ com data-horas de um mesmo fuso, mas o `{lubridate}` permite lidar com isso
 também
 
 ```{r}
-now(tzone = "Europe/London")
+dmy_hms("15/04/2021 02:25:30", tz = "Europe/London")
 ```
 
 - Nem o horário de verão consegue atrapalhar um cálculo preciso: com a função
@@ -106,7 +106,7 @@ now(tzone = "Europe/London")
 verão
 
 ```{r}
-dst(now(tzone = "Europe/London"))
+dst(dmy_hms("15/04/2021 02:25:30", tz = "Europe/London"))
 ```
 
 ---

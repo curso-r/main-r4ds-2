@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 # R para Ciência de Dados 2
 ## Lubridate
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### abril de 2021
+### agosto de 2021
 
 ---
 
@@ -52,7 +52,7 @@ now()
 ```
 
 ```
-#&gt; [1] "2021-04-14 18:22:31 -03"
+#&gt; [1] "2021-08-16 18:58:24 -03"
 ```
 
 ```r
@@ -60,7 +60,7 @@ as.numeric(now())
 ```
 
 ```
-#&gt; [1] 1618435352
+#&gt; [1] 1629151105
 ```
 
 - O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
@@ -139,11 +139,11 @@ também
 
 
 ```r
-now(tzone = "Europe/London")
+dmy_hms("15/04/2021 02:25:30", tz = "Europe/London")
 ```
 
 ```
-#&gt; [1] "2021-04-14 22:22:32 BST"
+#&gt; [1] "2021-04-15 02:25:30 BST"
 ```
 
 - Nem o horário de verão consegue atrapalhar um cálculo preciso: com a função
@@ -152,7 +152,7 @@ verão
 
 
 ```r
-dst(now(tzone = "Europe/London"))
+dst(dmy_hms("15/04/2021 02:25:30", tz = "Europe/London"))
 ```
 
 ```
@@ -186,7 +186,7 @@ now() + days(5)
 ```
 
 ```
-#&gt; [1] "2021-04-19 18:22:32 -03"
+#&gt; [1] "2021-08-21 18:58:25 -03"
 ```
 
 ---
@@ -280,7 +280,7 @@ now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
 ```
 
 ```
-#&gt; Time difference of -5.049405 hours
+#&gt; Time difference of 123.8145 days
 ```
 
 ```r
@@ -288,7 +288,7 @@ now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
 ```
 
 ```
-#&gt; Time difference of -4.049404 hours
+#&gt; Time difference of 123.8562 days
 ```
 
 ---
@@ -337,7 +337,7 @@ today() + months(5)                              # Dia
 ```
 
 ```
-#&gt; [1] "2021-09-14"
+#&gt; [1] "2022-01-16"
 ```
 
 ```r
@@ -345,7 +345,7 @@ now() + seconds(5)                               # Segundo
 ```
 
 ```
-#&gt; [1] "2021-04-14 18:22:37 -03"
+#&gt; [1] "2021-08-16 18:58:30 -03"
 ```
 
 ```r
@@ -353,7 +353,7 @@ now() + days(5)                                  # Dia
 ```
 
 ```
-#&gt; [1] "2021-04-19 18:22:32 -03"
+#&gt; [1] "2021-08-21 18:58:25 -03"
 ```
 
 ```r
@@ -361,7 +361,7 @@ as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
 ```
 
 ```
-#&gt; [1] 103
+#&gt; [1] 227
 ```
 
 ---
