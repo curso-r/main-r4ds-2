@@ -1,6 +1,6 @@
 ---
 title: "R para Ciência de Dados 2"
-subtitle: "Forcats"
+subtitle: "Lubridate + Forcats"
 author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
 date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
@@ -22,6 +22,215 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = "#>")
 options(dplyr.print_min = 5, dplyr.print_max = 5)
 ```
 
+class: middle, center, inverse
+# Lubridate
+
+---
+# Motivação
+
+É difícil encontrar um tipo de dado mais delicado do que datas (e horas):
+diferentemente de textos e erros de _encoding_, erros de _locale_ podem passar
+desapercebidos e estragar uma análise inteira.
+
+Operações com tempo são complicadas, pois envolvem precisão e diversos fatores
+que variam de um lugar para o outro (fuso horário, horário de verão, anos
+bissextos, formato da data, etc.).
+
+Além das variações normais de como cada país escreve suas datas, cada computador
+tem seu jeito de interpretá-las e cada programa tem seu jeito de salvá-las.
+
+Entender como é a representação de tempo dentro de linguagens de programação é
+muito valioso porque isso é um problema relevante independentemente da
+ferramenta sendo utilizada.
+
+---
+# Introdução
+
+- Como representar datas em um universo cheio de fusos e calendários diferentes?
+Estabelecendo um momento universal e contando os segundos que se passaram desde
+lá
+
+```{r, message=FALSE}
+library(lubridate)
+now()
+as.numeric(now())
+```
+
+- O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
+ano novo de 1970 em Londres (01/01/1970 00:00:00 UTC)
+
+---
+# O pacote {lubridate}
+
+- O pacote `{lubridate}` vai nos possibilitar trabalhar com datas e data-horas
+fora do ISO 8601 (`ano-mês-dia hora:minuto:segundo`)
+
+- Para converter uma data-hora do formato brasileiro para o padrão universal,
+pensamos na ordem das unidades em inglês: _day, month, year, hour, minute,
+second_
+
+```{r}
+dmy_hms("15/04/2021 02:25:00")
+```
+
+- Também é possível trabalhar só com datas usando a mesma lógica das unidades
+
+```{r}
+dmy("15/04/2021")
+```
+
+---
+# Você acredita em mágica?
+
+- O `{lubridate}` é tão poderoso que pode parecer mágica
+
+```{r}
+dmy("15 de abril de 2021", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1252
+mdy("April 15th 2021", locale = "en_US.UTF-8")     # Mês-dia-ano
+```
+
+- Às vezes o Excel salva datas como o número de dias desde 01/01/1970, mas nem
+isso pode vencer o `{lubridate}`
+
+```{r}
+as_date(18732)
+```
+
+---
+# Fusos
+
+- É mais raro precisar lidar com fusos horários porque normalmente trabalhamos
+com data-horas de um mesmo fuso, mas o `{lubridate}` permite lidar com isso
+também
+
+```{r}
+dmy_hms("15/04/2021 02:25:30", tz = "Europe/London")
+```
+
+- Nem o horário de verão consegue atrapalhar um cálculo preciso: com a função
+`dst()` é possível saber se em um dado dia aquele lugar estava no horário de
+verão
+
+```{r}
+dst(dmy_hms("15/04/2021 02:25:30", tz = "Europe/London"))
+```
+
+---
+# Componentes
+
+- As funções `year()`, `month()`, `day()`... (**no singular**) podem extrair os
+componentes de uma data
+
+```{r}
+month("2021-04-15")
+```
+
+- Obs.: Note como não foi necessário converter a string para data porque ela já
+está no formato esperado pelo `{lubridate}`
+
+- As funções `years()`, `months()`, `days()`... (**no plural**) permitem fazer
+contas com datas e data-horas
+
+```{r}
+now() + days(5)
+```
+
+---
+# Operações
+
+- Com os operadores matemáticos normais também somos capazes de calcular
+distâncias entre datas e horas
+
+```{r}
+dif <- dmy("15/04/2021") - dmy("24/08/2020")
+dif
+```
+
+- Podemos transformar um objeto de diferença temporal em qualquer unidade que
+queiramos usando as funções no plural
+
+```{r}
+as.period(dif) / minutes(1)
+```
+
+- Para diferenças entre data-horas pode ser importante usar os fusos
+
+---
+# Exemplos intermináveis
+
+```{r}
+dmy_hms("15/04/2021 02:25:30") # Data-hora
+dmy_hm("15/04/2021 02:25")     # Sem segundo
+dmy_h("15/04/2021 02")         # Sem minuto
+as_datetime(1618453530)        # Numérico
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+```{r}
+mdy_hms("4/15/21 2:25:30 PM")                                # Americano
+dmy_hms("15/04/2021 02:25:30", tz = "Europe/London")         # Com fuso
+now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
+now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+```{r}
+minute("2021-04-15 02:25:30")                   # Minuto
+year("2021-04-15")                              # Ano
+wday("2021-04-15")                              # Dia da semana
+month("2021-04-15", label = TRUE, abbr = FALSE) # Mês (sem abrev.)
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+```{r}
+today() + months(5)                              # Dia
+now() + seconds(5)                               # Segundo
+now() + days(5)                                  # Dia
+as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
+```
+
+---
+# Exemplos intermináveis (cont.)
+
+```{r}
+t1 <- dmy_hms("15/04/2021 02:25:00", tz = "America/Sao_Paulo")
+t2 <- dmy_hms("15/04/2021 02:25:00")
+t1 - t2
+t1 <- dmy_hms("15/04/2021 02:25:00", tz = "America/Sao_Paulo")
+t2 <- dmy_hms("15/04/2021 02:25:00", tz = "Europe/London")
+t1 - t2
+head(OlsonNames())
+```
+
+---
+# Extra: {clock}
+
+- Como não existe o dia 31/02/2021 (fevereiro tem menos dias), o `{lubridate}`
+simplesmente considera a operação inválida e não nos avisa!
+
+```{r, error=TRUE}
+x <- ymd("2021-01-31")
+x + months(1)
+
+# No {clock}, 31/01/2021 + 1 mês é um erro que deve ser corrigido
+library(clock)
+add_months(x, 1)
+
+# Agora podemos especificar uma estratégia de correção
+add_months(x, 1, invalid = "overflow")
+```
+
+---
+class: middle, center, inverse
+# Forcats
+
+---
 # Motivação
 
 No R, um dos tipos de dado mais importante é o fator: se você está vindo do R
