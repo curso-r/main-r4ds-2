@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R para Ciência de Dados 2
+## Purrr
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+### Agosto de 2021
+
+---
+
+
+
+
+# Motivação
+
+Além de lidar com listas, o `{purrr}` lida com iterações, um dos padrões mais
+comuns em qualquer tarefa de programação (independentemente da linguagem).
+
+Apesar de não ser tão evidente, todos os data frames do R não passam de listas
+com algumas propriedades específicas, então saber lidar com elas pode ser útil
+em diversos lugares.
+
+Ainda pode ser difícil entender como isso funciona, mas, além de números,
+strings e datas, é possível colocar listas nas colunas de um data frame.
+
+A sintaxe do `{purrr}` é capaz de mudar para sempre o modo como você funciona,
+ensinando padrões robustos de programação (sem efeitos colaterais e sem
+repetição de código).
+
+---
+# Introdução
+
+- Listas são como vetores, com a diferença de que elas não precisam ser
+homogêneas (seus elementos podem ter qualquer tipo)
+
+
+```r
+l &lt;- list(
+  um_numero = 123,
+  um_vetor = c(TRUE, FALSE, TRUE),
+  uma_string = "abc",
+  uma_lista = list(1, 2, 3)
+)
+str(l)
+```
+
+```
+#&gt; List of 4
+#&gt;  $ um_numero : num 123
+#&gt;  $ um_vetor  : logi [1:3] TRUE FALSE TRUE
+#&gt;  $ uma_string: chr "abc"
+#&gt;  $ uma_lista :List of 3
+#&gt;   ..$ : num 1
+#&gt;   ..$ : num 2
+#&gt;   ..$ : num 3
+```
+
+---
+# Estrutura
+
+
+```r
+l
+```
+
+```
+#&gt; $um_numero
+#&gt; [1] 123
+#&gt; 
+#&gt; $um_vetor
+#&gt; [1]  TRUE FALSE  TRUE
+#&gt; 
+#&gt; $uma_string
+#&gt; [1] "abc"
+#&gt; 
+#&gt; $uma_lista
+#&gt; $uma_lista[[1]]
+#&gt; [1] 1
+#&gt; 
+#&gt; $uma_lista[[2]]
+#&gt; [1] 2
+#&gt; 
+#&gt; $uma_lista[[3]]
+#&gt; [1] 3
+```
+
+---
+# Indexação
+
+- Para acessar os elementos de uma lista precisamos tomar cuidado com a diferença
+entre `[]` e `[[]]` (ou `purrr::pluck()`): o primeiro acesa uma posição,
+enquanto o segundo acessa um elemento
+
+
+```r
+l[3]
+```
+
+```
+#&gt; $uma_string
+#&gt; [1] "abc"
+```
+
+```r
+l[[3]]
+```
+
+```
+#&gt; [1] "abc"
+```
+
+
+```r
+library(purrr)
+pluck(l, 4, 2) # Indexação profunda
+```
+
+```
+#&gt; [1] 2
+```
+
+---
+# Iterações
+
+- Iteração não é nada mais do que a repetição de um trecho de código várias
+vezes, normalmente associada a um _loop_ (laço)
+
+
+```r
+vec &lt;- 1:5
+for (i in seq_along(vec)) {
+  vec[i] &lt;- vec[i] + 10
+}
+vec
+```
+
+```
+#&gt; [1] 11 12 13 14 15
+```
+
+- Note como a única coisa que fazemos é aplicar uma operação em cada elemento do
+vetor (`vec[i] + 10`)
+
+- Identificamos algumas estruturas: **entrada** (vetor de 1 a 5) e **função**
+(somar 10 a cada elemento)
+
+---
+# Simplificando
+
+- O pacote `{purrr}` nos permite simplificar iterações e integrá-las a pipelines
+do `{tidyverse}`: a função `map()` realiza uma iteração recebendo apenas uma
+entrada e uma função
+
+
+```r
+vec &lt;- 1:5
+soma_dez &lt;- function(x) {
+  x + 10
+}
+
+l &lt;- map(vec, soma_dez)
+str(l)
+```
+
+```
+#&gt; List of 5
+#&gt;  $ : num 11
+#&gt;  $ : num 12
+#&gt;  $ : num 13
+#&gt;  $ : num 14
+#&gt;  $ : num 15
+```
+
+---
+# Achatamento
+
+- `map()` sempre retorna uma lista independente do objeto recebido porque ela
+não pode assumir nada sobre o resultado
+
+- Se quisermos achatar os resultados só precisamos chamar uma função da família
+`map_***()` (onde `***` é a abreviação do tipo do objeto que deve ser retornado)
+
+
+```r
+map_dbl(vec, soma_dez)
+```
+
+```
+#&gt; [1] 11 12 13 14 15
+```
+
+- Os tipos possíveis são: `dbl` (números), `chr` (strings), `dfc` (_data frame
+columns_), `dfr` (_data frame rows_), `int` (inteiros) e `lgl` (lógicos)
+
+
+```r
+map_chr(vec, soma_dez)
+```
+
+```
+#&gt; [1] "11.000000" "12.000000" "13.000000" "14.000000" "15.000000"
+```
+
+---
+# Funções
+
+- Para passar outros argumentos **fixos** a uma função, basta adicioná-los ao
+final da chamada de `map()`
+
+
+```r
+soma_n &lt;- function(x, n) {
+  x + n
+}
+map_dbl(vec, soma_n, n = 3)
+```
+
+```
+#&gt; [1] 4 5 6 7 8
+```
+
+- Para simplificar funções curtas, podemos usar uma notação **lambda** na qual
+`.x` representa onde deve ser inserido o elemento atual da iteração (o valor
+"iterante") e `~` indica a declaração da função
+
+
+```r
+map_dbl(vec, ~3+.x)
+```
+
+```
+#&gt; [1] 4 5 6 7 8
+```
+
+---
+# Duas entradas
+
+- Se for necessário iterar em duas listas ou vetores, basta usar `map2()`
+
+
+```r
+strings &lt;- c("oiii", "como vai", "tchau")
+padroes &lt;- c("i+",   "(.o){2}",  "[au]+$")
+map2_chr(strings, padroes, stringr::str_extract)
+```
+
+```
+#&gt; [1] "iii"  "como" "au"
+```
+
+- A notação lambda funciona exatamente do mesmo modo, com `.x` e `.y`
+representando o primeiro e o segundo elementos da iteração
+
+
+```r
+map2_chr(strings, padroes, ~stringr::str_c(.y, " | ", .x))
+```
+
+```
+#&gt; [1] "i+ | oiii"          "(.o){2} | como vai" "[au]+$ | tchau"
+```
+
+---
+# List-columns
+
+- _List-columns_ são colunas nas quais cada elemento é uma lista (ou até mesmo
+uma tabela completa)
+
+-  A função `str_split()`, por exemplo, retorna uma lista contendo os pedaços da
+string original quebrada com um regex
+
+
+
+
+```r
+imdb %&gt;%
+* mutate(split_generos = str_split(generos, "\\|")) %&gt;%
+  select(titulo, generos, split_generos)
+```
+
+```
+#&gt; # A tibble: 3,713 × 3
+#&gt;   titulo                                   generos                 split_generos
+#&gt;   &lt;chr&gt;                                    &lt;chr&gt;                   &lt;list&gt;       
+#&gt; 1 Avatar                                   Action|Adventure|Fanta… &lt;chr [4]&gt;    
+#&gt; 2 Pirates of the Caribbean: At World's End Action|Adventure|Fanta… &lt;chr [3]&gt;    
+#&gt; 3 The Dark Knight Rises                    Action|Thriller         &lt;chr [2]&gt;    
+#&gt; 4 John Carter                              Action|Adventure|Sci-Fi &lt;chr [3]&gt;    
+#&gt; 5 Spider-Man 3                             Action|Adventure|Roman… &lt;chr [3]&gt;    
+#&gt; # … with 3,708 more rows
+```
+
+---
+# Unnest
+
+- Usando `tidyr::unnest()` é possível "abrir" a list-column de modo que cada
+linha fique com um de seus elementos (neste caso, o título do filme vai ser
+repetido uma vez para cada gênero ao qual o filme pertence)
+
+
+```r
+library(tidyr)
+imdb %&gt;%
+  mutate(split_generos = str_split(generos, "\\|")) %&gt;%
+  select(titulo, split_generos) %&gt;%
+* unnest(split_generos)
+```
+
+```
+#&gt; # A tibble: 10,612 × 2
+#&gt;   titulo                                   split_generos
+#&gt;   &lt;chr&gt;                                    &lt;chr&gt;        
+#&gt; 1 Avatar                                   Action       
+#&gt; 2 Avatar                                   Adventure    
+#&gt; 3 Avatar                                   Fantasy      
+#&gt; 4 Avatar                                   Sci-Fi       
+#&gt; 5 Pirates of the Caribbean: At World's End Action       
+#&gt; # … with 10,607 more rows
+```
+
+---
+# Nest
+
+- A operação inversa do `unnest()` é o  `nest()`, que transforma um grupo de
+linhas em uma list-column
+
+
+```r
+imdb %&gt;%
+  mutate(split_generos = str_split(generos, "\\|")) %&gt;%
+  select(titulo, split_generos) %&gt;%
+  unnest(split_generos) %&gt;%
+* group_by(titulo) %&gt;%
+* nest(generos = c(split_generos))
+```
+
+```
+#&gt; # A tibble: 3,711 × 2
+#&gt; # Groups:   titulo [3,711]
+#&gt;   titulo                                   generos         
+#&gt;   &lt;chr&gt;                                    &lt;list&gt;          
+#&gt; 1 Avatar                                   &lt;tibble [4 × 1]&gt;
+#&gt; 2 Pirates of the Caribbean: At World's End &lt;tibble [3 × 1]&gt;
+#&gt; 3 The Dark Knight Rises                    &lt;tibble [2 × 1]&gt;
+#&gt; 4 John Carter                              &lt;tibble [3 × 1]&gt;
+#&gt; 5 Spider-Man 3                             &lt;tibble [3 × 1]&gt;
+#&gt; # … with 3,706 more rows
+```
+
+---
+# Voltando ao {purrr}
+
+- Trazendo o assunto de volta para o `{purrr}`, o pacote nos permite operar com
+facilidade em list-columns justamente pela sua capacidade de tratar listas
+
+
+```r
+imdb %&gt;%
+  mutate(split_generos = str_split(generos, "\\|")) %&gt;%
+  select(titulo, split_generos) %&gt;%
+  unnest(split_generos) %&gt;%
+  group_by(titulo) %&gt;%
+  nest(generos = c(split_generos)) %&gt;%
+* ungroup() %&gt;%
+* mutate(n_generos = map_dbl(generos, nrow))
+```
+
+```
+#&gt; # A tibble: 3,711 × 3
+#&gt;   titulo                                   generos          n_generos
+#&gt;   &lt;chr&gt;                                    &lt;list&gt;               &lt;dbl&gt;
+#&gt; 1 Avatar                                   &lt;tibble [4 × 1]&gt;         4
+#&gt; 2 Pirates of the Caribbean: At World's End &lt;tibble [3 × 1]&gt;         3
+#&gt; 3 The Dark Knight Rises                    &lt;tibble [2 × 1]&gt;         2
+#&gt; 4 John Carter                              &lt;tibble [3 × 1]&gt;         3
+#&gt; 5 Spider-Man 3                             &lt;tibble [3 × 1]&gt;         3
+#&gt; # … with 3,706 more rows
+```
+
+---
+# Para saber mais
+
+O `{purrr}` simplifica loops, impede efeitos colaterais e ainda deixa seu código
+mais bonito! Para entender melhor como esse pacote incrível funciona, veja mais
+nos links abaixo:
+
+- [A Magia de Purrr](https://lente.dev/posts/magica-purrr/)
+
+- [Webinar de purrr avançado](https://www.youtube.com/watch?v=vb1lD9_AFcU)
+
+- [Exemplos com purrr](https://lente.dev/advanced-purrr.pdf)
+
+- [Purrr cheat sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/purrr.pdf)
+
+- [Purrr tutorial](https://jennybc.github.io/purrr-tutorial/)
+
+- [R for Data Science: Iteration](https://r4ds.had.co.nz/iteration.html)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
