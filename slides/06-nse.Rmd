@@ -236,3 +236,5 @@ materiais disponibilizados pelo time `{rlang}`:
    - [Programming with dplyr](https://dplyr.tidyverse.org/articles/programming.html)
    
    - [Metaprogramming](https://adv-r.hadley.nz/metaprogramming.html)
+   
+   - [Tutorial: {rlang} para Filhotes](https://blog.curso-r.com/posts/2021-07-27-rlang-para-filhotes/)
