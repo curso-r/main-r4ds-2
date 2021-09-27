@@ -17,19 +17,6 @@ casas %>%
   ) %>%
   View()
 
-# Selecionando apenas colunas com NA
-
-casas %>%
-  summarise(
-    across(
-      .cols = everything(),
-      ~sum(is.na(.x))
-    )
-  ) %>%
-  select(
-    where(~.x > 0)
-  )
-
 # Deixando no formato longo
 
 casas %>%
@@ -38,9 +25,6 @@ casas %>%
       .cols = everything(),
       ~sum(is.na(.x))
     )
-  ) %>%
-  select(
-    where(~.x > 0)
   ) %>%
   tidyr::pivot_longer(
     cols = everything(),
