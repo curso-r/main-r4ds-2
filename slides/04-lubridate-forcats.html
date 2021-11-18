@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 # R para Ciência de Dados 2
 ## Lubridate + Forcats
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### agosto de 2021
+### Novembro de 2021
 
 ---
 
@@ -56,7 +56,7 @@ now()
 ```
 
 ```
-#&gt; [1] "2021-08-19 19:04:15 -03"
+#&gt; [1] "2021-11-18 18:43:15 -03"
 ```
 
 ```r
@@ -64,7 +64,7 @@ as.numeric(now())
 ```
 
 ```
-#&gt; [1] 1629410656
+#&gt; [1] 1637271796
 ```
 
 - O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
@@ -190,7 +190,7 @@ now() + days(5)
 ```
 
 ```
-#&gt; [1] "2021-08-24 19:04:16 -03"
+#&gt; [1] "2021-11-23 18:43:15 -03"
 ```
 
 ---
@@ -284,7 +284,7 @@ now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
 ```
 
 ```
-#&gt; Time difference of 126.8186 days
+#&gt; Time difference of 217.804 days
 ```
 
 ```r
@@ -292,7 +292,7 @@ now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
 ```
 
 ```
-#&gt; Time difference of 126.8603 days
+#&gt; Time difference of 217.8457 days
 ```
 
 ---
@@ -328,8 +328,8 @@ month("2021-04-15", label = TRUE, abbr = FALSE) # Mês (sem abrev.)
 ```
 
 ```
-#&gt; [1] abril
-#&gt; 12 Levels: janeiro &lt; fevereiro &lt; março &lt; abril &lt; maio &lt; junho &lt; ... &lt; dezembro
+#&gt; [1] April
+#&gt; 12 Levels: January &lt; February &lt; March &lt; April &lt; May &lt; June &lt; ... &lt; December
 ```
 
 ---
@@ -341,7 +341,7 @@ today() + months(5)                              # Dia
 ```
 
 ```
-#&gt; [1] "2022-01-19"
+#&gt; [1] "2022-04-18"
 ```
 
 ```r
@@ -349,7 +349,7 @@ now() + seconds(5)                               # Segundo
 ```
 
 ```
-#&gt; [1] "2021-08-19 19:04:21 -03"
+#&gt; [1] "2021-11-18 18:43:20 -03"
 ```
 
 ```r
@@ -357,7 +357,7 @@ now() + days(5)                                  # Dia
 ```
 
 ```
-#&gt; [1] "2021-08-24 19:04:16 -03"
+#&gt; [1] "2021-11-23 18:43:15 -03"
 ```
 
 ```r
@@ -365,7 +365,7 @@ as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
 ```
 
 ```
-#&gt; [1] 230
+#&gt; [1] 321
 ```
 
 ---
@@ -522,8 +522,8 @@ lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE)
 ```
 
 ```
-#&gt; [1] agosto
-#&gt; 12 Levels: janeiro &lt; fevereiro &lt; março &lt; abril &lt; maio &lt; junho &lt; ... &lt; dezembro
+#&gt; [1] November
+#&gt; 12 Levels: January &lt; February &lt; March &lt; April &lt; May &lt; June &lt; ... &lt; December
 ```
 
 ---
