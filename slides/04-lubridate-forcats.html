@@ -56,7 +56,7 @@ now()
 ```
 
 ```
-#&gt; [1] "2021-11-18 18:43:15 -03"
+#&gt; [1] "2021-11-22 18:56:37 -03"
 ```
 
 ```r
@@ -64,7 +64,7 @@ as.numeric(now())
 ```
 
 ```
-#&gt; [1] 1637271796
+#&gt; [1] 1637618198
 ```
 
 - O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
@@ -115,7 +115,7 @@ dmy("15 de abril de 2021", locale = "pt_BR.UTF-8") # No Win: Portuguese_Brazil.1
 ```
 
 ```r
-mdy("April 15th 2021", locale = "en_US.UTF-8")     # Mês-dia-ano
+mdy("April 15th 2021", locale = "en_US.UTF-8")     # No Win: English (mês-dia-ano)
 ```
 
 ```
@@ -190,7 +190,7 @@ now() + days(5)
 ```
 
 ```
-#&gt; [1] "2021-11-23 18:43:15 -03"
+#&gt; [1] "2021-11-27 18:56:37 -03"
 ```
 
 ---
@@ -284,7 +284,7 @@ now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
 ```
 
 ```
-#&gt; Time difference of 217.804 days
+#&gt; Time difference of 221.8133 days
 ```
 
 ```r
@@ -292,7 +292,7 @@ now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
 ```
 
 ```
-#&gt; Time difference of 217.8457 days
+#&gt; Time difference of 221.855 days
 ```
 
 ---
@@ -341,7 +341,7 @@ today() + months(5)                              # Dia
 ```
 
 ```
-#&gt; [1] "2022-04-18"
+#&gt; [1] "2022-04-22"
 ```
 
 ```r
@@ -349,7 +349,7 @@ now() + seconds(5)                               # Segundo
 ```
 
 ```
-#&gt; [1] "2021-11-18 18:43:20 -03"
+#&gt; [1] "2021-11-22 18:56:42 -03"
 ```
 
 ```r
@@ -357,7 +357,7 @@ now() + days(5)                                  # Dia
 ```
 
 ```
-#&gt; [1] "2021-11-23 18:43:15 -03"
+#&gt; [1] "2021-11-27 18:56:37 -03"
 ```
 
 ```r
@@ -365,7 +365,7 @@ as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
 ```
 
 ```
-#&gt; [1] 321
+#&gt; [1] 325
 ```
 
 ---
