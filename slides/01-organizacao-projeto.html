@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.13/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 # R para Ciência de Dados 2
 ## Organização de projetos
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### Novembro de 2021
+### Abril de 2022
 
 ---
 
@@ -317,20 +317,7 @@ Quanto aos nomes dos projetos, recomenda-se:
 - não acabar com ponto.
 
 ---
-# Passo 2: adicione o Git
-
-
-```r
-usethis::use_git()
-```
-
-- Rodando o comando acima na pasta do projeto (a nova janela do RStudio que
-apareceu) você adiciona controle de versão.
-
-- Você receberá algumas instruções para seguir, mas está tudo certo.
-
----
-# Passo 2½: Configure seu usuário do Git
+# Passo 2: configure seu usuário do Git
 
 
 ```r
@@ -345,7 +332,33 @@ usethis::use_git_config(
 - O `user.email` precisa ser o que está vinculado à sua conta do GitHub.
 
 ---
-# Passo 3: Adicione o GitHub
+# Passo 3: adicione o Git
+
+
+```r
+usethis::use_git()
+```
+
+- Rodando o comando acima na pasta do projeto (a nova janela do RStudio que
+apareceu) você adiciona controle de versão.
+
+- Você receberá algumas instruções para seguir, mas está tudo certo.
+
+---
+# Passo 4: Personal Access Token
+
+- Antes de conectar com o GitHub, você será instruída(o) a criar um *Personal Access Token* (PAT).
+
+- O PAT serve para autenticar ao GitHub, podendo ser utilizado como senha de acesso ou internamente para automatizar tarefas (como criar um repositório).
+
+- Para criar seu PAT, rode `usethis::create_github_token()`. 
+
+- Para adicioná-lo ao R, rode `gitcreds::gitcreds_set()` e cole o seu token no console quando ele for requisitado.
+
+Veja [aqui](https://curso-r.github.io/zen-do-r/git-github.html) um passo-a-passo mais detalhado.
+
+---
+# Passo 5: adicione o GitHub
 
 
 ```r
@@ -354,23 +367,10 @@ usethis::use_github()
 
 - O comando acima sincroniza a pasta com o GitHub.
 
-- Mais uma vez, você receberá algumas instruções, mas lembre-se apenas de selecionar o método de autenticação `https`.
+- Mais uma vez, você receberá algumas instruções, mas lembre-se apenas de selecionar o método de autenticação `https` (caso necessário).
 
 ---
-# Personal Access Token
-
-- Ao conectar com o GitHub, você será instruída(o) a criar um *Personal Access Token* (PAT).
-
-- O PAT serve para autenticar ao github, podendo ser utilizado como senha de acesso ou internamente para automatizar tarefas (como criar um repositório).
-
-- Para criar seu PAT, rode `usethis::create_github_token()`. 
-
-- Para conectá-lo ao R, rode `gitcreds::gitcreds_set()` e cole o seu token no console quando ele for requisitado.
-
-Veja [aqui](https://curso-r.github.io/zen-do-r/git-github.html) um passo-a-passo mais detalhado.
-
----
-# Passo 4: Stage &amp; Commit
+# Passo 6: stage &amp; commit
 
 &lt;img src="img/02-organizacao-projeto/passo_3_commit_1.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
@@ -380,7 +380,7 @@ Veja [aqui](https://curso-r.github.io/zen-do-r/git-github.html) um passo-a-passo
 
 ---
 
-# Passo 5: Push
+# Passo 7: push
 
 &lt;img src="img/02-organizacao-projeto/passo_4_push.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
@@ -388,7 +388,7 @@ Veja [aqui](https://curso-r.github.io/zen-do-r/git-github.html) um passo-a-passo
 
 ---
 
-# Passo Extra: Pull
+# Passo 8 (extra): pull
 
 &lt;img src="img/02-organizacao-projeto/passo_5_pull.gif" width="50%" style="display: block; margin: auto;" /&gt;
 
