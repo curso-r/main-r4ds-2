@@ -1,9 +1,9 @@
 ## code to prepare `rick_and_morty` dataset goes here
 
-# scrape
-
+# carregar o pacote que contém o pipe
 library(magrittr)
 
+# faz o scraper
 url <- "https://en.wikipedia.org/wiki/List_of_Rick_and_Morty_episodes"
 
 res <- httr::GET(url)
@@ -23,17 +23,19 @@ tab <- lista_tab %>%
   purrr::map2(num_temporadas, ~dplyr::mutate(.x, no_season = .y)) %>%
   dplyr::bind_rows()
 
-# tidy
+# arrumar a base
 
 rick_and_morty <- tab %>%
   dplyr::relocate(no_season, .before = no_inseason) %>%
   dplyr::mutate(
+
     title = stringr::str_remove_all(title, '\\"'),
     u_s_viewers_millions  = stringr::str_remove(
       u_s_viewers_millions,
       "\\[.*\\]"
     ),
     u_s_viewers_millions = as.numeric(u_s_viewers_millions),
+    original_air_date = original_air_date_3,
     original_air_date = stringr::str_extract(
       original_air_date,
       "\\([0-9-]*\\)"
@@ -56,6 +58,6 @@ rick_and_morty <- tab %>%
   ) %>%
   tibble::as_tibble()
 
-
+# salvar os resultados
 readr::write_rds(tab, "data/rick_and_morty_raw.rds")
 readr::write_rds(rick_and_morty, "data/rick_and_morty.rds")
