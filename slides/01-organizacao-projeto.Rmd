@@ -414,4 +414,4 @@ knitr::include_graphics("img/02-organizacao-projeto/passo_5_pull.gif")
 
 - [Zen do R](https://curso-r.github.io/zen-do-r/), livro em desenvolvimento pela Curso-R.
 
-- [Apresentação da Bea Milz](https://beatrizmilz.github.io/RLadies-Git-RStudio-2019).
+- [Apresentação da Bea Milz](https://beatrizmilz.github.io/2022-curso-de-verao-ime-usp-relatorios/slides/#git-e-github).
