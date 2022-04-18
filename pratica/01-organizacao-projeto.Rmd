@@ -27,6 +27,11 @@ O código utilozado pode ser encontrado [aqui](https://raw.githubusercontent.com
 
 Para saber mais sobre Web Scraping, vejam a nossa trilha de Web Scraping: https://curso-r.com/trilhas/ws/
 
+Paleta de cores:
+https://www.color-hex.com/color-palette/9134
+
+Fonte: https://fontmeme.com/fontes/fonte-get-schwifty/
+
 Passo 5: Fazer o gráfico da audiência por episódio
 
 ```{r}
@@ -49,6 +54,12 @@ rick_and_morty %>%
     fill = "temporada",
     title = "Rick and Morty"
   ) +
+  scale_fill_manual(values = c("#e89ac7",
+                               "#e4a788",
+                               "#f0e14a",
+                               "#97ce4c",
+                               "#44281d"
+                               ))+
   theme(
     text = element_text(
       colour = "#11a2c6",
@@ -97,6 +108,11 @@ rick_and_morty %>%
     y = "audiencia",
     title = "Rick and Morty"
   ) +
+  scale_fill_manual(values = c("#e89ac7",
+                               "#e4a788",
+                               "#f0e14a",
+                               "#97ce4c",
+                               "#44281d")) +
   theme(
     text = element_text(
       colour = "#11a2c6",
@@ -146,6 +162,14 @@ tema_rick_morty <- function() {
     plot.background = element_rect(fill = "black", color = "black")
   )
 }
+
+scale_fill_rick_and_morty <- function() {
+  scale_fill_manual(values = c("#e89ac7",
+                               "#e4a788",
+                               "#f0e14a",
+                               "#97ce4c",
+                               "#44281d"))
+}
 ```
 
 Passo 9: subistuir o `theme()` nos gráficos pela função `tema_rick_morty()`.
@@ -166,7 +190,8 @@ rick_and_morty %>%
     fill = "temporada",
     title = "Rick and Morty"
   ) +
-  tema_rick_morty()
+  tema_rick_morty() + 
+  scale_fill_rick_and_morty()
 
 rick_and_morty %>%
   mutate(num_temporada = as.factor(num_temporada)) %>% 
@@ -185,7 +210,8 @@ rick_and_morty %>%
     y = "audiencia",
     title = "Rick and Morty"
   ) + 
-  tema_rick_morty()
+  tema_rick_morty() + 
+  scale_fill_rick_and_morty()
 ```
 
 Passo 10: fazendo um push para o Github
