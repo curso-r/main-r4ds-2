@@ -1,6 +1,6 @@
 ---
 title: "R para Ciência de Dados 2"
-subtitle: "Dplyr 1.0 e Tidyr"
+subtitle: "Tidyr e Dplyr 1.0"
 author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
 date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
@@ -21,6 +21,149 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = "#>")
 options(dplyr.print_min = 5, dplyr.print_max = 5)
 ```
 
+class: middle, center, inverse
+# Tidyr
+
+---
+# Dados arrumados
+
+Dentro do `tidyverse`, uma base *tidy* é uma base fácil de se trabalhar, isto é, fácil de se fazer manipulação de dados, fácil de se criar visualizações, fácil de se ajustar modelos e por aí vai.
+
+Na prática, uma base *tidy* é aquela que se encaixa bem no *framework* do `tidyverse`, pois os pacotes como o `dplyr` e o `ggplot2` foram desenvolvidos para funcionar bem com bases *tidy*. E assim como esses pacotes motivaram o uso de bases *tidy*, o conceito *tidy* motiva o surgimento de novos *frameworks*, como o `tidymodels` para modelagem.
+
+As duas propriedades mais importantes de uma base *tidy* são:
+
+- Cada coluna é uma variável;
+
+- Cada linha é uma observação.
+
+Essa definição proporciona uma maneira consistente de se referir a variáveis (nomes de colunas) e observações (índices das linhas).
+
+---
+# O pacote tidyr
+
+O pacote `tidyr` possui funções que nos ajudam a deixar uma base bagunçada em uma base *tidy*. Ou então, nos ajudam a bagunçar um pouquinho a nossa base quando isso nos ajudar a produzir o resultados que queremos.
+
+Vamos ver aqui algumas de suas principais funções:
+
+- `separate()` e `unite()`: para separar variáveis concatenadas em uma única coluna ou uni-las.
+
+- `pivot_wider()` e `pivot_longer()`: para pirvotar a base.
+
+---
+# Motivação
+
+Como motivação para utilizar esssas funções, vamos utilizar a nossa boa e velha base `imdb`.
+
+```{r}
+imdb <- readr::read_rds("../data/imdb.rds")
+
+imdb
+```
+
+---
+# separate()
+
+A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. Como exemplo, vamos transformar a coluna `generos` da base IMDB em três colunas, cada uma com um dos gêneros do filme. Lembrando que os valores da coluna `generos` estão no seguinte formato:
+
+```{r}
+imdb %>%
+  select(generos)
+```
+
+---
+# separate()
+
+Veja que agora, temos 3 colunas de gênero. Filmes com menos de 3 gêneros recebem `NA` na coluna `genero2` e/ou `genero3`. Os gêneros sobressalentes são descartados, assim como a coluna `generos` original.
+
+```{r}
+imdb %>% 
+  separate(col = generos, into = c("genero1", "genero2", "genero3"), sep = "\\|") %>% 
+  select(starts_with("genero"))
+```
+
+---
+# unite()
+
+A função `unite()` realiza a operação inversa da função `separate()`. Como exemplo, vamos agora transformar as colunas `ator1`, `ator2` e `ator3` em uma única coluna `atores`. Lembrando que essas colunas estão no formato abaixo.
+
+```{r}
+imdb %>%
+  select(starts_with("ator"))
+```
+
+---
+# unite()
+
+Veja que agora a coluna `elenco` possui os 3 atores/atrizes concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
+
+```{r}
+imdb %>% 
+  unite(col = "elenco", starts_with("ator"), sep = " - ") %>%
+  select(elenco)
+```
+
+---
+# Pivotagem
+
+O conceito de pivotagem no *tidyverse* se refere a mudança da estrutura da base, geralmente para alcançar o formato *tidy*. 
+
+Normalmente realizamos pivotagem quando nossas linhas não são unidades observacionais ou nossas colunas não são variáveis. Ela é similiar à pivotagem do Excel, mas um pouco mais complexa.
+
+O ato de pivotar resulta em transformar uma base de dados *long* em *wide* e vice-versa. 
+
+Uma base no formato *long* possui mais linhas e pode ter menos colunas, enquanto no formato *wide* poussi menos linhas e pode ter mais colunas
+
+Esses formatos são sempre relativos às colunas que estão sendo pivotadas, sendo que uma base *tidy* pode estar tanto no formato *long* quanto *wide*.
+
+Antigamente, utilizávamos as funções `gather()` e `spread()` para fazer as operações de pivotagem. Hoje em dia temos `pivot_longer()` e `pivot_wider()`. A demonstração a seguir é cortesia do [tidyexplain](https://www.garrickadenbuie.com/project/tidyexplain/#pivot-wider-and-longer).
+
+---
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("img/032-tidyr/pivotagem.gif")
+```
+
+---
+# pivot_longer()
+
+Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_atriz` e `protagonismo`.
+
+```{r}
+imdb %>% 
+  pivot_longer(
+    cols = starts_with("ator"), 
+    names_to = "protagonismo",
+    values_to = "ator_atriz"
+  ) %>% 
+  select(titulo, ator_atriz, protagonismo)
+```
+
+---
+# pivot_wider()
+
+A função `pivot_wider()` faz a operação inversa da `pivot_longer()`. Sem aplicarmos as duas funções em sequência, voltamos para a base original.
+
+```{r, echo=FALSE}
+imdb_long <- imdb %>% 
+  pivot_longer(
+    cols = starts_with("ator"), 
+    names_to = "protagonismo",
+    values_to = "ator_atriz"
+  )
+```
+
+
+```{r}
+imdb_long %>% 
+  pivot_wider(
+    names_from = protagonismo,
+    values_from = ator_atriz
+  ) %>%
+  select(titulo, starts_with("ator"))
+```
+
+---
 class: middle, center, inverse
 # Dplyr 1.0
 
@@ -70,8 +213,12 @@ Base de dados de venda de casas na cidade de Ames, nos Estados Unidos.
 - Versão traduzida
 
 ```{r, eval = FALSE}
-install.packages("remotes")
-remotes::install_github("cienciadedatos/dados")
+install.packages("dados")
+casas <- dados::casas
+```
+
+```{r, echo = FALSE}
+casas <- dados::casas
 ```
 
 - Base original:
@@ -84,10 +231,9 @@ data(ames_raw, package = "AmesHousing")
 ---
 # across()
 
-A função `across()` substitui as famílias `*_all()`, `*_if` e `*_at()`. A ideia é facilitar a aplicação de uma operação a diversas colunas da base. Antigamente fazíamos:
+A ideia da função `across()` é facilitar a aplicação de uma operação a diversas colunas da base. Antigamente fazíamos:
 
 ```{r}
-casas <- dados::casas
 casas %>%
   group_by(geral_qualidade) %>%
   summarise(
@@ -99,7 +245,7 @@ casas %>%
 ---
 # across()
 
-Com a nova função `across()`, a sintaxe é parecida `summarise_at()`, não precisamos mais usar `vars()` nem `~nome_da_funcao(.x)` para definir a função aplicada nas colunas.
+Com a nova função `across()`, a sintaxe é simplificada.
 
 ```{r}
 casas %>%
@@ -113,7 +259,7 @@ casas %>%
 ---
 # across()
 
-Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. Abaixo, calculamos o número de valores distintos para todas as variáveis da base `casas`.
+Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. O argumento padrão de `.cols` é `everything()`.
 
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
@@ -121,8 +267,6 @@ casas %>%
   summarise(across(.fns = n_distinct)) %>% 
   select(1:5)
 ```
-
-O padrão do parâmetro `.cols` é `everything()`, que representa "todas as colunas". Anteriormente, teríamos que utilizar a função `summarise_all()`.
 
 ---
 # across()
@@ -132,28 +276,32 @@ Se quisermos selecionar as colunas a serem modificadas a partir de um teste lóg
 ```{r}
 # Pegando apenas 5 colunas por questão de espaço
 casas %>%
-  summarise(across(where(is.character), n_distinct)) %>% 
+  summarise(across(
+    .cols = where(is.character), # Variáveis
+    .fns  = n_distinct           # Função
+  )) %>% 
   select(1:5)
 ```
-
-Todas as colunas da base resultante eram colunas com classe `character` na base `casas`. Anteriormente, teríamos que utilizar a função `summarise_if()`.
 
 ---
 # across()
 
-Você também pode combinar as ações do `summarise_if()` e `summarise_at()` em um único `across()`. Calculamos as áreas médias, garantindo que pegamos apenas variáveis numéricas.
+Você também pode combinar testes lógicos com seleções de colunas. Calculamos as áreas médias, garantindo que pegamos apenas variáveis numéricas.
 
 ```{r}
-# Pegando apenas 5 colunas por questão de espaço
+# Pegando apenas 4 colunas por questão de espaço
 casas %>%
-  summarise(across(where(is.numeric) & contains("_area"), mean, na.rm = TRUE)) %>% 
-  select(1:5)
+  summarise(across(
+    .cols = where(is.numeric) & contains("_area"), # Variáveis
+    .fns  = mean, na.rm = TRUE                     # Função
+  )) %>% 
+  select(1:4)
 ```
 
 ---
 # across()
 
-Isso não era possível utilizando apenas as funções `summarise()`, `summarise_if()` e `summarise_at()`:
+Fazer várias aplicações do `across()` também é possível:
 
 ```{r}
 casas %>%
@@ -167,11 +315,38 @@ casas %>%
 ```
 
 ---
+# across()
+
+A última funcionalidade relevante do `across()` é a capacidade de receber uma lista de funções:
+
+```{r}
+casas %>%
+  group_by(rua_tipo) %>%
+  summarise(across(
+      .cols = c(lote_area, venda_valor),
+      .fns = list("media" = mean, "mediana" = median)
+  ))
+```
+
+---
+# across()
+
+O argumento `.names` define uma "fórmula" para a construção do nome das novas colunas:
+
+```{r}
+casas %>%
+  group_by(rua_tipo) %>%
+  summarise(across(
+      .cols = c(lote_area, venda_valor),
+      .fns = list("media" = mean, "mediana" = median),
+      .names = "{.fn}_de_{.col}" # {nome função}_de_{nome coluna}
+  ))
+```
+
+---
 # across() outros verbos
 
-Embora a nova sintaxe, usando `across()`, não seja muito diferente do que fazíamos antes, realizar sumarizações complexas não é a única vantagem desse novo *framework*.
-
-O `across()` pode ser utilizado em todos os verbos do `dplyr` (com exceção do `select()` e `rename()`, já que ele não traz vantagens com relação ao que já podia ser feito) e isso unifica o modo que trabalhamos essas operações no `dplyr`. Em vez de termos uma família de funções para cada verbo, temos agora apenas o próprio verbo e o `across()`.
+O `across()` pode ser utilizado em todos os verbos do `dplyr` (com exceção do `select()` e `rename()`, já que ele não traz vantagens com relação ao que já podia ser feito) e isso unifica o modo que trabalhamos essas operações no `dplyr`.
 
 Vamos ver um exemplo para o `mutate()` e para o `filter()`.
 
@@ -199,126 +374,30 @@ casas %>%
 ```
 
 ---
-# select()
+# Notação: ~.x
 
-Não precisamos do `across()` na hora de selecionar colunas. A função `select()` já usa naturalmente o mecanismo de seleção de colunas que o `across()` proporciona.
-
-```{r}
-# Pegando apenas 5 colunas por questão de espaço
-casas %>%
-  select(where(is.numeric)) %>% 
-  select(1:5)
-```
-
----
-# rename()
-
-O mesmo vale para o `rename()`. Se quisermos renomer várias colunas, a partir de uma função, utilizamos o `rename_with()`.
-
-```{r}
-# Pegando apenas 5 colunas por questão de espaço
-casas %>%
-  rename_with(toupper, contains("venda")) %>% 
-  select(contains("VENDA"))
-```
-
----
-# relocate()
-
-O `dplyr` possui agora uma função própria para reorganizar colunas: `relocate()`. Por padrão, ela coloca uma ou mais colunas no começo da base.
-
-```{r}
-# Pegando apenas 5 colunas por questão de espaço
-casas %>%
-  relocate(venda_valor, venda_tipo) %>% 
-  select(1:5)
-```
-
----
-# relocate()
-
-Podemos usar os argumentos `.after` e `.before` para fazer mudanças mais complexas.
-
-O código baixo coloca a coluna `venda_ano` depois da coluna `construcao_ano`.
+Anteriormente utilizamos uma notação nova chamada "notação de fórmula" (também conhecida como "notação lambda"). Ela é útil para simplificar a definição de novas funções:
 
 ```{r, eval = FALSE}
-casas %>%
-  relocate(venda_ano, .after = construcao_ano)
-```
+# Função normal
+function(vec) {
+  !is.na(vec)
+}
 
-O código baixo coloca a coluna `venda_ano` antes da coluna `construcao_ano`.
+# Se ela tem só 1 linha, não precisamos de chaves
+function(vec) !is.na(vec)
 
-```{r, eval = FALSE}
-casas %>%
-  relocate(venda_ano, .before = construcao_ano)
-```
+# Se ela tem só 1 argumento, podemos sempre usar .x
+function(.x) !is.na(.x)
 
----
-# rowwise()
-
-Por fim, vamos discutir operações feitas por linha. Tome como exemplo a tabela abaixo:
-
-```{r}
-tab_notas <- tibble(
-  student_id = 1:5,
-  prova1 = sample(0:10, 5),
-  prova2 = sample(0:10, 5),
-  prova3 = sample(0:10, 5),
-  prova4 = sample(0:10, 5)
-)
-
-tab_notas
-```
-
----
-# rowwise()
-
-Se quisermos gerar uma coluna com a nota média de cada aluno nas quatro provas, não poderíamos usar o `mutate()` diretamente.
-
-```{r}
-tab_notas %>% mutate(media = mean(c(prova1, prova2, prova3, prova4)))
-```
-
-Neste caso, todas as colunas estão sendo empilhadas e gerando uma única média, passada a todas as linhas da coluna `media`.
-
----
-# rowwise()
-
-Para fazermos a conta para cada aluno, podemos agrupar por aluno. Agora sim a média é calculada apenas nas notas de cada estudante.
-
-```{r}
-tab_notas %>%
-  group_by(student_id) %>%
-  mutate(media = mean(c(prova1, prova2, prova3, prova4)))
-```
-
----
-# rowwise()
-
-E se não tivermos uma coluna ID? Então basta usarmos a `rowwise()`, uma função
-que automaticamente agrupa pelo identificador das linhas.
-
-```{r}
-tab_notas %>%
-  rowwise() %>%
-  mutate(media = mean(c(prova1, prova2, prova3, prova4)))
-```
-
----
-# c_across()
-
-Também podemos nos aproveitar da sintaxe do `across()` neste caso. Para isso, precisamos substutir a função `c()` pela função `c_across()`.
-
-```{r}
-tab_notas %>%
-  rowwise() %>%
-  mutate(media = mean(c_across(starts_with("prova"))))
+# Se a função estiver no formato acima, podemos trocar function(.x) por ~
+~ !is.na(.x)
 ```
 
 ---
 # Miscelânea de funções úteis
 
-Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos conhecidas do `dplyr`.
+Para quem quiser saber mais, vamos listar uma miscelânea de funções muito úteis, mas menos conhecidas do `dplyr`.
 
 - `bind_rows()`: para empilhar duas bases.
 
@@ -332,160 +411,12 @@ Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos 
 
 - `lag()`, `lead()`: para gerar colunas defasadas.
 
-- `pull()`: para transformar uma coluna da base em um vetor.
-
-- `slice_sample`: para gerar amostras da base.
-
----
-class: middle, center, inverse
-# Tidyr
-
----
-# Dados arrumados
-
-Dentro do `tidyverse`, uma base *tidy* é uma base fácil de se trabalhar, isto é, fácil de se fazer manipulação de dados, fácil de se criar visualizações, fácil de se ajustar modelos e por aí vai.
-
-Na prática, uma base *tidy* é aquela que se encaixa bem no *framework* do `tidyverse`, pois os pacotes como o `dplyr` e o `ggplot2` foram desenvolvidos para funcionar bem com bases *tidy*. E assim como esses pacotes motivaram o uso de bases *tidy*, o conceito *tidy* motiva o surgimento de novos *frameworks*, como o `tidymodels` para modelagem.
-
-As duas propriedades mais importantes de uma base *tidy* são:
-
-- Cada coluna é uma variável;
-
-- Cada linha é uma observação.
-
-Essa definição proporciona uma maneira consistente de se referir a variáveis (nomes de colunas) e observações (índices das linhas).
-
----
-# O pacote tidyr
-
-O pacote `tidyr` possui funções que nos ajudam a deixar uma base bagunçada em uma base *tidy*. Ou então, nos ajudam a bagunçar um pouquinho a nossa base quando isso nos ajudar a produzir o resultados que queremos.
-
-Vamos ver aqui algumas de suas principais funções:
-
-- `separate()` e `unite()`: para separar variáveis concatenadas em uma única coluna ou uni-las.
-
-- `pivot_wider()` e `pivot_longer()`: para pirvotar a base.
-
----
-# Motivação
-
-Como motivação para utilizar esssas funções, vamos utilizar a nossa boa e velha base `imdb`.
-
-```{r}
-imdb <- readr::read_rds("../data/imdb.rds")
-
-imdb
-```
-
----
-# separate()
-
-A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. Como exemplo, vamos transformar a coluna `generos` da base IMDB em três colunas, cada uma com um dos gêneros do filme. Lembrando que os valores da coluna `generos` estão no seguinte formato:
-
-```{r}
-imdb %>% pull(generos) %>% head()
-```
-
----
-# separate()
-
-Veja que agora, temos 3 colunas de gênero. Filmes com menos de 3 gêneros recebem `NA` na coluna `genero2` e/ou `genero3`. Os gêneros sobressalentes são descartados, assim como a coluna `generos` original.
-
-```{r}
-imdb %>% 
-  separate(col = generos, into = c("genero1", "genero2", "genero3"), sep = "\\|")
-```
-
----
-# unite()
-
-A função `unite()` realiza a operação inversa da função `separate()`. Como exemplo, vamos agora transformar as colunas `ator1`, `ator2` e `ator3` em uma única coluna `atores`. Lembrando que essas colunas estão no formato abaixo.
-
-```{r}
-imdb %>% select(starts_with("ator"))
-```
-
----
-# unite()
-
-Veja que agora a coluna `elenco` possui os 3 atores/atrizes concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
-
-```{r}
-imdb %>% 
-  unite(col = "elenco", starts_with("ator"), sep = " - ") %>%
-  select(elenco)
-```
-
----
-# Pivotagem
-
-O conceito de pivotagem no *tidyverse* se refere a mudança da estrutura da base, geralmente para alcançar o formato *tidy*. 
-
-Geralmente realizamos pivotagem quando nossas linhas não são unidades observacionais ou nossas colunas não são variáveis. Ela é similiar à pivotagem do Excel, mas um pouco mais complexa.
-
-O ato de pivotar resulta em transformar uma base de dados *long* em *wide* e vice-versa. 
-
-Uma base no formato *long* possui mais linhas e pode ter menos colunas, enquanto no formato *wide* poussi menos linhas e pode ter mais colunas
-
-Esses formatos são sempre relativos às colunas que estão sendo pivotadas, sendo que uma base *tidy* pode estar tanto no formato *long* quanto *wide*.
-
----
-# Pivotagem
-
-Antigamente, utilizávamos as funções `gather()` e `spread()` para fazer as operações de pivotagem. A fonte da imagem é [este site](https://www.garrickadenbuie.com/project/tidyexplain/#spread-and-gather").
-
-```{r, echo = FALSE, fig.align='center'}
-knitr::include_graphics("img/032-tidyr/pivotagem.gif")
-```
-
----
-# pivot_longer()
-
-Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_atriz` e `protagonismo`.
-
-```{r}
-imdb %>% 
-  pivot_longer(
-    cols = starts_with("ator"), 
-    names_to = "protagonismo",
-    values_to = "ator_atriz"
-  ) %>% 
-  select(titulo, ator_atriz, protagonismo)
-```
-
----
-# pivot_longer()
-
-Se considerarmos que na análise da base IMDB cada observação deve ser um filme, então essa nova base já não mais *tidy*, pois agora cada filme aparece em três linhas diferentes, uma vez para cada um de seus atores.
-
-Nesse sentido, embora possa parecer que a variável `ator_protagonismo` estava implícita na base original, ela não é uma variável de fato. Todos filmes tem um `ator_1`, um `ator_2` e um `ator_3`. Não existe nenhuma informação sobre o filme que podemos tirar da coluna `ator_protagonismo`, pois ela qualifica apenas os atores, não o filme em si.
-
----
-# pivot_wider()
-
-A função `pivot_wider()` faz a operação inversa da `pivot_longer()`. Sem aplicarmos as duas funções em sequência, voltamos para a base original.
-
-```{r, echo=FALSE}
-imdb_long <- imdb %>% 
-  pivot_longer(
-    cols = starts_with("ator"), 
-    names_to = "protagonismo",
-    values_to = "ator_atriz"
-  )
-```
-
-
-```{r}
-imdb_long %>% 
-  pivot_wider(
-    names_from = "protagonismo",
-    values_from = "ator_atriz"
-  ) %>%
-  select(1:3, starts_with("ator"))
-```
+- `rename()`, `relocate()`, `c_across()`: outras novidades do `dplyr` 1.0
 
 ---
 # Referências
+
+- [Documentação do dplyr](https://dplyr.tidyverse.org/) e [documentação do tidyr](https://tidyr.tidyverse.org/)
 
 - [Material de tidyverse da UFPR](http://www.leg.ufpr.br/~walmes/ensino/dsbd-linprog/slides/02-r-tidyverse.html#1)
 

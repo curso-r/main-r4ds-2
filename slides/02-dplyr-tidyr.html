@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.13/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -12,15 +12,241 @@
 class: center, middle, inverse, title-slide
 
 # R para Ciência de Dados 2
-## Dplyr 1.0 e Tidyr
+## Tidyr e Dplyr 1.0
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### Novembro de 2021
+### Abril de 2022
 
 ---
 
 
 
 
+class: middle, center, inverse
+# Tidyr
+
+---
+# Dados arrumados
+
+Dentro do `tidyverse`, uma base *tidy* é uma base fácil de se trabalhar, isto é, fácil de se fazer manipulação de dados, fácil de se criar visualizações, fácil de se ajustar modelos e por aí vai.
+
+Na prática, uma base *tidy* é aquela que se encaixa bem no *framework* do `tidyverse`, pois os pacotes como o `dplyr` e o `ggplot2` foram desenvolvidos para funcionar bem com bases *tidy*. E assim como esses pacotes motivaram o uso de bases *tidy*, o conceito *tidy* motiva o surgimento de novos *frameworks*, como o `tidymodels` para modelagem.
+
+As duas propriedades mais importantes de uma base *tidy* são:
+
+- Cada coluna é uma variável;
+
+- Cada linha é uma observação.
+
+Essa definição proporciona uma maneira consistente de se referir a variáveis (nomes de colunas) e observações (índices das linhas).
+
+---
+# O pacote tidyr
+
+O pacote `tidyr` possui funções que nos ajudam a deixar uma base bagunçada em uma base *tidy*. Ou então, nos ajudam a bagunçar um pouquinho a nossa base quando isso nos ajudar a produzir o resultados que queremos.
+
+Vamos ver aqui algumas de suas principais funções:
+
+- `separate()` e `unite()`: para separar variáveis concatenadas em uma única coluna ou uni-las.
+
+- `pivot_wider()` e `pivot_longer()`: para pirvotar a base.
+
+---
+# Motivação
+
+Como motivação para utilizar esssas funções, vamos utilizar a nossa boa e velha base `imdb`.
+
+
+```r
+imdb &lt;- readr::read_rds("../data/imdb.rds")
+
+imdb
+```
+
+```
+#&gt; # A tibble: 3,713 × 15
+#&gt;   titulo         ano diretor duracao cor   generos pais  classificacao orcamento
+#&gt;   &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;
+#&gt; 1 Avatar        2009 James …     178 Color Action… USA   A partir de … 237000000
+#&gt; 2 Pirates of …  2007 Gore V…     169 Color Action… USA   A partir de … 300000000
+#&gt; 3 The Dark Kn…  2012 Christ…     164 Color Action… USA   A partir de … 250000000
+#&gt; 4 John Carter   2012 Andrew…     132 Color Action… USA   A partir de … 263700000
+#&gt; 5 Spider-Man 3  2007 Sam Ra…     156 Color Action… USA   A partir de … 258000000
+#&gt; # … with 3,708 more rows, and 6 more variables: receita &lt;int&gt;, nota_imdb &lt;dbl&gt;,
+#&gt; #   likes_facebook &lt;int&gt;, ator_1 &lt;chr&gt;, ator_2 &lt;chr&gt;, ator_3 &lt;chr&gt;
+```
+
+---
+# separate()
+
+A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. Como exemplo, vamos transformar a coluna `generos` da base IMDB em três colunas, cada uma com um dos gêneros do filme. Lembrando que os valores da coluna `generos` estão no seguinte formato:
+
+
+```r
+imdb %&gt;%
+  select(generos)
+```
+
+```
+#&gt; # A tibble: 3,713 × 1
+#&gt;   generos                        
+#&gt;   &lt;chr&gt;                          
+#&gt; 1 Action|Adventure|Fantasy|Sci-Fi
+#&gt; 2 Action|Adventure|Fantasy       
+#&gt; 3 Action|Thriller                
+#&gt; 4 Action|Adventure|Sci-Fi        
+#&gt; 5 Action|Adventure|Romance       
+#&gt; # … with 3,708 more rows
+```
+
+---
+# separate()
+
+Veja que agora, temos 3 colunas de gênero. Filmes com menos de 3 gêneros recebem `NA` na coluna `genero2` e/ou `genero3`. Os gêneros sobressalentes são descartados, assim como a coluna `generos` original.
+
+
+```r
+imdb %&gt;% 
+  separate(col = generos, into = c("genero1", "genero2", "genero3"), sep = "\\|") %&gt;% 
+  select(starts_with("genero"))
+```
+
+```
+#&gt; # A tibble: 3,713 × 3
+#&gt;   genero1 genero2   genero3
+#&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;  
+#&gt; 1 Action  Adventure Fantasy
+#&gt; 2 Action  Adventure Fantasy
+#&gt; 3 Action  Thriller  &lt;NA&gt;   
+#&gt; 4 Action  Adventure Sci-Fi 
+#&gt; 5 Action  Adventure Romance
+#&gt; # … with 3,708 more rows
+```
+
+---
+# unite()
+
+A função `unite()` realiza a operação inversa da função `separate()`. Como exemplo, vamos agora transformar as colunas `ator1`, `ator2` e `ator3` em uma única coluna `atores`. Lembrando que essas colunas estão no formato abaixo.
+
+
+```r
+imdb %&gt;%
+  select(starts_with("ator"))
+```
+
+```
+#&gt; # A tibble: 3,713 × 3
+#&gt;   ator_1       ator_2           ator_3              
+#&gt;   &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;               
+#&gt; 1 CCH Pounder  Joel David Moore Wes Studi           
+#&gt; 2 Johnny Depp  Orlando Bloom    Jack Davenport      
+#&gt; 3 Tom Hardy    Christian Bale   Joseph Gordon-Levitt
+#&gt; 4 Daryl Sabara Samantha Morton  Polly Walker        
+#&gt; 5 J.K. Simmons James Franco     Kirsten Dunst       
+#&gt; # … with 3,708 more rows
+```
+
+---
+# unite()
+
+Veja que agora a coluna `elenco` possui os 3 atores/atrizes concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
+
+
+```r
+imdb %&gt;% 
+  unite(col = "elenco", starts_with("ator"), sep = " - ") %&gt;%
+  select(elenco)
+```
+
+```
+#&gt; # A tibble: 3,713 × 1
+#&gt;   elenco                                           
+#&gt;   &lt;chr&gt;                                            
+#&gt; 1 CCH Pounder - Joel David Moore - Wes Studi       
+#&gt; 2 Johnny Depp - Orlando Bloom - Jack Davenport     
+#&gt; 3 Tom Hardy - Christian Bale - Joseph Gordon-Levitt
+#&gt; 4 Daryl Sabara - Samantha Morton - Polly Walker    
+#&gt; 5 J.K. Simmons - James Franco - Kirsten Dunst      
+#&gt; # … with 3,708 more rows
+```
+
+---
+# Pivotagem
+
+O conceito de pivotagem no *tidyverse* se refere a mudança da estrutura da base, geralmente para alcançar o formato *tidy*. 
+
+Normalmente realizamos pivotagem quando nossas linhas não são unidades observacionais ou nossas colunas não são variáveis. Ela é similiar à pivotagem do Excel, mas um pouco mais complexa.
+
+O ato de pivotar resulta em transformar uma base de dados *long* em *wide* e vice-versa. 
+
+Uma base no formato *long* possui mais linhas e pode ter menos colunas, enquanto no formato *wide* poussi menos linhas e pode ter mais colunas
+
+Esses formatos são sempre relativos às colunas que estão sendo pivotadas, sendo que uma base *tidy* pode estar tanto no formato *long* quanto *wide*.
+
+Antigamente, utilizávamos as funções `gather()` e `spread()` para fazer as operações de pivotagem. Hoje em dia temos `pivot_longer()` e `pivot_wider()`. A demonstração a seguir é cortesia do [tidyexplain](https://www.garrickadenbuie.com/project/tidyexplain/#pivot-wider-and-longer).
+
+---
+
+&lt;img src="img/032-tidyr/pivotagem.gif" style="display: block; margin: auto;" /&gt;
+
+---
+# pivot_longer()
+
+Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_atriz` e `protagonismo`.
+
+
+```r
+imdb %&gt;% 
+  pivot_longer(
+    cols = starts_with("ator"), 
+    names_to = "protagonismo",
+    values_to = "ator_atriz"
+  ) %&gt;% 
+  select(titulo, ator_atriz, protagonismo)
+```
+
+```
+#&gt; # A tibble: 11,139 × 3
+#&gt;   titulo                                   ator_atriz       protagonismo
+#&gt;   &lt;chr&gt;                                    &lt;chr&gt;            &lt;chr&gt;       
+#&gt; 1 Avatar                                   CCH Pounder      ator_1      
+#&gt; 2 Avatar                                   Joel David Moore ator_2      
+#&gt; 3 Avatar                                   Wes Studi        ator_3      
+#&gt; 4 Pirates of the Caribbean: At World's End Johnny Depp      ator_1      
+#&gt; 5 Pirates of the Caribbean: At World's End Orlando Bloom    ator_2      
+#&gt; # … with 11,134 more rows
+```
+
+---
+# pivot_wider()
+
+A função `pivot_wider()` faz a operação inversa da `pivot_longer()`. Sem aplicarmos as duas funções em sequência, voltamos para a base original.
+
+
+
+
+
+```r
+imdb_long %&gt;% 
+  pivot_wider(
+    names_from = protagonismo,
+    values_from = ator_atriz
+  ) %&gt;%
+  select(titulo, starts_with("ator"))
+```
+
+```
+#&gt; # A tibble: 3,713 × 4
+#&gt;   titulo                                   ator_1       ator_2           ator_3 
+#&gt;   &lt;chr&gt;                                    &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;  
+#&gt; 1 Avatar                                   CCH Pounder  Joel David Moore Wes St…
+#&gt; 2 Pirates of the Caribbean: At World's End Johnny Depp  Orlando Bloom    Jack D…
+#&gt; 3 The Dark Knight Rises                    Tom Hardy    Christian Bale   Joseph…
+#&gt; 4 John Carter                              Daryl Sabara Samantha Morton  Polly …
+#&gt; 5 Spider-Man 3                             J.K. Simmons James Franco     Kirste…
+#&gt; # … with 3,708 more rows
+```
+
+---
 class: middle, center, inverse
 # Dplyr 1.0
 
@@ -69,9 +295,11 @@ Base de dados de venda de casas na cidade de Ames, nos Estados Unidos.
 
 
 ```r
-install.packages("remotes")
-remotes::install_github("cienciadedatos/dados")
+install.packages("dados")
+casas &lt;- dados::casas
 ```
+
+
 
 - Base original:
 
@@ -84,11 +312,10 @@ data(ames_raw, package = "AmesHousing")
 ---
 # across()
 
-A função `across()` substitui as famílias `*_all()`, `*_if` e `*_at()`. A ideia é facilitar a aplicação de uma operação a diversas colunas da base. Antigamente fazíamos:
+A ideia da função `across()` é facilitar a aplicação de uma operação a diversas colunas da base. Antigamente fazíamos:
 
 
 ```r
-casas &lt;- dados::casas
 casas %&gt;%
   group_by(geral_qualidade) %&gt;%
   summarise(
@@ -112,7 +339,7 @@ casas %&gt;%
 ---
 # across()
 
-Com a nova função `across()`, a sintaxe é parecida `summarise_at()`, não precisamos mais usar `vars()` nem `~nome_da_funcao(.x)` para definir a função aplicada nas colunas.
+Com a nova função `across()`, a sintaxe é simplificada.
 
 
 ```r
@@ -139,7 +366,7 @@ casas %&gt;%
 ---
 # across()
 
-Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. Abaixo, calculamos o número de valores distintos para todas as variáveis da base `casas`.
+Usando `across()`, podemos facilmente aplicar uma função em todas as colunas da nossa base. O argumento padrão de `.cols` é `everything()`.
 
 
 ```r
@@ -156,8 +383,6 @@ casas %&gt;%
 #&gt; 1  2930  2930             16                  7          129
 ```
 
-O padrão do parâmetro `.cols` é `everything()`, que representa "todas as colunas". Anteriormente, teríamos que utilizar a função `summarise_all()`.
-
 ---
 # across()
 
@@ -167,7 +392,10 @@ Se quisermos selecionar as colunas a serem modificadas a partir de um teste lóg
 ```r
 # Pegando apenas 5 colunas por questão de espaço
 casas %&gt;%
-  summarise(across(where(is.character), n_distinct)) %&gt;% 
+  summarise(across(
+    .cols = where(is.character), # Variáveis
+    .fns  = n_distinct           # Função
+  )) %&gt;% 
   select(1:5)
 ```
 
@@ -178,32 +406,33 @@ casas %&gt;%
 #&gt; 1  2930             16                  7        2         3
 ```
 
-Todas as colunas da base resultante eram colunas com classe `character` na base `casas`. Anteriormente, teríamos que utilizar a função `summarise_if()`.
-
 ---
 # across()
 
-Você também pode combinar as ações do `summarise_if()` e `summarise_at()` em um único `across()`. Calculamos as áreas médias, garantindo que pegamos apenas variáveis numéricas.
+Você também pode combinar testes lógicos com seleções de colunas. Calculamos as áreas médias, garantindo que pegamos apenas variáveis numéricas.
 
 
 ```r
-# Pegando apenas 5 colunas por questão de espaço
+# Pegando apenas 4 colunas por questão de espaço
 casas %&gt;%
-  summarise(across(where(is.numeric) &amp; contains("_area"), mean, na.rm = TRUE)) %&gt;% 
-  select(1:5)
+  summarise(across(
+    .cols = where(is.numeric) &amp; contains("_area"), # Variáveis
+    .fns  = mean, na.rm = TRUE                     # Função
+  )) %&gt;% 
+  select(1:4)
 ```
 
 ```
-#&gt; # A tibble: 1 × 5
-#&gt;   lote_area alvenaria_area porao_area_com_acabamento_1 porao_area_com_acabamento_2 porao_area_sem_acabamento
-#&gt;       &lt;dbl&gt;          &lt;dbl&gt;                       &lt;dbl&gt;                       &lt;dbl&gt;                     &lt;dbl&gt;
-#&gt; 1    10148.           102.                        443.                        49.7                      559.
+#&gt; # A tibble: 1 × 4
+#&gt;   lote_area alvenaria_area porao_area_com_acabamento_1 porao_area_com_acabament…
+#&gt;       &lt;dbl&gt;          &lt;dbl&gt;                       &lt;dbl&gt;                     &lt;dbl&gt;
+#&gt; 1    10148.           102.                        443.                      49.7
 ```
 
 ---
 # across()
 
-Isso não era possível utilizando apenas as funções `summarise()`, `summarise_if()` e `summarise_at()`:
+Fazer várias aplicações do `across()` também é possível:
 
 
 ```r
@@ -230,11 +459,56 @@ casas %&gt;%
 ```
 
 ---
+# across()
+
+A última funcionalidade relevante do `across()` é a capacidade de receber uma lista de funções:
+
+
+```r
+casas %&gt;%
+  group_by(rua_tipo) %&gt;%
+  summarise(across(
+      .cols = c(lote_area, venda_valor),
+      .fns = list("media" = mean, "mediana" = median)
+  ))
+```
+
+```
+#&gt; # A tibble: 2 × 5
+#&gt;   rua_tipo    lote_area_media lote_area_media… venda_valor_med… venda_valor_med…
+#&gt;   &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+#&gt; 1 cascalho             26607.           10420.          106663.            87425
+#&gt; 2 pavimentada          10080.            9436.          181101.           160375
+```
+
+---
+# across()
+
+O argumento `.names` define uma "fórmula" para a construção do nome das novas colunas:
+
+
+```r
+casas %&gt;%
+  group_by(rua_tipo) %&gt;%
+  summarise(across(
+      .cols = c(lote_area, venda_valor),
+      .fns = list("media" = mean, "mediana" = median),
+      .names = "{.fn}_de_{.col}" # {nome função}_de_{nome coluna}
+  ))
+```
+
+```
+#&gt; # A tibble: 2 × 5
+#&gt;   rua_tipo   media_de_lote_a… mediana_de_lote… media_de_venda_… mediana_de_vend…
+#&gt;   &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+#&gt; 1 cascalho             26607.           10420.          106663.            87425
+#&gt; 2 pavimenta…           10080.            9436.          181101.           160375
+```
+
+---
 # across() outros verbos
 
-Embora a nova sintaxe, usando `across()`, não seja muito diferente do que fazíamos antes, realizar sumarizações complexas não é a única vantagem desse novo *framework*.
-
-O `across()` pode ser utilizado em todos os verbos do `dplyr` (com exceção do `select()` e `rename()`, já que ele não traz vantagens com relação ao que já podia ser feito) e isso unifica o modo que trabalhamos essas operações no `dplyr`. Em vez de termos uma família de funções para cada verbo, temos agora apenas o próprio verbo e o `across()`.
+O `across()` pode ser utilizado em todos os verbos do `dplyr` (com exceção do `select()` e `rename()`, já que ele não traz vantagens com relação ao que já podia ser feito) e isso unifica o modo que trabalhamos essas operações no `dplyr`.
 
 Vamos ver um exemplo para o `mutate()` e para o `filter()`.
 
@@ -264,230 +538,31 @@ casas %&gt;%
 ```
 
 ---
-# select()
+# Notação: ~.x
 
-Não precisamos do `across()` na hora de selecionar colunas. A função `select()` já usa naturalmente o mecanismo de seleção de colunas que o `across()` proporciona.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-casas %&gt;%
-  select(where(is.numeric)) %&gt;% 
-  select(1:5)
-```
-
-```
-#&gt; # A tibble: 2,930 × 5
-#&gt;   ordem lote_fachada lote_area construcao_ano remodelacao_ano
-#&gt;   &lt;int&gt;        &lt;int&gt;     &lt;int&gt;          &lt;int&gt;           &lt;int&gt;
-#&gt; 1     1          141     31770           1960            1960
-#&gt; 2     2           80     11622           1961            1961
-#&gt; 3     3           81     14267           1958            1958
-#&gt; 4     4           93     11160           1968            1968
-#&gt; 5     5           74     13830           1997            1998
-#&gt; # … with 2,925 more rows
-```
-
----
-# rename()
-
-O mesmo vale para o `rename()`. Se quisermos renomer várias colunas, a partir de uma função, utilizamos o `rename_with()`.
+Anteriormente utilizamos uma notação nova chamada "notação de fórmula" (também conhecida como "notação lambda"). Ela é útil para simplificar a definição de novas funções:
 
 
 ```r
-# Pegando apenas 5 colunas por questão de espaço
-casas %&gt;%
-  rename_with(toupper, contains("venda")) %&gt;% 
-  select(contains("VENDA"))
-```
+# Função normal
+function(vec) {
+  !is.na(vec)
+}
 
-```
-#&gt; # A tibble: 2,930 × 5
-#&gt;   VENDA_MES VENDA_ANO VENDA_TIPO VENDA_CONDICAO VENDA_VALOR
-#&gt;       &lt;int&gt;     &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;                &lt;int&gt;
-#&gt; 1         5      2010 "WD "      venda normal        215000
-#&gt; 2         6      2010 "WD "      venda normal        105000
-#&gt; 3         6      2010 "WD "      venda normal        172000
-#&gt; 4         4      2010 "WD "      venda normal        244000
-#&gt; 5         3      2010 "WD "      venda normal        189900
-#&gt; # … with 2,925 more rows
-```
+# Se ela tem só 1 linha, não precisamos de chaves
+function(vec) !is.na(vec)
 
----
-# relocate()
+# Se ela tem só 1 argumento, podemos sempre usar .x
+function(.x) !is.na(.x)
 
-O `dplyr` possui agora uma função própria para reorganizar colunas: `relocate()`. Por padrão, ela coloca uma ou mais colunas no começo da base.
-
-
-```r
-# Pegando apenas 5 colunas por questão de espaço
-casas %&gt;%
-  relocate(venda_valor, venda_tipo) %&gt;% 
-  select(1:5)
-```
-
-```
-#&gt; # A tibble: 2,930 × 5
-#&gt;   venda_valor venda_tipo ordem pid        moradia_classe
-#&gt;         &lt;int&gt; &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;         
-#&gt; 1      215000 "WD "          1 0526301100 020           
-#&gt; 2      105000 "WD "          2 0526350040 020           
-#&gt; 3      172000 "WD "          3 0526351010 020           
-#&gt; 4      244000 "WD "          4 0526353030 020           
-#&gt; 5      189900 "WD "          5 0527105010 060           
-#&gt; # … with 2,925 more rows
-```
-
----
-# relocate()
-
-Podemos usar os argumentos `.after` e `.before` para fazer mudanças mais complexas.
-
-O código baixo coloca a coluna `venda_ano` depois da coluna `construcao_ano`.
-
-
-```r
-casas %&gt;%
-  relocate(venda_ano, .after = construcao_ano)
-```
-
-O código baixo coloca a coluna `venda_ano` antes da coluna `construcao_ano`.
-
-
-```r
-casas %&gt;%
-  relocate(venda_ano, .before = construcao_ano)
-```
-
----
-# rowwise()
-
-Por fim, vamos discutir operações feitas por linha. Tome como exemplo a tabela abaixo:
-
-
-```r
-tab_notas &lt;- tibble(
-  student_id = 1:5,
-  prova1 = sample(0:10, 5),
-  prova2 = sample(0:10, 5),
-  prova3 = sample(0:10, 5),
-  prova4 = sample(0:10, 5)
-)
-
-tab_notas
-```
-
-```
-#&gt; # A tibble: 5 × 5
-#&gt;   student_id prova1 prova2 prova3 prova4
-#&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
-#&gt; 1          1      3      3     10      1
-#&gt; 2          2      6      4      1      3
-#&gt; 3          3      0     10      4      4
-#&gt; 4          4     10      8      8      5
-#&gt; 5          5      7      6      7      2
-```
-
----
-# rowwise()
-
-Se quisermos gerar uma coluna com a nota média de cada aluno nas quatro provas, não poderíamos usar o `mutate()` diretamente.
-
-
-```r
-tab_notas %&gt;% mutate(media = mean(c(prova1, prova2, prova3, prova4)))
-```
-
-```
-#&gt; # A tibble: 5 × 6
-#&gt;   student_id prova1 prova2 prova3 prova4 media
-#&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      3      3     10      1   5.1
-#&gt; 2          2      6      4      1      3   5.1
-#&gt; 3          3      0     10      4      4   5.1
-#&gt; 4          4     10      8      8      5   5.1
-#&gt; 5          5      7      6      7      2   5.1
-```
-
-Neste caso, todas as colunas estão sendo empilhadas e gerando uma única média, passada a todas as linhas da coluna `media`.
-
----
-# rowwise()
-
-Para fazermos a conta para cada aluno, podemos agrupar por aluno. Agora sim a média é calculada apenas nas notas de cada estudante.
-
-
-```r
-tab_notas %&gt;%
-  group_by(student_id) %&gt;%
-  mutate(media = mean(c(prova1, prova2, prova3, prova4)))
-```
-
-```
-#&gt; # A tibble: 5 × 6
-#&gt; # Groups:   student_id [5]
-#&gt;   student_id prova1 prova2 prova3 prova4 media
-#&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      3      3     10      1  4.25
-#&gt; 2          2      6      4      1      3  3.5 
-#&gt; 3          3      0     10      4      4  4.5 
-#&gt; 4          4     10      8      8      5  7.75
-#&gt; 5          5      7      6      7      2  5.5
-```
-
----
-# rowwise()
-
-E se não tivermos uma coluna ID? Então basta usarmos a `rowwise()`, uma função
-que automaticamente agrupa pelo identificador das linhas.
-
-
-```r
-tab_notas %&gt;%
-  rowwise() %&gt;%
-  mutate(media = mean(c(prova1, prova2, prova3, prova4)))
-```
-
-```
-#&gt; # A tibble: 5 × 6
-#&gt; # Rowwise: 
-#&gt;   student_id prova1 prova2 prova3 prova4 media
-#&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      3      3     10      1  4.25
-#&gt; 2          2      6      4      1      3  3.5 
-#&gt; 3          3      0     10      4      4  4.5 
-#&gt; 4          4     10      8      8      5  7.75
-#&gt; 5          5      7      6      7      2  5.5
-```
-
----
-# c_across()
-
-Também podemos nos aproveitar da sintaxe do `across()` neste caso. Para isso, precisamos substutir a função `c()` pela função `c_across()`.
-
-
-```r
-tab_notas %&gt;%
-  rowwise() %&gt;%
-  mutate(media = mean(c_across(starts_with("prova"))))
-```
-
-```
-#&gt; # A tibble: 5 × 6
-#&gt; # Rowwise: 
-#&gt;   student_id prova1 prova2 prova3 prova4 media
-#&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
-#&gt; 1          1      3      3     10      1  4.25
-#&gt; 2          2      6      4      1      3  3.5 
-#&gt; 3          3      0     10      4      4  4.5 
-#&gt; 4          4     10      8      8      5  7.75
-#&gt; 5          5      7      6      7      2  5.5
+# Se a função estiver no formato acima, podemos trocar function(.x) por ~
+~ !is.na(.x)
 ```
 
 ---
 # Miscelânea de funções úteis
 
-Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos conhecidas do `dplyr`.
+Para quem quiser saber mais, vamos listar uma miscelânea de funções muito úteis, mas menos conhecidas do `dplyr`.
 
 - `bind_rows()`: para empilhar duas bases.
 
@@ -501,236 +576,12 @@ Para aquecer, vamos listar uma miscelânea de funções muito úteis, mas menos 
 
 - `lag()`, `lead()`: para gerar colunas defasadas.
 
-- `pull()`: para transformar uma coluna da base em um vetor.
-
-- `slice_sample`: para gerar amostras da base.
-
----
-class: middle, center, inverse
-# Tidyr
-
----
-# Dados arrumados
-
-Dentro do `tidyverse`, uma base *tidy* é uma base fácil de se trabalhar, isto é, fácil de se fazer manipulação de dados, fácil de se criar visualizações, fácil de se ajustar modelos e por aí vai.
-
-Na prática, uma base *tidy* é aquela que se encaixa bem no *framework* do `tidyverse`, pois os pacotes como o `dplyr` e o `ggplot2` foram desenvolvidos para funcionar bem com bases *tidy*. E assim como esses pacotes motivaram o uso de bases *tidy*, o conceito *tidy* motiva o surgimento de novos *frameworks*, como o `tidymodels` para modelagem.
-
-As duas propriedades mais importantes de uma base *tidy* são:
-
-- Cada coluna é uma variável;
-
-- Cada linha é uma observação.
-
-Essa definição proporciona uma maneira consistente de se referir a variáveis (nomes de colunas) e observações (índices das linhas).
-
----
-# O pacote tidyr
-
-O pacote `tidyr` possui funções que nos ajudam a deixar uma base bagunçada em uma base *tidy*. Ou então, nos ajudam a bagunçar um pouquinho a nossa base quando isso nos ajudar a produzir o resultados que queremos.
-
-Vamos ver aqui algumas de suas principais funções:
-
-- `separate()` e `unite()`: para separar variáveis concatenadas em uma única coluna ou uni-las.
-
-- `pivot_wider()` e `pivot_longer()`: para pirvotar a base.
-
----
-# Motivação
-
-Como motivação para utilizar esssas funções, vamos utilizar a nossa boa e velha base `imdb`.
-
-
-```r
-imdb &lt;- readr::read_rds("../data/imdb.rds")
-
-imdb
-```
-
-```
-#&gt; # A tibble: 3,713 × 15
-#&gt;   titulo                                     ano diretor  duracao cor   generos  pais  classificacao orcamento receita nota_imdb likes_facebook ator_1 ator_2 ator_3
-#&gt;   &lt;chr&gt;                                    &lt;int&gt; &lt;chr&gt;      &lt;int&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;             &lt;int&gt;   &lt;int&gt;     &lt;dbl&gt;          &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; 
-#&gt; 1 Avatar                                    2009 James C…     178 Color Action|… USA   A partir de … 237000000  7.61e8       7.9          33000 CCH P… Joel … Wes S…
-#&gt; 2 Pirates of the Caribbean: At World's End  2007 Gore Ve…     169 Color Action|… USA   A partir de … 300000000  3.09e8       7.1              0 Johnn… Orlan… Jack …
-#&gt; 3 The Dark Knight Rises                     2012 Christo…     164 Color Action|… USA   A partir de … 250000000  4.48e8       8.5         164000 Tom H… Chris… Josep…
-#&gt; 4 John Carter                               2012 Andrew …     132 Color Action|… USA   A partir de … 263700000  7.31e7       6.6          24000 Daryl… Saman… Polly…
-#&gt; 5 Spider-Man 3                              2007 Sam Rai…     156 Color Action|… USA   A partir de … 258000000  3.37e8       6.2              0 J.K. … James… Kirst…
-#&gt; # … with 3,708 more rows
-```
-
----
-# separate()
-
-A função `separate()` separa duas ou mais variáveis que estão concatenadas em uma mesma coluna. Como exemplo, vamos transformar a coluna `generos` da base IMDB em três colunas, cada uma com um dos gêneros do filme. Lembrando que os valores da coluna `generos` estão no seguinte formato:
-
-
-```r
-imdb %&gt;% pull(generos) %&gt;% head()
-```
-
-```
-#&gt; [1] "Action|Adventure|Fantasy|Sci-Fi"                           "Action|Adventure|Fantasy"                                 
-#&gt; [3] "Action|Thriller"                                           "Action|Adventure|Sci-Fi"                                  
-#&gt; [5] "Action|Adventure|Romance"                                  "Adventure|Animation|Comedy|Family|Fantasy|Musical|Romance"
-```
-
----
-# separate()
-
-Veja que agora, temos 3 colunas de gênero. Filmes com menos de 3 gêneros recebem `NA` na coluna `genero2` e/ou `genero3`. Os gêneros sobressalentes são descartados, assim como a coluna `generos` original.
-
-
-```r
-imdb %&gt;% 
-  separate(col = generos, into = c("genero1", "genero2", "genero3"), sep = "\\|")
-```
-
-```
-#&gt; # A tibble: 3,713 × 17
-#&gt;   titulo            ano diretor    duracao cor   genero1 genero2  genero3 pais  classificacao  orcamento receita nota_imdb likes_facebook ator_1  ator_2   ator_3   
-#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;chr&gt;        &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;              &lt;int&gt;   &lt;int&gt;     &lt;dbl&gt;          &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    
-#&gt; 1 Avatar           2009 James Cam…     178 Color Action  Adventu… Fantasy USA   A partir de 1… 237000000  7.61e8       7.9          33000 CCH Po… Joel Da… Wes Studi
-#&gt; 2 Pirates of the…  2007 Gore Verb…     169 Color Action  Adventu… Fantasy USA   A partir de 1… 300000000  3.09e8       7.1              0 Johnny… Orlando… Jack Dav…
-#&gt; 3 The Dark Knigh…  2012 Christoph…     164 Color Action  Thriller &lt;NA&gt;    USA   A partir de 1… 250000000  4.48e8       8.5         164000 Tom Ha… Christi… Joseph G…
-#&gt; 4 John Carter      2012 Andrew St…     132 Color Action  Adventu… Sci-Fi  USA   A partir de 1… 263700000  7.31e7       6.6          24000 Daryl … Samanth… Polly Wa…
-#&gt; 5 Spider-Man 3     2007 Sam Raimi      156 Color Action  Adventu… Romance USA   A partir de 1… 258000000  3.37e8       6.2              0 J.K. S… James F… Kirsten …
-#&gt; # … with 3,708 more rows
-```
-
----
-# unite()
-
-A função `unite()` realiza a operação inversa da função `separate()`. Como exemplo, vamos agora transformar as colunas `ator1`, `ator2` e `ator3` em uma única coluna `atores`. Lembrando que essas colunas estão no formato abaixo.
-
-
-```r
-imdb %&gt;% select(starts_with("ator"))
-```
-
-```
-#&gt; # A tibble: 3,713 × 3
-#&gt;   ator_1       ator_2           ator_3              
-#&gt;   &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;               
-#&gt; 1 CCH Pounder  Joel David Moore Wes Studi           
-#&gt; 2 Johnny Depp  Orlando Bloom    Jack Davenport      
-#&gt; 3 Tom Hardy    Christian Bale   Joseph Gordon-Levitt
-#&gt; 4 Daryl Sabara Samantha Morton  Polly Walker        
-#&gt; 5 J.K. Simmons James Franco     Kirsten Dunst       
-#&gt; # … with 3,708 more rows
-```
-
----
-# unite()
-
-Veja que agora a coluna `elenco` possui os 3 atores/atrizes concatenados. Se a ordem das colunas `ator1`, `ator2` e `ator3` nos trazia a informação de protagonismo, essa informação passa a ficar implícita nesse novo formato. As 3 colunas originais são removidas da base resultante.
-
-
-```r
-imdb %&gt;% 
-  unite(col = "elenco", starts_with("ator"), sep = " - ") %&gt;%
-  select(elenco)
-```
-
-```
-#&gt; # A tibble: 3,713 × 1
-#&gt;   elenco                                           
-#&gt;   &lt;chr&gt;                                            
-#&gt; 1 CCH Pounder - Joel David Moore - Wes Studi       
-#&gt; 2 Johnny Depp - Orlando Bloom - Jack Davenport     
-#&gt; 3 Tom Hardy - Christian Bale - Joseph Gordon-Levitt
-#&gt; 4 Daryl Sabara - Samantha Morton - Polly Walker    
-#&gt; 5 J.K. Simmons - James Franco - Kirsten Dunst      
-#&gt; # … with 3,708 more rows
-```
-
----
-# Pivotagem
-
-O conceito de pivotagem no *tidyverse* se refere a mudança da estrutura da base, geralmente para alcançar o formato *tidy*. 
-
-Geralmente realizamos pivotagem quando nossas linhas não são unidades observacionais ou nossas colunas não são variáveis. Ela é similiar à pivotagem do Excel, mas um pouco mais complexa.
-
-O ato de pivotar resulta em transformar uma base de dados *long* em *wide* e vice-versa. 
-
-Uma base no formato *long* possui mais linhas e pode ter menos colunas, enquanto no formato *wide* poussi menos linhas e pode ter mais colunas
-
-Esses formatos são sempre relativos às colunas que estão sendo pivotadas, sendo que uma base *tidy* pode estar tanto no formato *long* quanto *wide*.
-
----
-# Pivotagem
-
-Antigamente, utilizávamos as funções `gather()` e `spread()` para fazer as operações de pivotagem. A fonte da imagem é [este site](https://www.garrickadenbuie.com/project/tidyexplain/#spread-and-gather").
-
-&lt;img src="img/032-tidyr/pivotagem.gif" style="display: block; margin: auto;" /&gt;
-
----
-# pivot_longer()
-
-Agora, no lugar de `gather()`, utilizamos a função `pivot_longer()`. Abaixo, transformamos as colunas `ator1`, `ator2` e `ator3` em duas colunas: `ator_atriz` e `protagonismo`.
-
-
-```r
-imdb %&gt;% 
-  pivot_longer(
-    cols = starts_with("ator"), 
-    names_to = "protagonismo",
-    values_to = "ator_atriz"
-  ) %&gt;% 
-  select(titulo, ator_atriz, protagonismo)
-```
-
-```
-#&gt; # A tibble: 11,139 × 3
-#&gt;   titulo                                   ator_atriz       protagonismo
-#&gt;   &lt;chr&gt;                                    &lt;chr&gt;            &lt;chr&gt;       
-#&gt; 1 Avatar                                   CCH Pounder      ator_1      
-#&gt; 2 Avatar                                   Joel David Moore ator_2      
-#&gt; 3 Avatar                                   Wes Studi        ator_3      
-#&gt; 4 Pirates of the Caribbean: At World's End Johnny Depp      ator_1      
-#&gt; 5 Pirates of the Caribbean: At World's End Orlando Bloom    ator_2      
-#&gt; # … with 11,134 more rows
-```
-
----
-# pivot_longer()
-
-Se considerarmos que na análise da base IMDB cada observação deve ser um filme, então essa nova base já não mais *tidy*, pois agora cada filme aparece em três linhas diferentes, uma vez para cada um de seus atores.
-
-Nesse sentido, embora possa parecer que a variável `ator_protagonismo` estava implícita na base original, ela não é uma variável de fato. Todos filmes tem um `ator_1`, um `ator_2` e um `ator_3`. Não existe nenhuma informação sobre o filme que podemos tirar da coluna `ator_protagonismo`, pois ela qualifica apenas os atores, não o filme em si.
-
----
-# pivot_wider()
-
-A função `pivot_wider()` faz a operação inversa da `pivot_longer()`. Sem aplicarmos as duas funções em sequência, voltamos para a base original.
-
-
-
-
-
-```r
-imdb_long %&gt;% 
-  pivot_wider(
-    names_from = "protagonismo",
-    values_from = "ator_atriz"
-  ) %&gt;%
-  select(1:3, starts_with("ator"))
-```
-
-```
-#&gt; # A tibble: 3,713 × 6
-#&gt;   titulo                                     ano diretor           ator_1       ator_2           ator_3              
-#&gt;   &lt;chr&gt;                                    &lt;int&gt; &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;               
-#&gt; 1 Avatar                                    2009 James Cameron     CCH Pounder  Joel David Moore Wes Studi           
-#&gt; 2 Pirates of the Caribbean: At World's End  2007 Gore Verbinski    Johnny Depp  Orlando Bloom    Jack Davenport      
-#&gt; 3 The Dark Knight Rises                     2012 Christopher Nolan Tom Hardy    Christian Bale   Joseph Gordon-Levitt
-#&gt; 4 John Carter                               2012 Andrew Stanton    Daryl Sabara Samantha Morton  Polly Walker        
-#&gt; 5 Spider-Man 3                              2007 Sam Raimi         J.K. Simmons James Franco     Kirsten Dunst       
-#&gt; # … with 3,708 more rows
-```
+- `rename()`, `relocate()`, `c_across()`: outras novidades do `dplyr` 1.0
 
 ---
 # Referências
+
+- [Documentação do dplyr](https://dplyr.tidyverse.org/) e [documentação do tidyr](https://tidyr.tidyverse.org/)
 
 - [Material de tidyverse da UFPR](http://www.leg.ufpr.br/~walmes/ensino/dsbd-linprog/slides/02-r-tidyverse.html#1)
 
