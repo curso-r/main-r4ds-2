@@ -1,8 +1,8 @@
-# Motivação: ver quais colunas possuem NAs e quantos
+# Motivação: ver quais colunas possuem NAs e quais colunas possuem mais NAs.
 
 library(dplyr)
 
-casas <- readr::read_rds("data/casas.rds")
+casas <- dados::casas
 
 View(casas)
 
@@ -39,7 +39,7 @@ casas %>%
 
 library(dplyr)
 
-casas <- readr::read_rds("data/casas.rds")
+casas <- dados::casas
 
 casas %>%
   select(where(is.character)) %>%
@@ -89,6 +89,7 @@ imdb %>%
   ) %>%
   mutate(lucro = receita - orcamento) %>%
   group_by(ator) %>%
+  drop_na(lucro) %>%
   summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
   arrange(desc(lucro_medio))
 
@@ -102,6 +103,7 @@ imdb %>%
   ) %>%
   mutate(lucro = receita - orcamento) %>%
   group_by(ator) %>%
+  drop_na(lucro) %>%
   summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
   slice_max(lucro_medio, n = 1)
 
@@ -115,6 +117,7 @@ imdb %>%
   ) %>%
   mutate(lucro = receita - orcamento) %>%
   group_by(ator) %>%
+  drop_na(lucro) %>%
   summarise(
     lucro_medio = mean(lucro, na.rm = TRUE),
     n_filmes = n()
@@ -132,11 +135,12 @@ imdb %>%
   ) %>%
   mutate(lucro = receita - orcamento) %>%
   group_by(ator) %>%
+  drop_na(lucro) %>%
   summarise(
     lucro_medio = mean(lucro, na.rm = TRUE),
     n_filmes = n()
   ) %>%
-  filter(n_filmes > 10) %>%
+  filter(n_filmes >= 10) %>%
   slice_max(lucro_medio, n = 10)
 
 # -------------------------------------------------------------------------
@@ -194,10 +198,8 @@ imdb %>%
   summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
   pivot_wider(names_from = ano, values_from = lucro_medio) %>%
   View()
-stringr::str_subset()
+
 # -------------------------------------------------------------------------
-
-
 # Motivação: calcular o lucro médio por gênero do filme
 # na base IMDB. ***
 
@@ -208,36 +210,18 @@ library(stringr)
 imdb <- readr::read_rds("data/imdb.rds")
 
 imdb %>%
-  mutate(
-    generos = str_split(generos, "\\|")
-  ) %>%
-  View()
-
-imdb %>%
-  mutate(
-    generos = str_split(generos, "\\|")
-  ) %>%
-  unnest(generos) %>%
-  View()
-
-imdb %>%
-  mutate(
-    lucro = receita - orcamento,
-    generos = str_split(generos, "\\|")
-  ) %>%
-  unnest(generos) %>%
+  mutate(lucro = receita - orcamento) %>%
+  separate_rows(generos, sep =  "\\|")  %>%
   group_by(generos) %>%
-  summarise(lucro_medio = mean(lucro, na.rm = TRUE))
+  summarise(lucro_medio = mean(lucro, na.rm = TRUE)) |>
+  arrange(desc(lucro_medio))
 
 # Refazendo exemplo anterior
 
 imdb %>%
   filter(ano >= 2000) %>%
-  mutate(
-    lucro = receita - orcamento,
-    generos = str_split(generos, "\\|")
-  ) %>%
-  unnest(generos) %>%
+  mutate(lucro = receita - orcamento) %>%
+  separate_rows(generos, sep =  "\\|")  %>%
   filter(generos %in% c("Action", "Comedy", "Romance")) %>%
   group_by(generos, ano) %>%
   summarise(lucro_medio = mean(lucro, na.rm = TRUE)) %>%
@@ -253,12 +237,12 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-glimpse(starwars)
+starwars <- dados::dados_starwars
 
 starwars %>%
-  select(films, species) %>%
-  unnest(films) %>%
-  count(films) %>%
-  mutate(films = forcats::fct_reorder(films, n)) %>%
-  ggplot(aes(y = films, x = n)) +
+  select(filmes, especie) %>%
+  unnest(filmes) %>%
+  count(filmes) %>%
+  mutate(filmes = forcats::fct_reorder(filmes, n)) %>%
+  ggplot(aes(y = filmes, x = n)) +
   geom_col()
