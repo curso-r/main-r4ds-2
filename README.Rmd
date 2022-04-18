@@ -66,3 +66,10 @@ knitr::kable(CursoRutils:::listar_turmas_recentes("r4ds-2"))
 - NSE
 
 - Curly-curly
+
+  
+```{r eval=FALSE, include=FALSE}
+# para criar o zip do curso:
+# CursoRutils::empacotar_material_alunos("material.txt")
+```
+  

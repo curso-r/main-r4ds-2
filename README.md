@@ -10,52 +10,52 @@ Inscreva-se no curso: <https://www.curso-r.com/cursos/r4ds-2/>
 **Acesse o material completo do curso escolhendo uma das turmas
 abaixo**.
 
-| Turma          | Material                                  | Github                                     |
-| :------------- | :---------------------------------------- | :----------------------------------------- |
-| Agosto de 2021 | <https://curso-r.github.io/202108-r4ds-2> | <https://github.com/curso-r/202108-r4ds-2> |
-| Abril de 2021  | <https://curso-r.github.io/202104-r4ds-2> | <https://github.com/curso-r/202104-r4ds-2> |
-| Agosto de 2020 | <https://curso-r.github.io/202008-r4ds-2> | <https://github.com/curso-r/202008-r4ds-2> |
+| Turma           | Material                                  | Github                                     |
+|:----------------|:------------------------------------------|:-------------------------------------------|
+| Outubro de 2022 | <https://curso-r.github.io/202210-r4ds-2> | <https://github.com/curso-r/202210-r4ds-2> |
+| Julho de 2022   | <https://curso-r.github.io/202207-r4ds-2> | <https://github.com/curso-r/202207-r4ds-2> |
+| Abril de 2022   | <https://curso-r.github.io/202204-r4ds-2> | <https://github.com/curso-r/202204-r4ds-2> |
 
 ## Ementa
 
 **Organização de projetos**
 
-  - Por que não usar `.RData` e `.Rhistory`
+-   Por que não usar `.RData` e `.Rhistory`
 
-  - Git e Github
+-   Git e Github
 
-  - Funções e dependências
+-   Funções e dependências
 
-  - Pacotes
+-   Pacotes
 
 **Manipulação de dados**
 
-  - `{dplyr}` avançado: `across()`, `where()` e joins
+-   `{dplyr}` avançado: `across()`, `where()` e joins
 
-  - `{tidyr}`: pivotagem
+-   `{tidyr}`: pivotagem
 
 **Textos**
 
-  - Manipulação de textos com o pacote `{stringr}`
+-   Manipulação de textos com o pacote `{stringr}`
 
-  - Expressões regulares (regex)
+-   Expressões regulares (regex)
 
 **Datas e fatores**
 
-  - Manipulação de datas com o pacote `{lubridate}`
+-   Manipulação de datas com o pacote `{lubridate}`
 
-  - Manipulação de fatores com o pacote `{forcats}`
+-   Manipulação de fatores com o pacote `{forcats}`
 
 **Programação funcional**
 
-  - Listas e list-columns
+-   Listas e list-columns
 
-  - Introdução ao pacote `{purrr}`
+-   Introdução ao pacote `{purrr}`
 
-  - Substituindo for e while pelas funções `map_()`
+-   Substituindo for e while pelas funções `map_()`
 
 **Tidy-eval**
 
-  - NSE
+-   NSE
 
-  - Curly-curly
+-   Curly-curly
