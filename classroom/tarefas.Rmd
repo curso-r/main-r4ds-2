@@ -2,23 +2,20 @@ Tarefas para serem colocadas no Google Classroom.
 
 # Organização de projetos
 
-### Seu primeiro pacote
+### Projetos
 
-a. Utilize `usethis::create_package()` para criar seu primeiro pacote.
-b. Crie uma função chamada `colar`, que recebe os parâmetros `x` e `y` e os retorna colados, com um espaço de separação. Por exemplo: `colar(x = "Caio", y = "Lente")` deve devolver a string `"Caio Lente"`.
-c. Documente a função e adicione `@export`.
-d. Rode `devtools::document()` e `devtools::load_all()`.
-e. Rode `?colar`.
-f. Rode com seu nome e sobrenome: `colar("Jane", "Doe")`.
+a. Utilize `usethis::create_project()` para criar um projeto.
+b. Crie uma função chamada `colar`, que recebe os parâmetros `x` e `y` e os retorna colados, com um espaço de separação. Por exemplo: `colar(x = "Caio", y = "Lente")` deve devolver a string `"Caio Lente"`. Dica: para criar o arquivo, a função `usethis::use_r("colar")` é útil!
+c. Rode com seu nome e sobrenome: `colar("Jane", "Doe")` e veja se o resultado é o esperado.
 
 ### Github
 
-Siga os passos e não se esqueça de configurar seu usuário com `use_git_config()`!
+Siga os passos de configuração e não se esqueça de configurar seu usuário com `use_git_config()`!
 
-a. Crie um pacote e adicione Git e o GitHub.
-b. Crie um script em R e adicione a função `colar()`, criada no exercício 1.
-c. Commit & Push.
-d. Veja se seu arquivo R está no seu repositório do Github.
+a. No projeto criado no exercício anterior, inicie o Git `usethis::use_git()` e o GitHub `usethis::use_github()`
+b. Crie um script em R no data-raw/ e adicione o exemplo de uso da função `colar()`, criada no exercício anterior - item C.
+c. Faça commit & push dos arquivos alterados.
+d. Veja se seu arquivo R está no seu repositório do GitHub, e adicione nos comentários o link do repositório criado.
 
 # Manipulação
 
