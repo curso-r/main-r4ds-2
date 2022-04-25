@@ -85,7 +85,7 @@ lista_tab <- wiki_page %>%
   magrittr::extract(2:5) %>%
   rvest::html_table(fill = TRUE) %>%
   purrr::map(janitor::clean_names) %>%
-  purrr::map(~dplyr::rename_with(.x, ~stringr::str_remove(.x, "_37")))
+  purrr::map(~dplyr::rename_with(.x, ~stringr::str_remove(.x, "_37|_3")))
 
 num_temporadas <- 1:length(lista_tab)
 
@@ -129,3 +129,5 @@ rick_and_morty <- tab %>%
     qtd_espectadores_EUA = u_s_viewers_millions
   ) %>%
   tibble::as_tibble()
+
+View(rick_and_morty)
