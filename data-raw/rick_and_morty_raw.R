@@ -23,39 +23,19 @@ tab <- lista_tab %>%
   purrr::map2(num_temporadas, ~dplyr::mutate(.x, no_season = .y)) %>%
   dplyr::bind_rows()
 
-# arrumar a base
 
-rick_and_morty <- tab %>%
-  dplyr::relocate(no_season, .before = no_inseason) %>%
-  dplyr::mutate(
+# dplyr::glimpse(tab)
+# Rows: 51
+# Columns: 8
+# $ no_overall           <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1…
+# $ no_inseason          <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 2, 3, …
+# $ title                <chr> "\"Pilot\"", "\"Lawnmower Dog\"", "\"Anatomy…
+# $ directed_by          <chr> "Justin Roiland", "John Rice", "John Rice", …
+# $ written_by           <chr> "Dan Harmon & Justin Roiland", "Ryan Ridley"…
+# $ original_air_date    <chr> "December 2, 2013 (2013-12-02)", "December 9…
+# $ u_s_viewers_millions <chr> "1.10[4]", "1.51[5]", "1.30[6]", "1.32[7]", …
+# $ no_season            <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2,…
 
-    title = stringr::str_remove_all(title, '\\"'),
-    u_s_viewers_millions  = stringr::str_remove(
-      u_s_viewers_millions,
-      "\\[.*\\]"
-    ),
-    u_s_viewers_millions = as.numeric(u_s_viewers_millions),
-    original_air_date = stringr::str_extract(
-      original_air_date,
-      "\\([0-9-]*\\)"
-    ),
-    original_air_date = stringr::str_remove_all(
-      original_air_date,
-      "\\(|\\)"
-    ),
-    original_air_date = lubridate::as_date(original_air_date)
-  ) %>%
-  dplyr::select(
-    num_episodio = no_overall,
-    num_temporada = no_season,
-    num_dentro_temporada = no_inseason,
-    titulo = title,
-    direcao = directed_by,
-    roteiro = written_by,
-    data_transmissao_original = original_air_date,
-    qtd_espectadores_EUA = u_s_viewers_millions
-  ) %>%
-  tibble::as_tibble()
 
 # Objetivo: Limpar a base `tab` e criar essa tabela:
 # > dplyr::glimpse(rick_and_morty)
