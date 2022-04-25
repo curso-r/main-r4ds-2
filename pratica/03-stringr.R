@@ -82,7 +82,7 @@ wiki_page <- httr::content(res)
 
 lista_tab <- wiki_page %>%
   xml2::xml_find_all(".//table") %>%
-  magrittr::extract(2:5) %>%
+  magrittr::extract(2:6) %>%
   rvest::html_table(fill = TRUE) %>%
   purrr::map(janitor::clean_names) %>%
   purrr::map(~dplyr::rename_with(.x, ~stringr::str_remove(.x, "_37|_3")))
@@ -92,6 +92,7 @@ num_temporadas <- 1:length(lista_tab)
 tab <- lista_tab %>%
   purrr::map2(num_temporadas, ~dplyr::mutate(.x, no_season = .y)) %>%
   dplyr::bind_rows()
+
 ################
 
 rick_and_morty <- tab %>%
