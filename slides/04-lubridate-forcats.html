@@ -4,17 +4,25 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.14/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # R para Ciência de Dados 2
+]
+.subtitle[
 ## Lubridate + Forcats
+]
+.author[
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
-### Novembro de 2021
+]
+.date[
+### Abril de 2022
+]
 
 ---
 
@@ -56,7 +64,7 @@ now()
 ```
 
 ```
-#&gt; [1] "2021-11-22 18:56:37 -03"
+#&gt; [1] "2022-04-28 18:38:01 -03"
 ```
 
 ```r
@@ -64,7 +72,7 @@ as.numeric(now())
 ```
 
 ```
-#&gt; [1] 1637618198
+#&gt; [1] 1651181881
 ```
 
 - O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
@@ -190,7 +198,7 @@ now() + days(5)
 ```
 
 ```
-#&gt; [1] "2021-11-27 18:56:37 -03"
+#&gt; [1] "2022-05-03 18:38:01 -03"
 ```
 
 ---
@@ -284,7 +292,7 @@ now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
 ```
 
 ```
-#&gt; Time difference of 221.8133 days
+#&gt; Time difference of 378.8004 days
 ```
 
 ```r
@@ -292,7 +300,7 @@ now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
 ```
 
 ```
-#&gt; Time difference of 221.855 days
+#&gt; Time difference of 378.842 days
 ```
 
 ---
@@ -341,7 +349,7 @@ today() + months(5)                              # Dia
 ```
 
 ```
-#&gt; [1] "2022-04-22"
+#&gt; [1] "2022-09-28"
 ```
 
 ```r
@@ -349,7 +357,7 @@ now() + seconds(5)                               # Segundo
 ```
 
 ```
-#&gt; [1] "2021-11-22 18:56:42 -03"
+#&gt; [1] "2022-04-28 18:38:06 -03"
 ```
 
 ```r
@@ -357,7 +365,7 @@ now() + days(5)                                  # Dia
 ```
 
 ```
-#&gt; [1] "2021-11-27 18:56:37 -03"
+#&gt; [1] "2022-05-03 18:38:01 -03"
 ```
 
 ```r
@@ -365,7 +373,7 @@ as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
 ```
 
 ```
-#&gt; [1] 325
+#&gt; [1] 482
 ```
 
 ---
@@ -424,7 +432,8 @@ add_months(x, 1)
 ```
 
 ```
-#&gt; Error: Invalid date found at location 1.
+#&gt; Error in `stop_clock()`:
+#&gt; ! Invalid date found at location 1.
 #&gt; ℹ Resolve invalid date issues by specifying the `invalid` argument.
 ```
 
@@ -522,7 +531,7 @@ lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE)
 ```
 
 ```
-#&gt; [1] November
+#&gt; [1] April
 #&gt; 12 Levels: January &lt; February &lt; March &lt; April &lt; May &lt; June &lt; ... &lt; December
 ```
 
@@ -871,6 +880,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable
