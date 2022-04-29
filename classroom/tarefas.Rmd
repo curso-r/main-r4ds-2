@@ -1,5 +1,5 @@
 Tarefas para serem colocadas no Google Classroom.
-
+# Aula 1 -----------------------
 # Organização de projetos
 
 ### Projetos
@@ -17,21 +17,46 @@ b. Crie um script em R no data-raw/ e adicione o exemplo de uso da função `col
 c. Faça commit & push dos arquivos alterados.
 d. Veja se seu arquivo R está no seu repositório do GitHub, e adicione nos comentários o link do repositório criado.
 
+# Aula 2 -----------------------
 # Manipulação
 
 ## dplyr 1.0
 
-Faça os exercícios do script exercicios/01-exercicios-dplyr.R no material do curso.
+Ler e fazer os exercícios sobre dplyr 1.0: https://livro.curso-r.com/7-2-dplyr.html#dplyr-1.0
 
 A base "ames" possui informações de casas vendidas na cidade de Ames, nos EUA. cada observação é uma casa diferente.
 
 ## tidyr
 
-Faça os exercícios do script exercicios/01-exercicios-tidyr.R no material do curso.
-
-A base "pokemon" possui os status, tipo e cor de todos os pokémon da primeira à sétima geração. Cada observação é um pokémon diferente.
+Ler e fazer os exercícios sobre tidyr: https://livro.curso-r.com/7-3-tidyr.html
 
 A base "imdb" possui informações de filmes de 1916 a 2016 extraídas do site IMDB. Cada observação é um filme diferente.
+
+# Aula 3 -----------------------
+
+## stringr
+
+Ler e fazer os exercícios sobre stringr: https://livro.curso-r.com/7-4-o-pacote-stringr.html
+
+# Aula 4 -----------------------
+
+## lubridate
+Ler e fazer os exercícios sobre lubridate: https://livro.curso-r.com/7-5-o-pacote-lubridate.html
+
+## forcats
+Ler e fazer os exercícios sobre forcats: https://livro.curso-r.com/7-6-forcats.html
+
+# Aula 5 -----------------------
+
+## purrr
+...
+
+# Aula 6 -----------------------
+
+## nse
+...
+
+# ANTERIOR ------
 
 # Análise IMDB
 
@@ -232,27 +257,27 @@ d.5) Invertendo argumentos não-fixos: function(pattern, string) { stringr::str_
 
 d.6) Três argumentos não-fixos (desafio): function(x, y, z) { x + y + z }
 
-# Shiny
+<!-- # Shiny -->
 
-## Meu primeiro shiny app
+<!-- ## Meu primeiro shiny app -->
 
-Faça um shiny app para visualizar histogramas da base diamonds e o coloque no shinyapps.io.
+<!-- Faça um shiny app para visualizar histogramas da base diamonds e o coloque no shinyapps.io. -->
 
-Seu shiny deve ter um input e um output.
+<!-- Seu shiny deve ter um input e um output. -->
 
-- Input: variáveis numéricas da base diamonds.
-- Output: histograma da variável selecionada.
+<!-- - Input: variáveis numéricas da base diamonds. -->
+<!-- - Output: histograma da variável selecionada. -->
 
-Para acessar a base diamonds, carrrege o pacote ggplot2
+<!-- Para acessar a base diamonds, carrrege o pacote ggplot2 -->
 
-library(ggplto2)
+<!-- library(ggplto2) -->
 
-ou rode 
+<!-- ou rode  -->
 
-ggplot2::diamonds
+<!-- ggplot2::diamonds -->
 
 
-# Entrega Final
+# Entrega Final ----------------
 
 ## Instruções
 

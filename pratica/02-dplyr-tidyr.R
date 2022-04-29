@@ -1,3 +1,36 @@
+# -------------------------------------------------------------------------
+library(dplyr)
+library(tidyr)
+library(dados)
+library(ggplot2)
+
+# Motivação: explorar algumas funções do tidyr para lidar com
+# NAs
+# drop_na()
+dados_starwars |> View()
+
+dados_starwars |>
+  drop_na() |>
+  View()
+
+dados_starwars |>
+  drop_na(especie) |>
+  View()
+
+
+# Motivação: substituir todos os NAs das variáveis
+# categóricas por "sem informação" ***
+# tidyr::replace_na
+dados_starwars %>%
+  mutate(
+    across(
+      where(is.character),
+      tidyr::replace_na,
+      replace = "sem informação"
+    )
+  ) %>% View()
+
+# -----
 # Motivação: ver quais colunas possuem NAs e quais colunas possuem mais NAs.
 
 library(dplyr)
@@ -56,18 +89,7 @@ casas %>%
   arrange(desc(num_categs))
 
 
-# -------------------------------------------------------------------------
-# Motivação: substituir todos os NAs das variáveis
-# categóricas por "sem informação" ***
 
-casas %>%
-  mutate(
-    across(
-      where(is.character),
-      tidyr::replace_na,
-      replace = "sem informação"
-    )
-  ) %>% View()
 
 
 # -------------------------------------------------------------------------
