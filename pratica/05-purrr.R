@@ -58,7 +58,8 @@ imdb_graficos$grafico[[1]]
 # vários grupos
 
 rodar_modelo <- function(tab) {
-  lm(mpg ~ ., data = tab)
+  lm(mpg ~ ., data = tab) |>
+    broom::tidy()
 }
 
 tab_modelos <- mtcars %>%
@@ -98,6 +99,7 @@ map(textos, verifica_texto)
 
 # Motivação: criar coluna de pontos do time da casa
 # ganhos a partir de um placar ({brasileirao}) ***
+# empate dá 1 ponto; ganhar dá 3 pontos; perder dá 0 pontos
 
 library(purrr)
 library(dplyr)
@@ -122,14 +124,14 @@ calcular_pontos("1x7")
 
 brasileirao::matches %>%
   dplyr::mutate(
-    pontos = purrr::map_dbl(score, calcular_pontos)
+    pontos_casa = purrr::map_dbl(score, calcular_pontos)
   )
 
 # Gols pro e gols contra
 
 brasileirao::matches %>%
   dplyr::mutate(
-    pontos = purrr::map_dbl(score, calcular_pontos),
+    pontos_casa = purrr::map_dbl(score, calcular_pontos),
     gols_casa = purrr::map_dbl(
       score,
       ~as.numeric(stringr::str_split(.x, "x", simplify = TRUE)[1])
@@ -139,4 +141,5 @@ brasileirao::matches %>%
       ~as.numeric(stringr::str_split(.x, "x", simplify = TRUE)[2])
     )
   )
+
 
