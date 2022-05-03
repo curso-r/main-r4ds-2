@@ -3,14 +3,33 @@
 library(dplyr)
 library(purrr)
 
-arquivos <- list.files("data/imdb_por_ano/", full.names = TRUE)
 
-arquivos %>%
-  map(readr::read_rds) %>%
+# abrindo só um arquivo
+read_rds("data-raw/imdb_por_ano/imdb_1916.rds")
+
+# criando um vetor dos arquivos por ano da base do imdb
+# com base R
+arquivos <- list.files(path = "data-raw/imdb_por_ano",
+                       pattern = ".rds$",
+                       full.names = TRUE)
+
+# com o pacote fs
+arquivos_com_fs <- fs::dir_ls(path = "data-raw/imdb_por_ano", glob = "*.rds")
+
+
+# estrutura com purrr:
+#   map(vetor, funcao)
+
+# só com map: gera uma lista de tibbles
+lista_de_tibbles <- map(arquivos, read_rds)
+
+
+# com bind_rows: gera uma tibble
+tibbles_unica <- map(arquivos, read_rds) %>%
   bind_rows()
 
-arquivos %>%
-  map_dfr(readr::read_rds)
+# com map_dfr, nao é preciso usar o bind_rows
+imdb_purrr <- map_dfr(arquivos, read_rds)
 
 # -------------------------------------------------------------------------
 
@@ -25,7 +44,7 @@ library(ggplot2)
 imdb <- readr::read_rds("data/imdb.rds")
 
 # nest
-
+# agrupar e fazer um nest  (aninhando pelo grupo) por ano
 imdb_nest <- imdb %>%
   group_by(ano) %>%
   nest()
@@ -38,12 +57,17 @@ imdb_nest %>%
 # podemos manipular list-columns usando a
 # a funcão purrr::map()
 
+# funcao para fazer o grafico!
 fazer_grafico_dispersao <- function(tab) {
   tab %>%
     ggplot(aes(x = orcamento, y = receita)) +
     geom_point()
 }
 
+# experimentando a funcao
+fazer_grafico_dispersao(imdb)
+
+# usando map para gerar um gráfico por ano
 imdb_graficos <- imdb %>%
   group_by(ano) %>%
   nest() %>%
@@ -51,16 +75,32 @@ imdb_graficos <- imdb %>%
     grafico = purrr::map(data, fazer_grafico_dispersao)
   )
 
+# acessando os gráficos com base
 imdb_graficos$grafico[[1]]
+
+# acessando os gráficos com o pluck
+pluck(imdb_graficos, "grafico", 1)
 
 
 # também poderíamos rodar um modelo para
 # vários grupos
 
+# base que usaremos
+mtcars
+
+# exemplo de uso da funcao lm
+lm(mpg ~ ., data = mtcars) %>%
+  broom::tidy()
+
+# criando uma função para rodar o lm
+
 rodar_modelo <- function(tab) {
   lm(mpg ~ ., data = tab) |>
     broom::tidy()
 }
+
+# agrupando, fazendo nest (aninhando pelo grupo), e usando map para rodar um
+# modelo por grupo
 
 tab_modelos <- mtcars %>%
   group_by(cyl) %>%
@@ -69,9 +109,82 @@ tab_modelos <- mtcars %>%
     modelo = map(data, rodar_modelo)
   )
 
+# usando pluck para acessar os resultados
+pluck(modelos_cyl, "modelo", 1)
+
+
+# vendo os resultados para todos os grupos
+modelos_cyl  %>% unnest(cols = modelo)
+
+# e se quiser para algum grupo especifico?
+# continua sendo uma tibble! podemos filtrar
+
+modelos_cyl %>% filter(cyl == 8) %>% unnest(cols = modelo)
+
+# acessando os resultados com R base
 tab_modelos$modelo[[3]]
+
+
 summary(tab_modelos$modelo[[3]])
 
+
+# outra forma (mais direta), sem criar uma função!!
+
+# criando uma função anônima com ~ (o argumento tem que ser .x)
+tab_modelos_2 <- mtcars %>%
+  group_by(cyl) %>%
+  nest() %>%
+  mutate(
+    modelo = map(data, ~ broom::tidy(lm(mpg ~ ., data = .x)))
+    )
+
+tab_modelos_2
+
+tab_modelos_2$modelo
+
+# criando uma função anônima com \() (o argumento pode ter o nome que quisermos,
+# e podemos ter vários argumentos)
+mtcars %>%
+  group_by(cyl) %>%
+  nest() %>%
+  mutate(
+    modelo = map(data, \(x) broom::tidy(lm(mpg ~ ., data = x)))
+    )
+
+# group_split -----------------
+
+# outro exemplo do gráfico de dispersão: com a função group_split()
+
+# primeiro para entender o que o group_split faz:
+# vai separar por grupos, cada grupo vira uma lista.
+imdb %>%
+  group_split(ano)
+
+
+# podemos usar um map para aplicar uma função em cada elemento da lista.
+# ex: contar numero de linhas
+imdb %>%
+  group_split(ano) %>%
+  map(nrow)
+
+
+# criando uma função anonima para fazer um ggplot:
+
+imdb_split_grafico <- imdb %>%
+  drop_na(orcamento, receita) %>%
+  group_split(ano) %>%
+  map(~ ggplot(data = .x) +
+        aes(x = orcamento, y = receita) +
+        geom_point() +
+        facet_wrap(~ano))
+
+# acessando os gráficos com pluck
+grafico_2016 <- pluck(imdb_split_grafico, 69)
+
+# DICA: Podemos acessar os dados usados para gerar um grafico
+# usando: objeto_ggplot$data
+# exemplo:
+grafico_2016$data
 
 # -------------------------------------------------------------------------
 
@@ -141,5 +254,6 @@ brasileirao::matches %>%
       ~as.numeric(stringr::str_split(.x, "x", simplify = TRUE)[2])
     )
   )
+
 
 
