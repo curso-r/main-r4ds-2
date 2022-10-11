@@ -2,7 +2,6 @@
 title: "R para Ciência de Dados 2"
 subtitle: "Introdução ao curso"
 author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
-date: "`r paste(lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE, locale = 'pt_BR.UTF-8'), 'de', lubridate::year(Sys.Date()))`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -140,8 +139,6 @@ Também temos um blog:
 
 ---
 # Extras
-
-- Não teremos aula no dia 21/04! Já anotem nas suas agendas.
 
 - Teremos monitoria sempre 30 minutos antes do início das aulas.
 
