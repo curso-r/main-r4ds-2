@@ -1,75 +1,61 @@
 ---
 output: github_document
+params:
+  curso: r4ds-2
 ---
 
-# R para Ciência de Dados 2
+# R para Ciência de Dados II
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<!-- badges: start -->
+[![CC BY-NC-SA 4.0](https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+<!-- badges: end -->
+
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-Repositório principal do curso R para Ciência de Dados 2.
+Repositório principal do curso _R para Ciência de Dados II_.
 
-Inscreva-se no curso: https://www.curso-r.com/cursos/r4ds-2/
+Inscreva-se no curso: https://loja.curso-r.com/
 
 **Acesse o material completo do curso escolhendo uma das turmas abaixo**.
 
 ```{r, echo = FALSE}
-knitr::kable(CursoRutils:::listar_turmas_recentes("r4ds-2"))
+params$curso |>
+  stringr::str_c('org%3Acurso-r+in%3Aname+"', ... = _, '"&per_page=100') |>
+  gh::gh("/search/repositories?q={query}", query = _) |>
+  purrr::pluck("items") |>
+  purrr::map_chr("name") |>
+  tibble::tibble(repo = _) |>
+  dplyr::filter(!stringr::str_detect(repo, "main")) |>
+  dplyr::mutate(
+    date = repo |>
+      stringr::str_extract("^[0-9]+") |>
+      lubridate::ym(),
+    Turma = stringr::str_c(
+      lubridate::month(date, TRUE, FALSE, "pt_BR.UTF-8"),
+      " de ",
+      lubridate::year(date)
+    ),
+    Material = stringr::str_c("curso-r.github.io/", repo),
+    Material = stringr::str_c("[", Material, "](https://", Material, ")"),
+    GitHub = stringr::str_c("github.com/curso-r/", repo),
+    GitHub = stringr::str_c("[", GitHub, "](https://", GitHub, ")"),
+  ) |>
+  dplyr::arrange(dplyr::desc(date)) |>
+  dplyr::select(Turma, Material, GitHub) |>
+  knitr::kable()
 ```
 
-## Ementa
+## Plano de aula
 
-**Organização de projetos**
+6 aulas (18h) com os temas:
 
-- Por que não usar `.RData` e `.Rhistory`
-
-- Git e Github
-
-- Funções e dependências
-
-- Pacotes
-
-**Manipulação de dados**
-
-- `{dplyr}` avançado: `across()`, `where()` e joins
-
-- `{tidyr}`: pivotagem
-
-**Textos**
-
-- Manipulação de textos com o pacote `{stringr}`
-
-- Expressões regulares (regex)
-
-**Datas e fatores**
-
-- Manipulação de datas com o pacote `{lubridate}`
-
-- Manipulação de fatores com o pacote `{forcats}`
-
-**Programação funcional**
-
-- Listas e list-columns
-
-- Introdução ao pacote `{purrr}`
-
-- Substituindo for e while pelas funções `map_()`
-
-**Tidy-eval**
-
-- NSE
-
-- Curly-curly
-
-  
-```{r eval=FALSE, include=FALSE}
-# para criar o zip do curso:
-# CursoRutils::empacotar_material_alunos("material.txt")
-```
-  
+  - Controle de fluxo (`if`, `while` e `for`)
+  - Pacote purrr
+  - Manipulação de dados avançada
+  - Non-standard evaluation
+  - Pacote stringr
+  - Pacote lubridate, pacote forcats
