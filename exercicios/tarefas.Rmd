@@ -1,0 +1,427 @@
+Tarefas para serem colocadas no Google Classroom.
+# Aula 1 -----------------------
+# Organização de projetos
+
+### Projetos
+
+a. Utilize `usethis::create_project()` para criar um projeto.
+b. Crie uma função chamada `colar`, que recebe os parâmetros `x` e `y` e os retorna colados, com um espaço de separação. Por exemplo: `colar(x = "Caio", y = "Lente")` deve devolver a string `"Caio Lente"`. Dica: para criar o arquivo, a função `usethis::use_r("colar")` é útil!
+c. Rode com seu nome e sobrenome: `colar("Jane", "Doe")` e veja se o resultado é o esperado.
+
+### Github
+
+Siga os passos de configuração e não se esqueça de configurar seu usuário com `use_git_config()`!
+
+a. No projeto criado no exercício anterior, inicie o Git `usethis::use_git()` e o GitHub `usethis::use_github()`
+b. Crie um script em R no data-raw/ e adicione o exemplo de uso da função `colar()`, criada no exercício anterior - item C.
+c. Faça commit & push dos arquivos alterados.
+d. Veja se seu arquivo R está no seu repositório do GitHub, e adicione nos comentários o link do repositório criado.
+
+# Aula 2 -----------------------
+# Manipulação
+
+## dplyr 1.0
+
+Ler e fazer os exercícios sobre dplyr 1.0: https://livro.curso-r.com/7-2-dplyr.html#dplyr-1.0
+
+A base "ames" possui informações de casas vendidas na cidade de Ames, nos EUA. cada observação é uma casa diferente.
+
+## tidyr
+
+Ler e fazer os exercícios sobre tidyr: https://livro.curso-r.com/7-3-tidyr.html
+
+A base "imdb" possui informações de filmes de 1916 a 2016 extraídas do site IMDB. Cada observação é um filme diferente.
+
+# Aula 3 -----------------------
+
+## stringr
+
+Ler e fazer os exercícios sobre stringr: https://livro.curso-r.com/7-4-o-pacote-stringr.html
+
+# Aula 4 -----------------------
+
+## lubridate
+Ler e fazer os exercícios sobre lubridate: https://livro.curso-r.com/7-5-o-pacote-lubridate.html
+
+## forcats
+Ler e fazer os exercícios sobre forcats: https://livro.curso-r.com/7-6-forcats.html
+
+# Aula 5 -----------------------
+
+## purrr
+...
+
+# Aula 6 -----------------------
+
+## nse
+...
+
+# ANTERIOR ------
+
+# Análise IMDB
+
+## 1. Criando o projeto/pacote
+
+a. Crie um novo projeto ou pacote para a análise usando as funções usethis::use_project() ou usethis::use_package().
+
+Dica: você pode dar qualquer nome para o projeto/pacote, mas ele deve ser informativo, como "exemploIMDB" ou "analiseIMDB".
+
+b. Adicione o GIT à pasta do seu projeto usando a função usethis::use_git().
+
+c. Conecte a pasta do seu projeto/pacote ao Github utilizando a função usethis::use_github()
+
+## 2. Importação
+
+Se você estiver usando um projeto:
+
+A base IMDB (imdb.rds) está dentro da pasta data/ no material do curso. Crie também uma pasta data/ dentro do seu projeto e copie a base IMDB dentro dela.
+
+Se você estiver usando um pacote:
+
+a. Rode o código usethis::use_data_raw("imdb") para criar um script de manipulação. Essa função criará o script imdb.R dentro da pasta data-raw/ do seu pacate. Se essa pasta ainda não existir, ela será criada automaticamente.
+
+b. A base IMDB (imdb.rds) está dentro da pasta data/ no material do curso. Copie esse arquivo para a pasta data-raw/ dentro do seu pacote.
+
+c. No script criado no item a), importe a base IMDB, usando o código 
+
+imdb <- readr::read_rds("data-raw/imdb.rds")
+
+e rode a linha com o código usethis::use_data(imdb, overwrite = TRUE).
+
+d. Rode devtools::load_all() ou use o atalho CTRL + SHIFT + L.
+
+Se tudo ocorreu bem, a partir de agora, a base imdb ficará disponível no ambiente sempre que você executar o item d).
+
+## 3. Pegando maiores receitas
+
+Escreva uma função que receba a base IMDB e um número "n" e retorne uma tabela com o título, diretor e receita dos "n" filmes com maior receita na base IMDB. 
+
+Essa função deverá ter a estrutura a seguir:
+
+pegar_maiores_receitas <- function(tab, n) {
+  
+  tab_n_maiores_receitas <- imdb %>%
+    # codigo para manipular a tabela
+
+  tab_n_maiores_receitas
+}
+
+Com a função pronta, se rodarmos pegar_maiores_receitas(imdb, 1), ela deve retornar uma tibble (1 linha, 3 colunas) com o título, diretor e receita do filme com maior receita na base IMDB. Se rodarmos pegar_maiores_receitas(imdb, 10), ela deve retornar uma tibble (10 linhas, 3 colunas) com o título, diretor e receita dos 10 filmes com maior receita na base IMDB.
+
+Dicas:
+
+1. Crie um script .R na pasta data-raw/ para usar de rascunho na construção do código de manipulação.
+
+2. Depois que o código que gera a tabela estiver pronto, transforme ele em uma função e e a coloque dentro da pasta R/.
+
+3. Você pode usar a função `usethis::use_r("tabelas.R") para criar um script na pasta R/ onde você colocará todas as suas funções que geram tabelas.
+
+4. Se você estiver utilizando um pacote, documente a sua função para treinar a sintaxe de documentação.
+
+5. Quando a função estiver pronta, você pode apagar o script criado em 1 (opcional).
+
+## 4. Calcular número de filmes
+
+Crie uma função que receba a base IMDB e uma string com o nome de um ator e retorne o número de filmes que esse ator aparece, independentemente da posição (i.e., ator_1, ator_2, ator_3).
+
+A sua função deve ter a seguinte estrutura:
+
+calcular_num_filmes <- function(tab, nome_ator) {
+  
+  num_filmes <- imdb %>%
+    # codigo para calcular o número de filmes do ator "nome_ator"
+
+  num_filmes
+}
+
+Exemplo: a chamada calcular_num_filmes(imdb, "Will Smith") deve retornar o número 19, isto é, o ator Will Smith aparece em 19 filmes na base IMDB.
+
+Dica: use a função pivot_longer() para criar apenas uma coluna de atores.
+
+Mais dicas:
+
+1. Crie um script .R na pasta data-raw/ para usar de rascunho na construção do código de manipulação.
+
+2. Depois que o código que gera o número de filmes estiver pronto, transforme ele em uma função e a coloque dentro da pasta R/.
+
+3. Você pode usar a função `usethis::use_r("valores_uteis.R") para criar um script na pasta R/ onde você colocará todas as suas funções que geram valores interessantes para a análise.
+
+4. Se você estiver utilizando um pacote, documente a sua função para treinar a sintaxe de documentação.
+
+5. Quando a função estiver pronta, você pode apagar o script criado em 1 (opcional).
+
+# Análise Ames
+
+## 1. Criando o projeto/pacote
+
+Crie um novo projeto ou pacote para realizar uma análise de dados da base Ames. Conecte o seu projeto/pacote com o GIT e com o Github, criando um novo repositório para ele na sua conta.
+
+A base Ames possui informações sobre casas vendidas na cidade de Ames, nos EUA.
+
+## 2. Importação
+
+A base Ames (ames.rds) está dentro da pasta data/ no material do curso. Copie o arquivo e coloque a base dentro do seu projeto/pacote de maneira adequada.
+
+## 3. Valor médio da venda
+
+Crie uma função que receba a base Ames e uma string com o nome de uma coluna categórica e retorne o valor médio da venda para cada uma das categorias dessa variável.
+
+A estrutura da sua função deve ser a seguinte:
+
+sumarizar_venda_media <- function(tab, nome_coluna) {
+  
+  tab %>%
+    group_by(across(nome_culuna)) %>%
+    summarise(
+      # código que calcula a venda média
+    )
+    
+}
+
+
+## 4. Número de Nas
+
+Crie uma função que receba a base Ames e uma string referente ao nome de uma coluna da base Ames e retorne o número de valores NAs nessa coluna.
+
+A informação de NA nessa base é importante, pois representa o número de casas que não tem uma determinada característica. Se a uma observação tiver NA na coluna piscina_qualidade, por exemplo, significa que a casa em questão não tem piscina.
+
+A sua função deverá ter a seguinte estrutura:
+
+pegar_num_NAs <- function(tab, nome_coluna) {
+  
+  tab %>%
+    # código que retorna o número de NAs da coluna "nome_coluna"
+
+}
+
+Com a função pronta, se rodarmos pegar_num_NAs(ames, piscina_area), ela deve devolver o número 2917, isto é, existem 2917 casas na base que não possuem piscina.
+
+
+EXTRA: adicione um parâmetro lógico na sua função que faça a função devolver a proporção de valores NA na coluna. Nesse caso, a função teria a estrutura:
+
+
+pegar_num_NAs <- function(tab, nome_coluna, prop = FALSE) {
+  
+  tab %>%
+    # código que retorna o número de NAs da coluna "nome_coluna"
+    
+  if (prop) {
+    # código que transforma o valor em proporção
+  }
+
+}
+
+E pegar_num_NAs(ames, piscina_area, prop = TRUE) precisa devolver 0.9955631.
+
+# Strings, datas e listas
+
+## 1. Strings
+
+a. Leia a tabela do IMDB com readr::read_rds("data/imdb.rds").
+
+b. Crie uma coluna com o número de gêneros aos quais um filme pertence. Dica: você vai precisar descobrir uma função do pacote {stringr} que conte o número de ocorrências de um padrão.
+
+c. Alguns filmes contém subtítulos (texto que segue um dois-pontos); crie uma coluna com o subtítulos dos filmes que os têm. Por exemplo: "The Hobbit: The Desolation of Smaug" -> "The Desolation of Smaug".
+
+d. Filtre da tabela apenas os filmes cujos títulos começam com números.
+
+e. Crie uma coluna que indica a idade mínima de uma pessoa que pode ver aquele filme. Por exemplo: "Livre" -> 0, "A partir de 13 anos" -> 13.
+
+## 2. Datas
+
+a. Leia a tabela do SINESP com readr::read_rds("data/dados_sinesp.rds").
+
+b. Converta a coluna "mes_ano" para o primeiro dia do mês correspondente. Por exemplo: "01/2018" -> 2018-01-01.
+
+c. Transforme a coluna criada acima para o formato brasileiro de datas. Dica: tente entender como a função lubridate::stamp() funciona ou, se ficar complicado, tente usar format.Date().
+
+## 3. Listas
+
+a. Dentro do diretório data/imdb_por_ano/ há uma série de arquivos RDS com fatias da base IMDB. O comando fs::dir_ls("data/imdb_por_ano/") lista todos os arquivos desse diretório. Em UMA linha e usando apenas DUAS funções, leia todos os arquivos listados com o comando anterior e empilhe as tabelas em um único data frame. Dica: procure entender toda a família map_***().
+
+b. A partir da tabela obtida no exercício anterior, obtenha uma tabela com duas colunas: "ano" e "filmes", onde "filmes" é uma list-column contendo todas as informações dos filmes dos respectivos anos.
+
+c. A partir da tabela obtida no exercício anterior, abra a coluna "filmes" de modo que a unidade amostral volte a ser filmes, ou seja, transforme a tabela de b. na tabela de a.
+
+d. Escreva as funções abaixo como lambdas:
+
+d.1) Simples: function(x) { 10 + x }
+
+d.2) Valor fixo: function(x, y = 3) { x + y }
+
+d.3) Valores fixos: function(x, y = 3, z = 4) { x + y + z }
+
+d.4) Agumentos não-fixos: function(x, y) { x + y }
+
+d.5) Invertendo argumentos não-fixos: function(pattern, string) { stringr::str_detect(string, pattern) }
+
+d.6) Três argumentos não-fixos (desafio): function(x, y, z) { x + y + z }
+
+<!-- # Shiny -->
+
+<!-- ## Meu primeiro shiny app -->
+
+<!-- Faça um shiny app para visualizar histogramas da base diamonds e o coloque no shinyapps.io. -->
+
+<!-- Seu shiny deve ter um input e um output. -->
+
+<!-- - Input: variáveis numéricas da base diamonds. -->
+<!-- - Output: histograma da variável selecionada. -->
+
+<!-- Para acessar a base diamonds, carrrege o pacote ggplot2 -->
+
+<!-- library(ggplto2) -->
+
+<!-- ou rode  -->
+
+<!-- ggplot2::diamonds -->
+
+
+# Entrega Final ----------------
+
+## Instruções
+
+1. Escolha uma das bases utilizadas no curso ou uma base própria.
+
+2. Crie um novo projeto ou pacote e o conecte com o Github, em um repositório aberto.
+
+3. Faça uma análise da base escolhida para responder alguma pergunta de interesse (veja o tópico "Bases de dados"). 
+
+4. A comunicação dos resultados deve ser feita no README.Rmd do seu repositório. O README.Rmd é um arquivo R Markdown localizado na raiz do seu repositório. Se ele não existir, rode o comando usethis::use_readme_rmd() para criá-lo.
+
+5. Você deve submeter aqui no Classroom apenas o link para o repositório criado no Github. 
+
+6. O certificado será enviado na semana do dia 14 de setembro, apenas a quem entregar esta atividade.
+
+7. Os 3 trabalhos mais legais ganharão uma vaga para qualquer curso da Curso-R. Serão avaliados:
+
+- Análise crítica: entendimento da base e do problema em estudo.
+- Organização: clareza na comunicação dos resultados e acesso aos arquivos utilizados na análise.
+- Técnica: conhecimento do conteúdo visto nesse curso.
+- Criatividade: abordagem escolhida para a análise e a comunicação dos resultados.
+
+## Bases de dados
+
+As bases estão na pasta "bases", do material do curso. Rode 
+
+CursoR::atualizar_material() 
+
+novamente caso você não tenha todos os arquivos.
+
+** COVID-19 **
+
+Descrição: número de casos e óbitos diários por COVID no Brasil por município.
+
+Principais variáveis:
+
+- Número de casos e óbitos diários por COVID
+- Município, estado e população do município
+- Data
+- Latitude e longitude de cada município (centróide)
+
+Principais características
+
+- Séries temporais
+- Dados geográficos
+- Oportunidade para construção de mapas
+
+Sugestões de análises
+
+- Visualizar as séries de casos e óbitos por município
+- Prever o número de óbitos no próximo mês
+
+_______________________________________________________________________________________________________
+** Secretaria de Segurança Pública (SSP) de São Paulo **
+
+Descrição: número de ocorrências mensais de diversos crimes de 2002 a 2020 (abril) no nível delegacia para todo o Estado de São Paulo.
+
+Principais variáveis:
+
+- Número de ocorrências mensais (furtos, roubos, homicídios etc) 
+- Delegacia onde a ocorrência foi registrada
+- Município e região do estado da delegacia
+- Mês e ano
+
+Principais características
+
+- Séries temporais
+- Dados geográficos
+- Oportunidade para construção de mapas
+
+Sugestões de análises
+
+- Visualizar as séries de criminalidade
+- Avaliar se os níveis de criminalidade mudaram durante a quarentena
+
+_______________________________________________________________________________________________________
+** Companhia Ambiental do Estado de São Paulo (CETESB) **
+
+Descrição: concentração horária de alguns poluentes em algumas estações de monitoramento na Região Metropolitana de São Paulo de jan/2017 a mai/2020.
+
+Principais variáveis:
+
+- Concentração horária de CO, NO, NO2, O3 e MP10
+- Data e hora da medição
+- Estação de monitoramento
+- Latitude e longitude das estações de monitoramento
+
+Principais características
+
+- Séries temporais
+- Oportunidade para construção de mapas
+- Oportunidade para vários tipos de sumarização (dado que as medidas são horárias)
+
+Sugestões de análises
+
+- Visualizar cada uma das séries de poluentes
+- Avaliar se os níveis de poluição mudaram durante a quarentena
+
+_______________________________________________________________________________________________________
+** Análise de Crédito **
+
+Descrição: base com características de clientes que solicitaram empréstimo em uma financeira.
+
+Principais variáveis:
+
+- Classificação de cliente bom/ruim
+- Variáveis demográficas e financeiras do cliente
+- Tempo e valor do empréstimo solicitado
+
+Principais características
+
+- Oportunidade de modelagem preditiva
+- Problema de classificação (cliente bom/cliente ruim)
+- Variáveis explicativas númericas e categóricas
+
+Sugestões de análises
+
+- Avaliar quais características definem um cliente bom ou ruim
+- Construir um modelo para prever clientes bons e ruins
+
+_______________________________________________________________________________________________________
+** Pokémon **
+
+Descrição: base com os status base de todos os pokémon da primeira à sétima geração. 
+
+Principais variáveis:
+
+- Nome, tipo e geração de cada pokémon
+- Status base (altura, peso, hp, ataque, defesa etc)
+- Cor base e imagem de cada pokémon
+
+Principais características
+
+- Tema leve e descontraído (caso o mundo já esteja pesado demais)
+- Oportunidade de trabalhar com cores e imagens
+- Variáveis explicativas númericas e categóricas
+- Você vai ser uma/um dos únicas(os) a escolher essa base
+
+Sugestões de análises
+
+- Análise descritiva dos pokémon, por tipo e/ou geração
+- Analisar quais características estão correlacionadas (por exemplo, pokémon altos e pesados tendem a ter defesa maior?)
+
+_______________________________________________________________________________________________________
+** Sua base **
+
+Você também pode usar uma base sua na entrega final. Só não se esqueça de descrever bem o problema e as variáveis envolvidas.
