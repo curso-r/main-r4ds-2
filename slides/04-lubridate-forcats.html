@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.14/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.20/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -21,7 +21,7 @@ class: center, middle, inverse, title-slide
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
 ]
 .date[
-### Abril de 2022
+### Março de 2023
 ]
 
 ---
@@ -64,7 +64,7 @@ now()
 ```
 
 ```
-#&gt; [1] "2022-04-28 18:38:01 -03"
+#&gt; [1] "2023-03-03 14:06:24 -03"
 ```
 
 ```r
@@ -72,7 +72,7 @@ as.numeric(now())
 ```
 
 ```
-#&gt; [1] 1651181881
+#&gt; [1] 1677863185
 ```
 
 - O formato padrão é denominado "Era UNIX" e conta o número de segundos desde o
@@ -198,7 +198,7 @@ now() + days(5)
 ```
 
 ```
-#&gt; [1] "2022-05-03 18:38:01 -03"
+#&gt; [1] "2023-03-08 14:06:24 -03"
 ```
 
 ---
@@ -292,7 +292,7 @@ now() - dmy_hms("15/04/2021 02:25:30")                       # Diferença
 ```
 
 ```
-#&gt; Time difference of 378.8004 days
+#&gt; Time difference of 687.6117 days
 ```
 
 ```r
@@ -300,7 +300,7 @@ now() - dmy_hms("15/04/2021 02:25:30", tz = "Europe/London") # Com fuso
 ```
 
 ```
-#&gt; Time difference of 378.842 days
+#&gt; Time difference of 687.6534 days
 ```
 
 ---
@@ -349,7 +349,7 @@ today() + months(5)                              # Dia
 ```
 
 ```
-#&gt; [1] "2022-09-28"
+#&gt; [1] "2023-08-03"
 ```
 
 ```r
@@ -357,7 +357,7 @@ now() + seconds(5)                               # Segundo
 ```
 
 ```
-#&gt; [1] "2022-04-28 18:38:06 -03"
+#&gt; [1] "2023-03-03 14:06:29 -03"
 ```
 
 ```r
@@ -365,7 +365,7 @@ now() + days(5)                                  # Dia
 ```
 
 ```
-#&gt; [1] "2022-05-03 18:38:01 -03"
+#&gt; [1] "2023-03-08 14:06:24 -03"
 ```
 
 ```r
@@ -373,7 +373,7 @@ as.period(today() - dmy("01/01/2021")) / days(1) # Dia - dia
 ```
 
 ```
-#&gt; [1] 482
+#&gt; [1] 791
 ```
 
 ---
@@ -531,7 +531,7 @@ lubridate::month(Sys.Date(), label = TRUE, abbr = FALSE)
 ```
 
 ```
-#&gt; [1] April
+#&gt; [1] March
 #&gt; 12 Levels: January &lt; February &lt; March &lt; April &lt; May &lt; June &lt; ... &lt; December
 ```
 
