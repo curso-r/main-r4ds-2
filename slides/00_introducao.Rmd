@@ -1,0 +1,121 @@
+---
+title: "R para Ciência de Dados 2"
+subtitle: "Introdução ao curso"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+output:
+  xaringan::moon_reader:
+    intermediates_dir: "img/"
+    lib_dir: libs
+    css: "css/xaringan-themer.css"
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class: middle, center
+# Iniciar gravação!
+
+---
+class: middle, center, inverse
+# Sobre nós
+
+---
+class: middle, center
+# A Curso-R
+
+.pull-left[
+```{r, echo = FALSE, out.width="70%"}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/295643c6243701ae6a9bac3fb8ad467ff0ce3c84/d1785/img/logo/cursor1-41.png")
+```
+
+<br>
+<br>
+
+```{r, echo = FALSE, out.width="70%"}
+knitr::include_graphics("img/logo_r6.png")
+```
+]
+
+.pull-right[
+```{r, echo = FALSE, out.width="70%"}
+knitr::include_graphics("img/produtos.png")
+```
+]
+
+### [loja.curso-r.com](https://loja.curso-r.com)
+
+---
+# O time
+
+```{r, echo = FALSE, out.width="70%", fig.align="center"}
+knitr::include_graphics("img/time.png")
+```
+
+---
+class: middle, center, inverse
+# Sobre o curso
+
+---
+# Materiais
+
+- Site da turma: links para todos os slides, exercícios e referências
+
+- Repositório da turma no GitHub: todo o código (inclusive dos slides)
+
+- Turma no Google Sala de Aula: avisos importantes e dúvidas sobre o curso
+
+- Aba de Atividades no Google Sala de Aula: vídeos das aulas e depósito do TCC
+
+- Fórum da Curso-R (https://discourse.curso-r.com)
+
+- Nosso livro Ciência de Dados em R (https://livro.curso-r.com)
+
+- O Zen do R (https://curso-r.github.io/zen-do-r)
+
+- Blog da Curso-R (http://blog.curso-r.com)
+
+---
+# Informações importantes
+
+- Aulas sempre das 19:00 às 22:00
+
+- Intervalo de ~15 minutos em torno das 20:30
+
+- Gravações serão disponibilizadas na aba de Atividades do Google Sala de Aula
+
+- Tirando dúvidas:
+
+  - Monitoria de 30 minutos antes do início de cada aula (18:30 às 19:00)
+
+  - [Nosso fórum](https://discourse.curso-r.com), principalmente quando você quiser que vejamos seu código
+
+  - Veja [aqui](https://discourse.curso-r.com/t/como-escrever-uma-boa-pergunta/542) algumas dicas de como fazer uma boa pergunta
+
+- Exercícios:
+
+  - Alguns exercícios **não obrigatórios** entre as aulas para gerar dúvidas
+
+  - Um trabalho final **obrigatório** para receber o certificado de conclusão (e bolsas!)
+
+---
+# Como praticar
+
+- Não se preocupe com estilos de estudo, use o que te deixa mais confortável
+
+- Estude um pouco todo dia:
+
+  - Se você tem apenas 1h na semana, faça 3 sessões de 20 minutos em dias diferentes
+
+  - Isso ajuda a fixar o conteúdo e deixá-lo fresco na cabeça até a próxima aula
+
+- Coloque em prática o que você aprendeu resolvendo os exercícios opcionais
+
+- Faça perguntas! **Não existe dúvida idiota**
+
+- referência:  [Nahurhodo 205 - Powerpoint é útil para a aprendizagem?](https://www.b9.com.br/shows/naruhodo/naruhodo-205-powerpoint-e-util-para-a-aprendizagem/)
