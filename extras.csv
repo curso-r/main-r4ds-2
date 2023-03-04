@@ -36,5 +36,4 @@ Aula, Tema, Descrição, Link
 6, rlang, rlang para Filhotes, https://blog.curso-r.com/posts/2021-07-27-rlang-para-filhotes
 6, Trabalho final, Post no blog: dicas para criar tabelas, https://blog.curso-r.com/posts/2020-12-03-dicas-relatorios-r4ds1_tabelas/
 6, Trabalho final, Post no blog: dicas de relatórios, https://blog.curso-r.com/posts/2021-03-15-dicas-relatorios-r4ds1_relatorios/
-6, rmarkdown, Colinha de rmarkdown, https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.alunos |>
-  mutate(across(Nota1:Nota9, as.numeric))pdf
+6, rmarkdown, Colinha de rmarkdown, https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet
