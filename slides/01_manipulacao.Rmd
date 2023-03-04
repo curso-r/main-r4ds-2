@@ -128,7 +128,7 @@ funções mais importantes que ele traz: `pivot_longer()` e `pivot_wider()`. Par
 os exemplos, usaremos as mais tocadas da _Billboard_ e os dados de renda do
 censo americano.
 
-```{r}
+```{r, message = FALSE}
 # Já carrega o tidyr e o dplyr
 library(tidyverse)
 
