@@ -31,9 +31,9 @@ abaixo**.
 
 6 aulas (18h) com os temas:
 
-- Controle de fluxo (`if`, `while` e `for`)
-- Pacote purrr
 - Manipulação de dados avançada
-- Non-standard evaluation
 - Pacote stringr
 - Pacote lubridate, pacote forcats
+- Controle de fluxo (`if`, `while` e `for`)
+- Pacote purrr
+- Non-standard evaluation
