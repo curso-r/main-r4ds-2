@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs-2.20/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# R para Ciência de Dados 2
+]
+.subtitle[
+## Manipulação de dados avançada
+]
+.author[
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+]
+
+---
+
+
+
+
+class: middle, center
+# Iniciar gravação!
+
+---
+class: middle, center, inverse
+# tidyr
+
+---
+# Motivação
+
+Um dos conceitos mais importantes do tidyverse é o de **dados tidy** ("dados
+arrumados"). Na prática, uma tabela tidy tem três propriedades importantes:
+
+- Cada coluna é uma variável.
+
+- Cada linha é uma observação.
+
+- Cada célula é um único valor.
+
+Essa definição garante uma maneira consistente de se referir a variáveis (nomes
+das colunas) e observações (índices das linhas). Além disso, o tidyverse foi
+construído pensando em tabelas tidy; na prática, uma base tidy fica mais fácil de
+manipular, visualizar, modelar, e por aí vai.
+
+Mas esse conceito não parece óbvio? As nossas colunas não são _sempre_
+variáveis? As nossas linhas não são _sempre_ observações? A realidade é bem mais
+complicada do que parece...
+
+---
+class: middle, center
+
+&lt;img src="img/01_manipulacao/amizade.jpg" style="display: block; margin: auto;" /&gt;
+
+[Ilustração por @allison_horst](https://twitter.com/allison_horst)
+
+---
+# Bases bagunçadas
+
+&gt; _Tabelas arrumadas são todas parecidas, mas cada tabela bagunçada é bagunçada
+&gt; do seu próprio jeito._ — Hadley Wickham
+
+Tabelas normalmente ficam bagunçadas por causa de processos manuais de
+imputação. O Excel é o culpado número 1.
+
+O exemplo abaixo traz as notas de 3 cachorros em um treino de comportamento.
+Como o treino é repetido toda semana, basta criar mais uma coluna `NotaSemanaX`
+para registrar as notas de um novo treino.
+
+
+```
+#&gt; # A tibble: 3 × 5
+#&gt;   Cachorro NotaSemana1 NotaSemana2 NotaSemana3 NotaSemana4
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+#&gt; 1 Bacon             10           4           8           9
+#&gt; 2 Dexter            10           4          10           8
+#&gt; 3 Zip                0           0          10           9
+```
+
+---
+# Arrumando a base
+
+Não tem nada de errado com aquela tabela, mas perceba que cada coluna
+`NotaSemana` não é uma variável diferente! Na verdade, o próprio nome
+`NotaSemana` já indica que são duas variáveis: `Nota` e `Semana`.
+
+
+```
+#&gt; # A tibble: 12 × 3
+#&gt;   Cachorro Semana  Nota
+#&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 Bacon         1    10
+#&gt; 2 Bacon         2     4
+#&gt; 3 Bacon         3     8
+#&gt; 4 Bacon         4     9
+#&gt; 5 Dexter        1    10
+#&gt; # … with 7 more rows
+```
+
+Neste novo formato, cada linha é uma observação e cada coluna é uma variável.
+
+---
+# Pivotagem
+
+O conceito de pivotagem no tidyverse se refere a essa mudança da estrutura da
+base, geralmente para alcançar o formato tidy. Ela é similar à tabela dinâmica
+do Excel, mas um pouco mais poderosa.
+
+O ato de pivotar envolve passar uma tabela da sua forma **larga** para a sua
+forma **longa** (ou fazer o caminho contrário). No exemplo dos cachorros, a base
+original era a versão larga e a base modificada era a versão longa.
+
+Não existe um absoluto. Nunca dizemos que uma base é longa ou larga, nós só
+estamos tentando deixar ela _mais_ longa ou _mais_ larga. Também não é certo
+dizer que a base tidy é sempre melhor; apesar de o tidyverse geralmente
+funcionar melhor com tabelas tidy, existem ocasiões em que a tabela bagunçada é
+de fato o que queremos.
+
+---
+# O pacote tidyr
+
+O pacote que nos permite transformar uma base bagunçada em uma base tidy é o
+tidyr. Ele também nos ajuda a bagunçar um pouquinho a nossa base quando isso for
+necessário.
+
+Apesar de o tidyr ser um pacote bem amplo, hoje vamos aprender sobre as duas
+funções mais importantes que ele traz: `pivot_longer()` e `pivot_wider()`. Para
+os exemplos, usaremos as mais tocadas da _Billboard_ e os dados de renda do
+censo americano.
+
+
+```r
+# Já carrega o tidyr e o dplyr
+library(tidyverse)
+```
+
+```
+#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+#&gt; ✔ ggplot2 3.4.1     ✔ purrr   1.0.1
+#&gt; ✔ tibble  3.1.8     ✔ dplyr   1.1.0
+#&gt; ✔ tidyr   1.3.0     ✔ stringr 1.5.0
+#&gt; ✔ readr   2.1.4     ✔ forcats 1.0.0
+#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+#&gt; ✖ dplyr::filter() masks stats::filter()
+#&gt; ✖ dplyr::lag()    masks stats::lag()
+```
+
+```r
+# Tabelas que vamos usar
+musicas &lt;- select(billboard, track, wk1:wk6)
+renda &lt;- select(us_rent_income, NAME, variable, estimate)
+```
+
+---
+# Larga para longa
+
+A tabela abaixo é muito parecida com a dos cachorros. Cada linha é uma música e
+cada coluna `wkX` é a posição da mesma no Top 100 durante aquela semana.
+
+
+```r
+musicas
+```
+
+```
+#&gt; # A tibble: 317 × 7
+#&gt;   track                     wk1   wk2   wk3   wk4   wk5   wk6
+#&gt;   &lt;chr&gt;                   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 Baby Don't Cry (Keep...    87    82    72    77    87    94
+#&gt; 2 The Hardest Part Of ...    91    87    92    NA    NA    NA
+#&gt; 3 Kryptonite                 81    70    68    67    66    57
+#&gt; 4 Loser                      76    76    72    69    67    65
+#&gt; 5 Wobble Wobble              57    34    25    17    17    31
+#&gt; # … with 312 more rows
+```
+
+Para deixar ela tidy, precisamos usar a função `pivot_longer()`.
+
+---
+# pivot_longer()
+
+
+```r
+musicas |&gt;
+  pivot_longer(
+    cols = starts_with("wk"), # Colunas que começam com "wk"
+    names_to = "semana",      # Nomes das colunas viram "semana"
+    values_to = "posicao"     # Valores das colunas viram "posicao"
+  )
+```
+
+```
+#&gt; # A tibble: 1,902 × 3
+#&gt;   track                   semana posicao
+#&gt;   &lt;chr&gt;                   &lt;chr&gt;    &lt;dbl&gt;
+#&gt; 1 Baby Don't Cry (Keep... wk1         87
+#&gt; 2 Baby Don't Cry (Keep... wk2         82
+#&gt; 3 Baby Don't Cry (Keep... wk3         72
+#&gt; 4 Baby Don't Cry (Keep... wk4         77
+#&gt; 5 Baby Don't Cry (Keep... wk5         87
+#&gt; # … with 1,897 more rows
+```
+
+---
+# Longa para larga
+
+Na tabela abaixo temos o problema inverso da anterior: uma única coluna
+(`variable`) contém duas variáveis (`income` e `rent`).
+
+
+```r
+renda
+```
+
+```
+#&gt; # A tibble: 104 × 3
+#&gt;   NAME    variable estimate
+#&gt;   &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
+#&gt; 1 Alabama income      24476
+#&gt; 2 Alabama rent          747
+#&gt; 3 Alaska  income      32940
+#&gt; 4 Alaska  rent         1200
+#&gt; 5 Arizona income      27517
+#&gt; # … with 99 more rows
+```
+
+Para deixar ela tidy, precisamos usar a função `pivot_wider()`.
+
+---
+# pivot_wider()
+
+
+```r
+renda |&gt;
+  pivot_wider(
+    names_from = variable, # Nomes das colunas vêm de `variable`
+    values_from = estimate # Valores das colunas vêm de `estimate`
+  )
+```
+
+```
+#&gt; # A tibble: 52 × 3
+#&gt;   NAME       income  rent
+#&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 Alabama     24476   747
+#&gt; 2 Alaska      32940  1200
+#&gt; 3 Arizona     27517   972
+#&gt; 4 Arkansas    23789   709
+#&gt; 5 California  29454  1358
+#&gt; # … with 47 more rows
+```
+
+---
+class: middle, center
+
+[Animação por Garrick Aden-Buie](https://www.garrickadenbuie.com/project/tidyexplain/#pivot-wider-and-longer)
+
+&lt;img src="img/01_manipulacao/pivotagem.gif" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle, center, inverse
+# dplyr
+
+---
+# Motivação
+
+No _R para Ciência de Dados I_, já aprendemos os verbos mais importantes
+do dplyr:
+
+- `select()`: selecionar colunas.
+
+- `arrange()`: ordenar linhas.
+
+- `filter()`: filtrar linhas.
+
+- `mutate()`: modificar e criar colunas.
+
+- `group_by()`: agrupar linhas.
+
+- `summarise()`: sumarizar colunas.
+
+- `left_join()`: juntar tabelas.
+
+O que mais falta aprender se essas funções já resolvem praticamente todos os
+problemas de manipulação? Talvez possamos usá-las _melhor_...
+
+---
+class: middle, center
+
+&lt;img src="img/01_manipulacao/arte_dplyr.png" width="68%" style="display: block; margin: auto;" /&gt;
+
+[Ilustração por @allison_horst](https://twitter.com/allison_horst)
+
+---
+# Tarefas repetitivas
+
+É bastante comum lidar com tabelas que têm muitas colunas parecidas e nas quais
+precisamos fazer o mesmo tratamento. Por causa de uma falha no Excel, todas as
+colunas da tabela abaixo foram lidas como texto (`&lt;chr&gt;`) .
+
+
+```
+#&gt; # A tibble: 3 × 10
+#&gt;   Aluno Nota1 Nota2 Nota3 Nota4 Nota5 Nota6 Nota7 Nota8 Nota9
+#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+#&gt; 1 Ana   7.0   1.6   7.7   3.9   9.5   10.0  0.9   7.9   3.6  
+#&gt; 2 Bruno 9.2   1.5   1.3   5.1   5.8   7.1   5.5   8.7   3.7  
+#&gt; 3 Caio  5.7   7.4   1.9   0.8   2.3   6.3   3.3   1.3   1.5
+```
+
+Para transformar todas as `NotaX` juntas, poderíamos usar `pivot_longer()` e
+aplicar a transformação na coluna resultante. O problema é que nem sempre
+queremos reestruturar a tabela inteira para fazer uma transformação simples.
+
+---
+# Montando frases com mutate()
+
+Nós sabemos transformar uma tabela (`mutate()`), selecionar as colunas desejadas
+(`select(Nota1:Nota9)`) e converter textos para números (`as.numeric()`). Só
+ainda não aprendemos uma maneira de repetir esse processo para muitas colunas
+sem precisar escrever a mesma coisa várias vezes.
+
+
+```r
+alunos |&gt;
+  mutate(
+    Nota1 = as.as.numeric(Nota1),
+    Nota2 = as.as.numeric(Nota2),
+    # ... O que fazer se tivéssemos 500 colunas?
+  )
+```
+
+Vamos pensar em uma frase que descreva a operação que queremos fazer:
+
+&gt; _Aplicar uma transformação **ao longo** das colunas `Nota1` a `Nota9` usando a
+&gt; função `as.numeric()`._
+
+---
+# across()
+
+
+```r
+alunos |&gt;
+  mutate(                  # Aplicar uma transformação...
+    across(                # ...ao longo...
+      .cols = Nota1:Nota9, # ...das colunas `Nota1` a `Nota9`...
+      .fns = as.numeric    # ...usando a função `as.numeric()`.
+    )
+  )
+```
+
+```
+#&gt; # A tibble: 3 × 10
+#&gt;   Aluno Nota1 Nota2 Nota3 Nota4 Nota5 Nota6 Nota7 Nota8 Nota9
+#&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 Ana     7     1.6   7.7   3.9   9.5  10     0.9   7.9   3.6
+#&gt; 2 Bruno   9.2   1.5   1.3   5.1   5.8   7.1   5.5   8.7   3.7
+#&gt; 3 Caio    5.7   7.4   1.9   0.8   2.3   6.3   3.3   1.3   1.5
+```
+
+---
+# Argumentos da across()
+
+`.cols`, o primeiro argumento da `across()`, é uma seleção de variáveis idêntica
+à que usaríamos na `select()`; `.fns`, o segundo, é um **nome** de uma função,
+ou seja, a função sem os parênteses na frente. Não precisamos explicitar eles
+sempre.
+
+
+```r
+# Expressões equivalentes à do slide anterior
+alunos |&gt;
+  mutate(across(Nota1:Nota9, as.numeric))
+
+alunos |&gt;
+  mutate(across(-Aluno, as.numeric))
+
+alunos |&gt;
+  mutate(across(starts_with("Nota"), as.numeric))
+
+alunos |&gt;
+  mutate(across(c(2, 3, 4, 5, 6, 7, 8, 9, 10), as.numeric)) # c()!
+```
+
+---
+# Um universo de possibilidades
+
+A `across()` já seria muito boa se ela só fizesse o que vimos até agora, mas ela
+é capaz de muito mais. Vamos usar de exemplo a tabela a seguir: dados sobre
+vários personagens do universo Star Wars.
+
+
+```r
+estrelas &lt;- select(starwars, 1:6)
+estrelas
+```
+
+```
+#&gt; # A tibble: 87 × 6
+#&gt;   name           height  mass hair_color skin_color  eye_color
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;    
+#&gt; 1 Luke Skywalker    172    77 blond      fair        blue     
+#&gt; 2 C-3PO             167    75 &lt;NA&gt;       gold        yellow   
+#&gt; 3 R2-D2              96    32 &lt;NA&gt;       white, blue red      
+#&gt; 4 Darth Vader       202   136 none       white       yellow   
+#&gt; 5 Leia Organa       150    49 brown      light       brown    
+#&gt; # … with 82 more rows
+```
+
+---
+# where()
+
+A função `where()` é amiga íntima da `across()`. Com ela, nós podemos selecionar
+colunas baseadas nas suas características ao invés de seus nomes. Abaixo vamos
+ver como aplicar a `toupper()` em todas as colunas de texto:
+
+&gt; _Aplicar uma transformação ao longo das colunas **onde** `is.character()` é
+&gt; verdadeira usando a função `toupper()`._
+
+
+```r
+estrelas |&gt;
+  mutate(                  # Aplicar uma transformação...
+    across(                # ...ao longo das colunas...
+      where(is.character), # ...onde `is.character()` é verdadeira...
+      toupper              # ...usando a função `toupper()`.
+    )
+  )
+```
+
+P.S.: inclusive podemos usar a `where()` dentro da `select()`!
+
+---
+# Argumento da where()
+
+O único argumento da `where()` precisa ser o nome de um **predicado**, ou seja,
+de uma função que retorne `TRUE` para as colunas que você quer e `FALSE` caso
+contrário.
+
+
+```r
+# Equivalente ao slide anterior
+estrelas |&gt;
+  mutate(across(where(is.character), toupper))
+```
+
+```
+#&gt; # A tibble: 87 × 6
+#&gt;   name           height  mass hair_color skin_color  eye_color
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;    
+#&gt; 1 LUKE SKYWALKER    172    77 BLOND      FAIR        BLUE     
+#&gt; 2 C-3PO             167    75 &lt;NA&gt;       GOLD        YELLOW   
+#&gt; 3 R2-D2              96    32 &lt;NA&gt;       WHITE, BLUE RED      
+#&gt; 4 DARTH VADER       202   136 NONE       WHITE       YELLOW   
+#&gt; 5 LEIA ORGANA       150    49 BROWN      LIGHT       BROWN    
+#&gt; # … with 82 more rows
+```
+
+---
+# Combinando seleções
+
+Não estamos limitados a apenas um seletor por `across()`: no exemplo abaixo,
+estamos aplicando `toupper()` às colunas textuais **exceto** `name`. A sintaxe
+continua igual à da `select()`.
+
+
+```r
+estrelas |&gt;
+  mutate(across(c(where(is.character), -name), toupper)) # c()!
+```
+
+```
+#&gt; # A tibble: 87 × 6
+#&gt;   name           height  mass hair_color skin_color  eye_color
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;    
+#&gt; 1 Luke Skywalker    172    77 BLOND      FAIR        BLUE     
+#&gt; 2 C-3PO             167    75 &lt;NA&gt;       GOLD        YELLOW   
+#&gt; 3 R2-D2              96    32 &lt;NA&gt;       WHITE, BLUE RED      
+#&gt; 4 Darth Vader       202   136 NONE       WHITE       YELLOW   
+#&gt; 5 Leia Organa       150    49 BROWN      LIGHT       BROWN    
+#&gt; # … with 82 more rows
+```
+
+---
+# Outros verbos e across()
+
+A `across()` funciona com outros verbos do dplyr além da `mutate()`: no exemplo
+abaixo, estamos tirando a média de todas as colunas numéricas. Note que agora
+precisamos usar `where(is.numeric)`.
+
+
+```r
+estrelas |&gt;
+  summarise(across(where(is.numeric), mean))
+```
+
+```
+#&gt; # A tibble: 1 × 2
+#&gt;   height  mass
+#&gt;    &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1     NA    NA
+```
+
+Não teve erro nenhum na execução! O problema foi que temos personagens com
+altura ou peso desconhecidos na nossa tabela e, no R, qualquer operação
+matemática que tenha um `NA` no meio retorna `NA` também.
+
+---
+# Funções próprias na across()
+
+Podemos usar qualquer função no argumento `.fns` da `across()`, com a condição
+de que ela receba _apenas um_ argumento. No caso do slide anterior,
+precisaríamos passar a coluna e `na.rm = TRUE`. A solução é criar nossa própria
+função!
+
+
+```r
+media_limpa &lt;- function(x) {
+  mean(x, na.rm = TRUE)
+}
+
+estrelas |&gt;
+  summarise(across(where(is.numeric), media_limpa))
+```
+
+```
+#&gt; # A tibble: 1 × 2
+#&gt;   height  mass
+#&gt;    &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1   174.  97.3
+```
+
+---
+# Várias across() de uma vez
+
+Agora que conseguimos sumarizar as as colunas numéricas com `across()`, podemos
+tentar sumarizar as colunas textuais também... De uma vez só. A `n_distinct()`
+retorna o número de elementos distintos em uma coluna.
+
+
+```r
+estrelas |&gt;
+  summarise(
+    across(where(is.numeric), media_limpa),
+    across(where(is.character), n_distinct)
+  )
+```
+
+```
+#&gt; # A tibble: 1 × 6
+#&gt;   height  mass  name hair_color skin_color eye_color
+#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;      &lt;int&gt;      &lt;int&gt;     &lt;int&gt;
+#&gt; 1   174.  97.3    87         13         31        15
+```
+
+---
+# Várias funções em uma across()
+
+Se passarmos uma lista nomeada para a `across()`, podemos aplicar mais de uma
+função ao mesmo tempo. Falaremos mais sobre listas na aula de purrr.
+
+
+```r
+estrelas |&gt;
+  summarise(
+    across(
+      .cols = where(is.numeric),
+      .fns = list("media" = media_limpa, "distintos" = n_distinct)
+    )
+  )
+```
+
+```
+#&gt; # A tibble: 1 × 4
+#&gt;   height_media height_distintos mass_media mass_distintos
+#&gt;          &lt;dbl&gt;            &lt;int&gt;      &lt;dbl&gt;          &lt;int&gt;
+#&gt; 1         174.               46       97.3             39
+```
+
+---
+# Rodada bônus!
+
+O tidyr tem mais duas funções importantes que podem vir a calhar quando estamos
+reestruturando uma tabelas: `separate()` e `unite()`.
+
+
+```r
+estrelas |&gt;
+  pivot_longer(4:6, names_to = "variaveis", values_to = "cor")
+```
+
+```
+#&gt; # A tibble: 261 × 5
+#&gt;   name           height  mass variaveis  cor  
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;
+#&gt; 1 Luke Skywalker    172    77 hair_color blond
+#&gt; 2 Luke Skywalker    172    77 skin_color fair 
+#&gt; 3 Luke Skywalker    172    77 eye_color  blue 
+#&gt; 4 C-3PO             167    75 hair_color &lt;NA&gt; 
+#&gt; 5 C-3PO             167    75 skin_color gold 
+#&gt; # … with 256 more rows
+```
+
+---
+# separate()
+
+A função `separate()` quebra uma coluna em várias de acordo com um
+**separador**.
+
+
+```r
+estrelas |&gt;
+  pivot_longer(4:6, names_to = "variaveis", values_to = "cor") |&gt;
+  separate(variaveis, c("orgao", "jogar_fora"), sep = "_")
+```
+
+```
+#&gt; # A tibble: 261 × 6
+#&gt;   name           height  mass orgao jogar_fora cor  
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;
+#&gt; 1 Luke Skywalker    172    77 hair  color      blond
+#&gt; 2 Luke Skywalker    172    77 skin  color      fair 
+#&gt; 3 Luke Skywalker    172    77 eye   color      blue 
+#&gt; 4 C-3PO             167    75 hair  color      &lt;NA&gt; 
+#&gt; 5 C-3PO             167    75 skin  color      gold 
+#&gt; # … with 256 more rows
+```
+
+---
+# unite()
+
+A `unite()` junta várias colunas usando um separador.
+
+
+```r
+estrelas |&gt;
+  pivot_longer(4:6, names_to = "variaveis", values_to = "cor") |&gt;
+  unite("cor_orgao", cor, variaveis, sep = "_")
+```
+
+```
+#&gt; # A tibble: 261 × 4
+#&gt;   name           height  mass cor_orgao       
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;           
+#&gt; 1 Luke Skywalker    172    77 blond_hair_color
+#&gt; 2 Luke Skywalker    172    77 fair_skin_color 
+#&gt; 3 Luke Skywalker    172    77 blue_eye_color  
+#&gt; 4 C-3PO             167    75 NA_hair_color   
+#&gt; 5 C-3PO             167    75 gold_skin_color 
+#&gt; # … with 256 more rows
+```
+
+---
+class: middle, center, inverse
+# Fim
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

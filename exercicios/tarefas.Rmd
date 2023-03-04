@@ -1,36 +1,18 @@
-Tarefas para serem colocadas no Google Classroom.
-# Aula 1 -----------------------
-# Organização de projetos
-
-### Projetos
-
-a. Utilize `usethis::create_project()` para criar um projeto.
-b. Crie uma função chamada `colar`, que recebe os parâmetros `x` e `y` e os retorna colados, com um espaço de separação. Por exemplo: `colar(x = "Caio", y = "Lente")` deve devolver a string `"Caio Lente"`. Dica: para criar o arquivo, a função `usethis::use_r("colar")` é útil!
-c. Rode com seu nome e sobrenome: `colar("Jane", "Doe")` e veja se o resultado é o esperado.
-
-### Github
-
-Siga os passos de configuração e não se esqueça de configurar seu usuário com `use_git_config()`!
-
-a. No projeto criado no exercício anterior, inicie o Git `usethis::use_git()` e o GitHub `usethis::use_github()`
-b. Crie um script em R no data-raw/ e adicione o exemplo de uso da função `colar()`, criada no exercício anterior - item C.
-c. Faça commit & push dos arquivos alterados.
-d. Veja se seu arquivo R está no seu repositório do GitHub, e adicione nos comentários o link do repositório criado.
-
-# Aula 2 -----------------------
-# Manipulação
-
-## dplyr 1.0
-
-Ler e fazer os exercícios sobre dplyr 1.0: https://livro.curso-r.com/7-2-dplyr.html#dplyr-1.0
-
-A base "ames" possui informações de casas vendidas na cidade de Ames, nos EUA. cada observação é uma casa diferente.
+# Aula 1: Manipulação de dados avançada -----------------------
 
 ## tidyr
 
 Ler e fazer os exercícios sobre tidyr: https://livro.curso-r.com/7-3-tidyr.html
 
 A base "imdb" possui informações de filmes de 1916 a 2016 extraídas do site IMDB. Cada observação é um filme diferente.
+
+## dplyr
+
+Ler e fazer os exercícios sobre dplyr 1.0: https://livro.curso-r.com/7-2-dplyr.html#dplyr-1.0
+
+A base "ames" possui informações de casas vendidas na cidade de Ames, nos EUA. cada observação é uma casa diferente.
+
+# Aula 2 -----------------------
 
 # Aula 3 -----------------------
 
@@ -82,7 +64,7 @@ a. Rode o código usethis::use_data_raw("imdb") para criar um script de manipula
 
 b. A base IMDB (imdb.rds) está dentro da pasta data/ no material do curso. Copie esse arquivo para a pasta data-raw/ dentro do seu pacote.
 
-c. No script criado no item a), importe a base IMDB, usando o código 
+c. No script criado no item a), importe a base IMDB, usando o código
 
 imdb <- readr::read_rds("data-raw/imdb.rds")
 
@@ -94,12 +76,12 @@ Se tudo ocorreu bem, a partir de agora, a base imdb ficará disponível no ambie
 
 ## 3. Pegando maiores receitas
 
-Escreva uma função que receba a base IMDB e um número "n" e retorne uma tabela com o título, diretor e receita dos "n" filmes com maior receita na base IMDB. 
+Escreva uma função que receba a base IMDB e um número "n" e retorne uma tabela com o título, diretor e receita dos "n" filmes com maior receita na base IMDB.
 
 Essa função deverá ter a estrutura a seguir:
 
 pegar_maiores_receitas <- function(tab, n) {
-  
+
   tab_n_maiores_receitas <- imdb %>%
     # codigo para manipular a tabela
 
@@ -127,7 +109,7 @@ Crie uma função que receba a base IMDB e uma string com o nome de um ator e re
 A sua função deve ter a seguinte estrutura:
 
 calcular_num_filmes <- function(tab, nome_ator) {
-  
+
   num_filmes <- imdb %>%
     # codigo para calcular o número de filmes do ator "nome_ator"
 
@@ -169,13 +151,13 @@ Crie uma função que receba a base Ames e uma string com o nome de uma coluna c
 A estrutura da sua função deve ser a seguinte:
 
 sumarizar_venda_media <- function(tab, nome_coluna) {
-  
+
   tab %>%
     group_by(across(nome_culuna)) %>%
     summarise(
       # código que calcula a venda média
     )
-    
+
 }
 
 
@@ -188,7 +170,7 @@ A informação de NA nessa base é importante, pois representa o número de casa
 A sua função deverá ter a seguinte estrutura:
 
 pegar_num_NAs <- function(tab, nome_coluna) {
-  
+
   tab %>%
     # código que retorna o número de NAs da coluna "nome_coluna"
 
@@ -201,10 +183,10 @@ EXTRA: adicione um parâmetro lógico na sua função que faça a função devol
 
 
 pegar_num_NAs <- function(tab, nome_coluna, prop = FALSE) {
-  
+
   tab %>%
     # código que retorna o número de NAs da coluna "nome_coluna"
-    
+
   if (prop) {
     # código que transforma o valor em proporção
   }
@@ -285,11 +267,11 @@ d.6) Três argumentos não-fixos (desafio): function(x, y, z) { x + y + z }
 
 2. Crie um novo projeto ou pacote e o conecte com o Github, em um repositório aberto.
 
-3. Faça uma análise da base escolhida para responder alguma pergunta de interesse (veja o tópico "Bases de dados"). 
+3. Faça uma análise da base escolhida para responder alguma pergunta de interesse (veja o tópico "Bases de dados").
 
 4. A comunicação dos resultados deve ser feita no README.Rmd do seu repositório. O README.Rmd é um arquivo R Markdown localizado na raiz do seu repositório. Se ele não existir, rode o comando usethis::use_readme_rmd() para criá-lo.
 
-5. Você deve submeter aqui no Classroom apenas o link para o repositório criado no Github. 
+5. Você deve submeter aqui no Classroom apenas o link para o repositório criado no Github.
 
 6. O certificado será enviado na semana do dia 14 de setembro, apenas a quem entregar esta atividade.
 
@@ -302,9 +284,9 @@ d.6) Três argumentos não-fixos (desafio): function(x, y, z) { x + y + z }
 
 ## Bases de dados
 
-As bases estão na pasta "bases", do material do curso. Rode 
+As bases estão na pasta "bases", do material do curso. Rode
 
-CursoR::atualizar_material() 
+CursoR::atualizar_material()
 
 novamente caso você não tenha todos os arquivos.
 
@@ -337,7 +319,7 @@ Descrição: número de ocorrências mensais de diversos crimes de 2002 a 2020 (
 
 Principais variáveis:
 
-- Número de ocorrências mensais (furtos, roubos, homicídios etc) 
+- Número de ocorrências mensais (furtos, roubos, homicídios etc)
 - Delegacia onde a ocorrência foi registrada
 - Município e região do estado da delegacia
 - Mês e ano
@@ -401,7 +383,7 @@ Sugestões de análises
 _______________________________________________________________________________________________________
 ** Pokémon **
 
-Descrição: base com os status base de todos os pokémon da primeira à sétima geração. 
+Descrição: base com os status base de todos os pokémon da primeira à sétima geração.
 
 Principais variáveis:
 
