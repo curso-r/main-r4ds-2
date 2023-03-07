@@ -261,8 +261,8 @@ sem precisar escrever a mesma coisa várias vezes.
 ```{r, eval = FALSE}
 alunos |>
   mutate(
-    Nota1 = as.as.numeric(Nota1),
-    Nota2 = as.as.numeric(Nota2),
+    Nota1 = as.numeric(Nota1),
+    Nota2 = as.numeric(Nota2),
     # ... O que fazer se tivéssemos 500 colunas?
   )
 ```
@@ -462,7 +462,7 @@ A `unite()` junta várias colunas usando um separador.
 ```{r}
 estrelas |>
   pivot_longer(4:6, names_to = "variaveis", values_to = "cor") |>
-  unite("cor_orgao", cor, variaveis, sep = "_")
+  unite("cor_orgao", c(cor, variaveis), sep = "_")
 ```
 
 ---
