@@ -55,13 +55,6 @@ variáveis? As nossas linhas não são _sempre_ observações? A realidade é be
 complicada do que parece...
 
 ---
-class: middle, center
-
-&lt;img src="img/01_manipulacao/amizade.jpg" style="display: block; margin: auto;" /&gt;
-
-[Ilustração por @allison_horst](https://twitter.com/allison_horst)
-
----
 # Bases bagunçadas
 
 &gt; _Tabelas arrumadas são todas parecidas, mas cada tabela bagunçada é bagunçada
@@ -83,6 +76,13 @@ para registrar as notas de um novo treino.
 #&gt; 2 Dexter            10           4          10           8
 #&gt; 3 Zip                0           0          10           9
 ```
+
+---
+class: middle, center
+
+&lt;img src="img/01_manipulacao/tidyr.jpg" style="display: block; margin: auto;" /&gt;
+
+[Ilustração por @allison_horst](https://twitter.com/allison_horst)
 
 ---
 # Arrumando a base
@@ -281,7 +281,7 @@ problemas de manipulação? Talvez possamos usá-las _melhor_...
 ---
 class: middle, center
 
-&lt;img src="img/01_manipulacao/arte_dplyr.png" width="68%" style="display: block; margin: auto;" /&gt;
+&lt;img src="img/01_manipulacao/dplyr.png" width="68%" style="display: block; margin: auto;" /&gt;
 
 [Ilustração por @allison_horst](https://twitter.com/allison_horst)
 
@@ -297,8 +297,8 @@ colunas da tabela abaixo foram lidas como texto (`&lt;chr&gt;`) .
 #&gt; # A tibble: 3 × 10
 #&gt;   Aluno Nota1 Nota2 Nota3 Nota4 Nota5 Nota6 Nota7 Nota8 Nota9
 #&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
-#&gt; 1 Ana   7.0   1.6   7.7   3.9   9.5   10.0  0.9   7.9   3.6  
-#&gt; 2 Bruno 9.2   1.5   1.3   5.1   5.8   7.1   5.5   8.7   3.7  
+#&gt; 1 Ana   7.0   1.6   7.7   3.9   9.5   10.0  0.9   7.9   3.6
+#&gt; 2 Bruno 9.2   1.5   1.3   5.1   5.8   7.1   5.5   8.7   3.7
 #&gt; 3 Caio  5.7   7.4   1.9   0.8   2.3   6.3   3.3   1.3   1.5
 ```
 
@@ -392,12 +392,12 @@ estrelas
 ```
 #&gt; # A tibble: 87 × 6
 #&gt;   name           height  mass hair_color skin_color  eye_color
-#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;    
-#&gt; 1 Luke Skywalker    172    77 blond      fair        blue     
-#&gt; 2 C-3PO             167    75 &lt;NA&gt;       gold        yellow   
-#&gt; 3 R2-D2              96    32 &lt;NA&gt;       white, blue red      
-#&gt; 4 Darth Vader       202   136 none       white       yellow   
-#&gt; 5 Leia Organa       150    49 brown      light       brown    
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;
+#&gt; 1 Luke Skywalker    172    77 blond      fair        blue
+#&gt; 2 C-3PO             167    75 &lt;NA&gt;       gold        yellow
+#&gt; 3 R2-D2              96    32 &lt;NA&gt;       white, blue red
+#&gt; 4 Darth Vader       202   136 none       white       yellow
+#&gt; 5 Leia Organa       150    49 brown      light       brown
 #&gt; # … with 82 more rows
 ```
 
@@ -441,12 +441,12 @@ estrelas |&gt;
 ```
 #&gt; # A tibble: 87 × 6
 #&gt;   name           height  mass hair_color skin_color  eye_color
-#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;    
-#&gt; 1 LUKE SKYWALKER    172    77 BLOND      FAIR        BLUE     
-#&gt; 2 C-3PO             167    75 &lt;NA&gt;       GOLD        YELLOW   
-#&gt; 3 R2-D2              96    32 &lt;NA&gt;       WHITE, BLUE RED      
-#&gt; 4 DARTH VADER       202   136 NONE       WHITE       YELLOW   
-#&gt; 5 LEIA ORGANA       150    49 BROWN      LIGHT       BROWN    
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;
+#&gt; 1 LUKE SKYWALKER    172    77 BLOND      FAIR        BLUE
+#&gt; 2 C-3PO             167    75 &lt;NA&gt;       GOLD        YELLOW
+#&gt; 3 R2-D2              96    32 &lt;NA&gt;       WHITE, BLUE RED
+#&gt; 4 DARTH VADER       202   136 NONE       WHITE       YELLOW
+#&gt; 5 LEIA ORGANA       150    49 BROWN      LIGHT       BROWN
 #&gt; # … with 82 more rows
 ```
 
@@ -466,12 +466,12 @@ estrelas |&gt;
 ```
 #&gt; # A tibble: 87 × 6
 #&gt;   name           height  mass hair_color skin_color  eye_color
-#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;    
-#&gt; 1 Luke Skywalker    172    77 BLOND      FAIR        BLUE     
-#&gt; 2 C-3PO             167    75 &lt;NA&gt;       GOLD        YELLOW   
-#&gt; 3 R2-D2              96    32 &lt;NA&gt;       WHITE, BLUE RED      
-#&gt; 4 Darth Vader       202   136 NONE       WHITE       YELLOW   
-#&gt; 5 Leia Organa       150    49 BROWN      LIGHT       BROWN    
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;
+#&gt; 1 Luke Skywalker    172    77 BLOND      FAIR        BLUE
+#&gt; 2 C-3PO             167    75 &lt;NA&gt;       GOLD        YELLOW
+#&gt; 3 R2-D2              96    32 &lt;NA&gt;       WHITE, BLUE RED
+#&gt; 4 Darth Vader       202   136 NONE       WHITE       YELLOW
+#&gt; 5 Leia Organa       150    49 BROWN      LIGHT       BROWN
 #&gt; # … with 82 more rows
 ```
 
@@ -574,56 +574,7 @@ estrelas |&gt;
 ---
 # Rodada bônus!
 
-O tidyr tem mais duas funções importantes que podem vir a calhar quando estamos
-reestruturando uma tabelas: `separate()` e `unite()`.
-
-
-```r
-estrelas |&gt;
-  pivot_longer(4:6, names_to = "variaveis", values_to = "cor")
-```
-
-```
-#&gt; # A tibble: 261 × 5
-#&gt;   name           height  mass variaveis  cor  
-#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;
-#&gt; 1 Luke Skywalker    172    77 hair_color blond
-#&gt; 2 Luke Skywalker    172    77 skin_color fair 
-#&gt; 3 Luke Skywalker    172    77 eye_color  blue 
-#&gt; 4 C-3PO             167    75 hair_color &lt;NA&gt; 
-#&gt; 5 C-3PO             167    75 skin_color gold 
-#&gt; # … with 256 more rows
-```
-
----
-# separate()
-
-A função `separate()` quebra uma coluna em várias de acordo com um
-**separador**.
-
-
-```r
-estrelas |&gt;
-  pivot_longer(4:6, names_to = "variaveis", values_to = "cor") |&gt;
-  separate(variaveis, c("orgao", "jogar_fora"), sep = "_")
-```
-
-```
-#&gt; # A tibble: 261 × 6
-#&gt;   name           height  mass orgao jogar_fora cor  
-#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;
-#&gt; 1 Luke Skywalker    172    77 hair  color      blond
-#&gt; 2 Luke Skywalker    172    77 skin  color      fair 
-#&gt; 3 Luke Skywalker    172    77 eye   color      blue 
-#&gt; 4 C-3PO             167    75 hair  color      &lt;NA&gt; 
-#&gt; 5 C-3PO             167    75 skin  color      gold 
-#&gt; # … with 256 more rows
-```
-
----
-# unite()
-
-A `unite()` junta várias colunas usando um separador.
+O tidyr tem mais uma função que pode vir a calhar: `unite()`.
 
 
 ```r
@@ -634,13 +585,13 @@ estrelas |&gt;
 
 ```
 #&gt; # A tibble: 261 × 4
-#&gt;   name           height  mass cor_orgao       
-#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;           
+#&gt;   name           height  mass cor_orgao
+#&gt;   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;
 #&gt; 1 Luke Skywalker    172    77 blond_hair_color
-#&gt; 2 Luke Skywalker    172    77 fair_skin_color 
-#&gt; 3 Luke Skywalker    172    77 blue_eye_color  
-#&gt; 4 C-3PO             167    75 NA_hair_color   
-#&gt; 5 C-3PO             167    75 gold_skin_color 
+#&gt; 2 Luke Skywalker    172    77 fair_skin_color
+#&gt; 3 Luke Skywalker    172    77 blue_eye_color
+#&gt; 4 C-3PO             167    75 NA_hair_color
+#&gt; 5 C-3PO             167    75 gold_skin_color
 #&gt; # … with 256 more rows
 ```
 

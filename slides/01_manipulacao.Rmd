@@ -48,15 +48,6 @@ variáveis? As nossas linhas não são _sempre_ observações? A realidade é be
 complicada do que parece...
 
 ---
-class: middle, center
-
-```{r, echo = FALSE, fig.align='center'}
-knitr::include_graphics("img/01_manipulacao/amizade.jpg")
-```
-
-[Ilustração por @allison_horst](https://twitter.com/allison_horst)
-
----
 # Bases bagunçadas
 
 > _Tabelas arrumadas são todas parecidas, mas cada tabela bagunçada é bagunçada
@@ -78,6 +69,15 @@ caes <- tibble::tribble(
 )
 caes
 ```
+
+---
+class: middle, center
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("img/01_manipulacao/tidyr.jpg")
+```
+
+[Ilustração por @allison_horst](https://twitter.com/allison_horst)
 
 ---
 # Arrumando a base
@@ -224,7 +224,7 @@ problemas de manipulação? Talvez possamos usá-las _melhor_...
 class: middle, center
 
 ```{r, echo = FALSE, out.width="68%", fig.align='center'}
-knitr::include_graphics("img/01_manipulacao/arte_dplyr.png")
+knitr::include_graphics("img/01_manipulacao/dplyr.png")
 ```
 
 [Ilustração por @allison_horst](https://twitter.com/allison_horst)
@@ -434,30 +434,7 @@ estrelas |>
 ---
 # Rodada bônus!
 
-O tidyr tem mais duas funções importantes que podem vir a calhar quando estamos
-reestruturando uma tabelas: `separate()` e `unite()`.
-
-```{r}
-estrelas |>
-  pivot_longer(4:6, names_to = "variaveis", values_to = "cor")
-```
-
----
-# separate()
-
-A função `separate()` quebra uma coluna em várias de acordo com um
-**separador**.
-
-```{r}
-estrelas |>
-  pivot_longer(4:6, names_to = "variaveis", values_to = "cor") |>
-  separate(variaveis, c("orgao", "jogar_fora"), sep = "_")
-```
-
----
-# unite()
-
-A `unite()` junta várias colunas usando um separador.
+O tidyr tem mais uma função que pode vir a calhar: `unite()`.
 
 ```{r}
 estrelas |>
