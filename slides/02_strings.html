@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs-2.20/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# R para Ciência de Dados 2
+]
+.subtitle[
+## Trabalhando com strings
+]
+.author[
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+]
+
+---
+
+
+
+
+class: middle, center
+# Iniciar gravação!
+
+---
+class: middle, center, inverse
+# stringr
+
+---
+# Motivação
+
+Até agora já aprendemos muito sobre manipulação de dados, mas na verdade só
+aprendemos a manipular _tabelas_. Existem inúmeros tipos de dados dentro das
+tabelas e as funções que vimos até agora lidam praticamente só com números.
+
+Bases com colunas textuais são _extremamente_ comuns hoje em dia, então saber
+lidar com strings se torna uma parte essencial do processo da ciência de dados.
+
+Muitas pessoas acham que trabalhar com textos é igual a trabalhar com variáveis
+categóricas; basta converter cada string para um número e seguir com a
+modelagem. Entretanto, isso não faz sentido para grande parte das variáveis que
+veremos aqui.
+
+Além de ajudar em análise de dados, tratar strings também ajuda com programação
+porque grande parte das linguagens modernas funcionam da mesma maneira que o R
+nesse quesito.
+
+Mas o que há de tão diferente nas strings? Vamos entender isso na prática...
+
+---
+# Criando strings
+
+Strings não passam de sequências de caracteres. No R é muito fácil criar uma
+string, basta escrever qualquer coisa entre parênteses:
+
+
+```r
+"Isto é uma string"
+```
+
+```
+#&gt; [1] "Isto é uma string"
+```
+
+Se precisarmos colocar aspas duplas dentro da nossa string, podemos usar aspas
+simples para criá-la.
+
+
+```r
+'Isto é uma "string"'
+```
+
+```
+#&gt; [1] "Isto é uma \"string\""
+```
+
+O R sempre usa aspas duplas para exibir strings, até aí ok. Mas de onde veio
+essa `\"`?
+
+---
+# Escapando caracteres
+
+Como o R atribui uma função primária à aspa (criar strings), precisamos de um
+mecanismo para acessar sua função secundária (ser um caractere em uma string). A
+**barra invertida** indica para o R que estamos usando a função secundária do
+caractere seguinte.
+
+
+```r
+c("'simples'", '\'simples\'', '"dupla"', "\"dupla\"", "\\barra\\")
+```
+
+```
+#&gt; [1] "'simples'" "'simples'" "\"dupla\"" "\"dupla\"" "\\barra\\"
+```
+
+Se quisermos ver uma string sem os escapes, podemos usar a função `cat()`. Ela
+retorna qualquer texto da forma como ele seria exibido fora do R.
+
+
+```r
+cat(c("'simples'", '\'simples\'', '"dupla"', "\"dupla\"", "\\barra\\"))
+```
+
+```
+#&gt; 'simples' 'simples' "dupla" "dupla" \barra\
+```
+
+---
+# Outros caracteres especiais
+
+Vários caracteres têm funções secundárias. O `\n`, por exemplo, indica que esta
+não é a letra `n` e sim uma **n**ova linha; o `\t`, por sua vez, é um **t**ab.
+
+
+```r
+cat("Cachorro:\n\t- Dexter")
+```
+
+```
+#&gt; Cachorro:
+#&gt; 	- Dexter
+```
+
+O `\u` é extremamente poderoso. Ele indica que os próximos _quatro_ caracteres
+serão um código [Unicode](https://home.unicode.org/), que é a lista
+internacional de todos os caracteres possíveis.
+
+
+```r
+cat("Temperatura: 10\u00ba C")
+```
+
+```
+#&gt; Temperatura: 10º C
+```
+
+Agora que já sabemos criar strings, como podemos trabalhar com elas?
+
+---
+class: middle, center
+
+&lt;img src="img/02_strings/stringr.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+[Ilustração por @allison_horst](https://twitter.com/allison_horst)
+
+---
+# O pacote stringr
+
+O pacote que nos permite trabalhar com strings de forma intuitiva e eficiente é
+o stringr. Praticamente todas as suas funções começam com `str_`, o que facilita
+muito na hora de achar o que você precisa.
+
+
+```r
+# Já carrega o stringr
+library(tidyverse)
+
+cachorros &lt;- tibble(cachorro = c("Bacon", "Dexter", "Zip"))
+cachorros
+```
+
+```
+#&gt; # A tibble: 3 × 1
+#&gt;   cachorro
+#&gt;   &lt;chr&gt;   
+#&gt; 1 Bacon   
+#&gt; 2 Dexter  
+#&gt; 3 Zip
+```
+
+---
+# str_c()
+
+A primeira (e talvez mais importante) função do stringr é a `str_c()`. Assim
+como `c()` serve para juntar elementos, a `str_c()` serve para juntar strings.
+
+
+```r
+cachorros |&gt;
+  mutate(oi = str_c("Oi, ", cachorro, "!"))
+```
+
+```
+#&gt; # A tibble: 3 × 2
+#&gt;   cachorro oi         
+#&gt;   &lt;chr&gt;    &lt;chr&gt;      
+#&gt; 1 Bacon    Oi, Bacon! 
+#&gt; 2 Dexter   Oi, Dexter!
+#&gt; 3 Zip      Oi, Zip!
+```
+
+A `str_c()` aceita qualquer número de argumentos e, se algum deles for um vetor
+de strings, ela faz a junção iterativamente.
+
+---
+# str_flatten()
+
+A `str_flatten()` também junta strings, mas ela sempre **achata** todas e
+retorna sempre uma única string. Ela funciona perfeitamente com a `summarise()`:
+
+
+```r
+cachorros |&gt;
+  summarise(todos = str_flatten(cachorro, ", ", last = " e "))
+```
+
+```
+#&gt; # A tibble: 1 × 1
+#&gt;   todos              
+#&gt;   &lt;chr&gt;              
+#&gt; 1 Bacon, Dexter e Zip
+```
+
+O seu segundo argumento especifica um separador a ser colocado entre cada string
+do vetor de entrada. Já o argumento `last` especifica uma variação desse
+separador a ser utilizada somente na última string.
+
+---
+# str_length() e str_sub()
+
+Duas funções trabalham com caracteres individuais: `str_length()` e `str_sub()`.
+A primeira faz a contagem e a segunda extrai os caracteres entre duas posições.
+
+
+```r
+cachorros |&gt;
+  mutate(
+    letras = str_length(cachorro),
+    apelido = str_sub(cachorro, 1, 3)
+  )
+```
+
+```
+#&gt; # A tibble: 3 × 3
+#&gt;   cachorro letras apelido
+#&gt;   &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;  
+#&gt; 1 Bacon         5 Bac    
+#&gt; 2 Dexter        6 Dex    
+#&gt; 3 Zip           3 Zip
+```
+
+---
+# str_squish() e str_pad()
+
+A `str_squish()` elimina espaços desnecessários em uma string. Ela remove todos
+os espaços no início e no fim, além de encurtar espaços excessivos no meio.
+
+
+```r
+stringr::str_squish("  Nenhum   espaço   sobrando    ")
+```
+
+```
+#&gt; [1] "Nenhum espaço sobrando"
+```
+
+Já a `str_pad()` adiciona caracteres até que a string fique com o comprimento
+desejado. O argumento `side` permite até escolher de qual lado vai o enchimento.
+
+
+```r
+stringr::str_pad("7", width = 3, side = "left", pad = "0")
+```
+
+```
+#&gt; [1] "007"
+```
+
+---
+# str\_to\_\*()
+
+
+```r
+str_to_upper("caixa alta e baixa. título e frase.")
+```
+
+```
+#&gt; [1] "CAIXA ALTA E BAIXA. TÍTULO E FRASE."
+```
+
+```r
+str_to_lower("caixa alta e baixa. título e frase.")
+```
+
+```
+#&gt; [1] "caixa alta e baixa. título e frase."
+```
+
+```r
+str_to_title("caixa alta e baixa. título e frase.")
+```
+
+```
+#&gt; [1] "Caixa Alta E Baixa. Título E Frase."
+```
+
+```r
+str_to_sentence("caixa alta e baixa. título e frase.")
+```
+
+```
+#&gt; [1] "Caixa alta e baixa. título e frase."
+```
+
+---
+class: middle, center, inverse
+# Expressões regulares
+
+---
+# Motivação
+
+Por enquanto vimos como manipular strings, mas não estamos extraindo nenhuma
+informação. Podemos juntar, encurtar, colar e resumir strings, mas não interagir
+com seus conteúdos.
+
+Uma das partes mais importantes (e difíceis) de se aprender nesta área são as
+**expressões regulares**. O resto da aula vai ser praticamente todo dedicado a
+ensinar regex e mostrar como essa tecnologia funciona, e ainda assim não vamos
+ter nem arranhado a ponta desse iceberg.
+
+A parte boa é que regex funciona praticamente da mesma forma em qualquer
+linguagem de programação, então esse conhecimento é altamente replicável mesmo
+que você precise trabalhar com alguma outra ferramenta.
+
+Não exitem em tirar dúvidas! No início tudo vai parecer chato e óbvio, mas eu
+garanto que temos muita coisa para vocês colocarem em suas caixas de
+ferramentas. Vamos entender o que é e como funcionam as expressões regulares...
+
+---
+# Regex
+
+Expressões regulares (ou "regex") são uma linguagem para descrever padrões de
+strings. Elas são extremamente poderosas e muito usadas pelo stringr.
+
+
+```r
+frutas &lt;- c("laranja", "melancia", "maçã", "mamão")
+```
+
+Para aprender sobre o assunto, vamos usar a função `str_extract()`. Ela extrai a
+parte de uma string que bate com o regex do segundo argumento.
+
+
+```r
+str_extract(string = frutas, pattern = "ma")
+```
+
+```
+#&gt; [1] NA   NA   "ma" "ma"
+```
+
+Note que ela retorna `NA` se não houve nenhum _match_.
+
+---
+# Literais
+
+Os **caracteres literais** são majoritariamente letras e numerais. Eles não têm
+significado especial em regex e, portanto, casam com si próprios.
+
+
+```r
+str_extract(c("laranja", "MELANCIA", "maçã", "mamão"), "la")
+```
+
+```
+#&gt; [1] "la" NA   NA   NA
+```
+
+Os literais são sensíveis a maiúsculas e minúsculas, por isso não houve _match_
+com `"MELANCIA"`. Abaixo vemos a situação inversa.
+
+
+```r
+str_extract(c("laranja", "MELANCIA", "maçã", "mamão"), "LA")
+```
+
+```
+#&gt; [1] NA   "LA" NA   NA
+```
+
+Nunca esqueça que o **espaço em branco** é um literal válido!
+
+---
+# Meta-caracteres
+
+A maior parte das pontuações têm significados especiais, sendo chamadas de
+**meta-caracteres**. O `.`, por exemplo, é o coringa e casa com qualquer
+caractere.
+
+
+```r
+str_extract(c("laranja", "MELANCIA", "maçã", "mamão"), "a.")
+```
+
+```
+#&gt; [1] "ar" NA   "aç" "am"
+```
+
+Para fazer uma regex que dê _match_ com um ponto-final literal, precisamos
+acessar a função secundária do `.` usando `\\.`:
+
+
+```r
+str_extract("strings.", "s\\.") # "s." daria match com "st"
+```
+
+```
+#&gt; [1] "s."
+```
+
+Desafio: por que precisamos usar `\\.` e não só `\.`?
+
+---
+# Escapando meta-caracteres
+
+Em regex, a função primária do `.` é ser o coringa e a secundária é ser o
+ponto-final literal. Já no R, a função primária do `.` é ser o ponto-final
+literal e não há nenhuma função secundária.
+
+Se usarmos `\.`, o R vai tentar achar uma função secundária do `.` e falhar no
+processo (`unrecognized escape`). Logo, precisamos **escapar a barra
+invertida**! `\\.` vai passar `\.` ao regex, que consegue achar uma função
+secundária para o ponto-final.
+
+Quando as barras invertidas começam a atrapalhar a leitura, a melhor saída é
+usar **raw strings**. Ao invés de apas, raw strings são criadas com sequências
+incomuns de caracteres como `r"()"`, `r"[]"` ou `r"{}"`.
+
+
+```r
+cat(c("\\.", "\\\\", r"(\.)", r"(\\)"))
+```
+
+```
+#&gt; \. \\ \. \\
+```
+
+---
+# Meta-caracteres: âncoras
+
+`^` casa com o início de uma string e `$` casa com o final. É como se toda
+string tivesse 2 caracteres invisíveis que só podem ser acessados com as
+âncoras.
+
+
+```r
+str_extract(c("laranja", "melancia"), "^la")
+```
+
+```
+#&gt; [1] "la" NA
+```
+
+```r
+str_extract(c("laranja", "jaca"), "ja$")
+```
+
+```
+#&gt; [1] "ja" NA
+```
+
+```r
+str_extract(c("jaca", " jaca "), "^jaca$")
+```
+
+```
+#&gt; [1] "jaca" NA
+```
+
+---
+# Meta-caracteres: conjuntos
+
+`[]` permite casar com qualquer caractere em um conjunto, enquanto `[^]` faz
+exatamente o contrário. Neste contexto, `-` pode definir um intervalo.
+
+
+```r
+str_extract(c("romã", "laranja", "cereja"), "r[ao]")
+```
+
+```
+#&gt; [1] "ro" "ra" NA
+```
+
+```r
+str_extract(c("romã", "laranja", "cereja"), "r[^ao]")
+```
+
+```
+#&gt; [1] NA   NA   "re"
+```
+
+```r
+str_extract(c("coc0", "carambola", "melanc1a"), "c[0-9]")
+```
+
+```
+#&gt; [1] "c0" NA   "c1"
+```
+
+---
+# Meta-caracteres: grupos
+
+`()` permite agrupar expressões, com `|` separando uma da outra. Na prática,
+funciona como `[]`, mas se aplica a padrões com mais de um caractere.
+
+
+```r
+str_extract(c("laranja", "cereja"), "(an|re)ja")
+```
+
+```
+#&gt; [1] "anja" "reja"
+```
+
+`()` também pode ser usado com **referências retroativas**, onde `\\1` copia o
+conteúdo capturado pelo primeiro `()`, `\\2` pelo segundo e assim por diante.
+
+
+```r
+str_extract(c("banana", "cacau", "coco"), "(..)\\1")
+```
+
+```
+#&gt; [1] "anan" "caca" "coco"
+```
+
+---
+# Meta-caracteres: quantificadores
+
+`?` torna um padrão opcional (0 ou 1 vez), `+` permite que um padrão repita (1
+ou mais vezes) e `*` permite que um padrão seja opcional ou repita (0 ou mais
+vezes).
+
+
+```r
+str_extract(c("a", "ab", "abb"), "ab?")
+```
+
+```
+#&gt; [1] "a"  "ab" "ab"
+```
+
+```r
+str_extract(c("a", "ab", "abb"), "ab+")
+```
+
+```
+#&gt; [1] NA    "ab"  "abb"
+```
+
+```r
+str_extract(c("a", "ab", "abb"), "ab*")
+```
+
+```
+#&gt; [1] "a"   "ab"  "abb"
+```
+
+---
+# Meta-caracteres: quantificadores específicos
+
+`{m,n}` permite casar entre `m` e `n` vezes. Podemos omitir um dos dois para
+casar exatamente `n` ou pelo menos `n` vezes.
+
+
+```r
+str_extract(c("a", "aa", "aaa", "aaaa"), "a{2,3}") # Entre m e n
+```
+
+```
+#&gt; [1] NA    "aa"  "aaa" "aaa"
+```
+
+```r
+str_extract(c("a", "aa", "aaa", "aaaa"), "a{3}") # Exatamente n
+```
+
+```
+#&gt; [1] NA    NA    "aaa" "aaa"
+```
+
+```r
+str_extract(c("a", "aa", "aaa", "aaaa"), "a{3,}") # n ou mais
+```
+
+```
+#&gt; [1] NA     NA     "aaa"  "aaaa"
+```
+
+---
+# Meta-caracteres: quantificadores com [] e ()
+
+Quantificadores são muito utilizados com `[]` e `()`. Neste caso, eles vão se
+aplicar ao conteúdo completo do conjunto ou grupo.
+
+
+```r
+str_extract("Telefone: 91234-5678", "[0-9]+")
+```
+
+```
+#&gt; [1] "91234"
+```
+
+```r
+str_extract("Telefone: 91234-5678", "[0-9]{5}-[0-9]{4}")
+```
+
+```
+#&gt; [1] "91234-5678"
+```
+
+```r
+str_extract(c("oi olá oi", "olá oi olá"), "(oi |olá )+")
+```
+
+```
+#&gt; [1] "oi olá " "olá oi "
+```
+
+---
+# str_detect()
+
+Podemos usar regex na função `str_detect()` para verificar se um padrão existe.
+Isso é muito útil na hora de filtrar tabelas com colunas textuais.
+
+
+
+
+```r
+# Usando a tabela da Billboard da aula passada
+musicas |&gt;
+  filter(str_detect(track, "[Bb]aby"))
+```
+
+```
+#&gt; # A tibble: 6 × 7
+#&gt;   track                     wk1   wk2   wk3   wk4   wk5   wk6
+#&gt;   &lt;chr&gt;                   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 Baby Don't Cry (Keep...    87    82    72    77    87    94
+#&gt; 2 Come On Over Baby (A...    57    47    45    29    23    18
+#&gt; 3 My Baby You                82    76    76    70    82    81
+#&gt; 4 Crybaby                    28    34    48    62    77    90
+#&gt; 5 Baby U Are                 96    89    92    96    96    NA
+#&gt; # … with 1 more row
+```
+
+---
+# str_replace() e str_remove()
+
+A `str_replace()` aceita um regex e substitui o _match_ usando o argumento
+`replacement` (que pode conter referências retroativas). Se quisermos só remover
+o _match_, podemos usar `str_remove()`.
+
+
+```r
+str_replace(
+  string = c("/user/pasta/arq1.py", "/user/pasta/arq2.py"),
+  pattern = "pasta/(arq[0-9]).py",
+  replacement = "nova_pasta/\\1.R"
+)
+```
+
+```
+#&gt; [1] "/user/nova_pasta/arq1.R" "/user/nova_pasta/arq2.R"
+```
+
+```r
+str_remove("/user/pasta/arq1.py", "\\.py")
+```
+
+```
+#&gt; [1] "/user/pasta/arq1"
+```
+
+---
+# str\_\*\_all()
+
+Várias funções que vimos até agora só atuam no _primeiro match_ da string. Se
+quisermos atuar em todos os _matches_, precisamos das suas versões com `_all()`.
+
+
+```r
+str_extract_all("Telefone: 91234-5678", "[0-9]+")
+```
+
+```
+#&gt; [[1]]
+#&gt; [1] "91234" "5678"
+```
+
+```r
+str_replace_all("Bom dia. Boa tarde. Boa noite.", "\\.", "!")
+```
+
+```
+#&gt; [1] "Bom dia! Boa tarde! Boa noite!"
+```
+
+```r
+str_remove_all('Bom. dia, turma.', '\\.')
+```
+
+```
+#&gt; [1] "Bom dia, turma"
+```
+
+---
+# Rodada bônus!
+
+O tidyr também tem uma função para lidar com regex:
+`separate_wider_regex()`.
+
+
+```r
+tibble(dados = "Nome: Caio / Sexo: M / Idade: 27") |&gt;
+  separate_wider_regex(dados, patterns = c(
+    "Nome: ",
+    nome = "[A-Za-z]+", # Dois intervalos juntos
+    " / Sexo: ",
+    sexo = "[A-Z]+",
+    " / Idade: ",
+    idade = "[0-9]+"
+  ))
+```
+
+```
+#&gt; # A tibble: 1 × 3
+#&gt;   nome  sexo  idade
+#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+#&gt; 1 Caio  M     27
+```
+
+---
+class: middle, center, inverse
+# Miscelânea
+
+---
+# Problemas com acentos
+
+Para casar com todas as letras com acento, precisamos usar `[:alpha:]`.
+
+
+```r
+str_extract("Número: (11) 91234-1234", "[A-Za-z]+")
+```
+
+```
+#&gt; [1] "N"
+```
+
+```r
+str_extract("Número: (11) 91234-1234", "[:alpha:]+")
+```
+
+```
+#&gt; [1] "Número"
+```
+
+Se quisermos remover os acentos, precisamos da `stringi::stri_trans_general()`
+
+
+```r
+stringi::stri_trans_general("Váríös àçêntõs", "Latin-ASCII")
+```
+
+```
+#&gt; [1] "Varios acentos"
+```
+
+---
+# Problemas com formatos
+
+Este assunto foge um pouco do escopo do curso, mas é importante que vocês
+estejam cientes de que ele existe. Para que uma string seja interpretada
+corretamente, ela depende de um **locale** (e do seu **encoding**).
+
+Veja o código abaixo. A segunda linha teve um erro de leitura porque ela foi
+armazenada usando o encoding `Latin1`, o padrão do Excel brasileiro.
+
+
+
+
+```r
+arquivo |&gt;
+  read_csv() |&gt;
+  arrange(texto)
+```
+
+```
+#&gt; # A tibble: 2 × 1
+#&gt;   texto 
+#&gt;   &lt;chr&gt; 
+#&gt; 1 "Z"   
+#&gt; 2 "\xc1"
+```
+
+---
+# Encoding
+
+Para corrigir o problema anterior, basta especificar um encoding com a função
+`locale()`. A `guess_encoding()` pode te ajudar neste processo.
+
+
+```r
+arquivo |&gt;
+  read_csv(locale = locale(encoding = "Latin1")) |&gt;
+  arrange(texto)
+```
+
+```
+#&gt; # A tibble: 2 × 1
+#&gt;   texto
+#&gt;   &lt;chr&gt;
+#&gt; 1 Z    
+#&gt; 2 Á
+```
+
+Mas agora podemos ver que a `arrange()` não está ordenando as linhas
+corretamente! Isso acontece quando o seu `.locale` não bate com o idioma.
+
+---
+# Locale
+
+Para corrigir este segundo problema, precisamos especificar o idioma da tabela
+na `arrange()`. No geral, vamos sempre usar `"pt_BR"`.
+
+
+```r
+arquivo |&gt;
+  read_csv(locale = locale(encoding = "Latin1")) |&gt;
+  arrange(texto, .locale = "pt_BR")
+```
+
+```
+#&gt; # A tibble: 2 × 1
+#&gt;   texto
+#&gt;   &lt;chr&gt;
+#&gt; 1 Á    
+#&gt; 2 Z
+```
+
+Para saber mais sobre esse tópico, recomendo a seção no nosso livro sobre
+[encoding](https://livro.curso-r.com/5-2-readr.html#locale) e este post sobre
+[locale](https://blog.curso-r.com/posts/2023-03-06-ordenando-strings/).
+
+---
+class: middle, center, inverse
+# Fim
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

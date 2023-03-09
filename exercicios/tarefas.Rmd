@@ -14,11 +14,11 @@ A base "ames" possui informações de casas vendidas na cidade de Ames, nos EUA.
 
 # Aula 2 -----------------------
 
-# Aula 3 -----------------------
-
 ## stringr
 
 Ler e fazer os exercícios sobre stringr: https://livro.curso-r.com/7-4-o-pacote-stringr.html
+
+# Aula 3 -----------------------
 
 # Aula 4 -----------------------
 
