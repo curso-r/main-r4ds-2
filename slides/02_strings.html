@@ -255,7 +255,7 @@ os espaços no início e no fim, além de encurtar espaços excessivos no meio.
 
 
 ```r
-stringr::str_squish("  Nenhum   espaço   sobrando    ")
+str_squish("  Nenhum   espaço   sobrando    ")
 ```
 
 ```
@@ -267,7 +267,7 @@ desejado. O argumento `side` permite até escolher de qual lado vai o enchimento
 
 
 ```r
-stringr::str_pad("7", width = 3, side = "left", pad = "0")
+str_pad("7", width = 3, side = "left", pad = "0")
 ```
 
 ```
@@ -665,7 +665,7 @@ o _match_, podemos usar `str_remove()`.
 ```r
 str_replace(
   string = c("/user/pasta/arq1.py", "/user/pasta/arq2.py"),
-  pattern = "pasta/(arq[0-9]).py",
+  pattern = "pasta/(arq[0-9])\\.py",
   replacement = "nova_pasta/\\1.R"
 )
 ```
