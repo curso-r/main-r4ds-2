@@ -1,0 +1,651 @@
+---
+title: "R para Ciência de Dados 2"
+subtitle: "Trabalhando com datas e fatores"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: "css/xaringan-themer.css"
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment = "#>")
+options(dplyr.print_min = 5, dplyr.print_max = 5, dplyr.width = 70)
+```
+
+class: middle, center
+# Iniciar gravação!
+
+---
+class: middle, center, inverse
+# lubridate
+
+---
+# Motivação
+
+É difícil encontrar um tipo de dado mais delicado do que datas (e horas): erros
+de encoding e locale, diferentemente do que ocorre com strings, podem passar
+desapercebidos e estragar uma análise inteira.
+
+Operações com tempo são complicadas, pois envolvem precisão e diversos fatores
+que variam de um lugar para o outro (fuso horário, horário de verão, anos
+bissextos, formato da data, etc.).
+
+Além das variações normais de como cada país escreve suas datas, cada computador
+tem seu jeito de interpretá-las e cada programa tem seu jeito de salvá-las. Para
+ter uma noção do tamanho do problema, basta saber que cientistas tiveram que
+[renomear vários genes
+humanos](https://www.theverge.com/2020/8/6/21355674/human-genes-rename-microsoft-excel-misreading-dates)
+para impedir o Excel de convertê-los acidentalmente para datas!
+
+A maior parte do nosso tempo, portanto, irá para a tarefa de converter nossos
+formatos locais para um padrão universal. Mas será que isso é possível? Como
+pode existir um formato que seja capaz de resolver todos os nossos problemas?
+
+---
+# Era Unix e ISO 8601
+
+A Era Unix estabelece um momento universal e conta os segundos que se passaram
+desde então. No caso, ela começa no **ano-novo de 1970 em Londres** e essa
+referência é absoluta: não importa o seu fuso ou país, o ano-novo londrino é o
+marco zero para todos.
+
+> Já se passaram ``r as.integer(lubridate::now())`` segundos desde que Londres
+> comemorou o ano-novo de 1970.
+
+Agora só precisamos de um formato universal para representar a Era Unix de
+maneira mais amigável. Chamamos esse padrão de ISO 8601 e ele ordena os
+componentes da data do menor para o maior.
+
+> Agora estamos em `r format(lubridate::now(), "%d/%m/%y %T")` em São Paulo, mas
+> no ISO 8601 escreveríamos isso como ``r lubridate::now(tzone = "UTC")` UTC`.
+
+Para converter do formato brasileiro para o universal, vamos precisar do
+lubridate.
+
+---
+class: middle, center
+
+```{r, echo = FALSE, out.width="62%", fig.align='center'}
+knitr::include_graphics("img/03_datas_fatores/lubridate.png")
+```
+
+[Ilustração por @allison_horst](https://twitter.com/allison_horst)
+
+---
+# O pacote lubridate
+
+O pacote lubridate nos permite trabalhar com **datas** e **data-horas**. Datas
+identificam um dia, enquanto data-horas identificam um segundo.
+
+```{r, message = FALSE}
+library(tidyverse)
+today()
+now()
+```
+
+O `-03` indica que eu estou 3 horas atrás do fuso universal (chamado UTC). No
+geral não precisamos nos preocupar com o fuso, mas podemos mudá-lo com o
+argumento `tz` (mais sobre isso depois).
+
+---
+# Lendo datas de strings
+
+O ISO 8601 vai da maior unidade (ano) para a menor (segundo). Se tivermos uma
+string neste formato, basta usar `as_date()` ou `as_datetime()` para lê-la.
+
+```{r}
+as_datetime("2001-02-03 04:05:06")
+```
+
+As saídas parecem strings, mas são datas. Nós inclusive podemos extrair a Era
+Unix de dentro delas.
+
+```{r}
+as_datetime("2001-02-03 04:05:06") |> as.numeric()
+```
+
+Escrever datas no formato ISO evita que precisemos fazer conversões...
+
+---
+# Convertendo datas de strings
+
+Se uma string tiver uma data fora do formato ISO, podemos convertê-la durante a
+leitura com a família `ymd_hms()` de funções.
+
+```{r}
+dmy_hms("03/02/2001 04:05:06")
+```
+
+Para estas funções: `d` = dia, `m` = mês, `y` = ano, `h` = hora, `m` = minuto,
+`s` = segundo. Note que elas também assumem que toda data está no fuso
+universal.
+
+```{r}
+mdy_hms("02/03/2001 04:05:06") # Formato americano
+```
+
+Existem também as versões sem horas, como `dmy()` e `mdy()`.
+
+---
+# Convertendo datas complexas
+
+As funções demonstradas no slide anterior funcionam até para datas escritas por
+extenso.
+
+```{r}
+# No Windows: locale = "Portuguese_Brazil.1252"
+dmy("3 de fevereiro de 2001", locale = "pt_BR")
+# No Windows: locale = "English"
+mdy("February 3rd, 2001", locale = "en_US")
+```
+
+Existem formatos mais exóticos (como o do Excel), mas estes podem geralmente ser
+convertidos usando a função `janitor::convert_to_date()`.
+
+---
+# Componentes
+
+As funções `year()`, `month()`, `day()`... (**no singular**) podem extrair os
+componentes de uma data. Note como não é necessário converter a string para data
+antes de aplicar a função porque ela já está no formato ISO.
+
+```{r}
+day("2001-02-03")
+```
+
+As funções `years()`, `months()`, `days()`... (**no plural**) permitem fazer
+contas com datas e data-horas.
+
+```{r}
+as_date("2001-02-03") + days(5)
+```
+
+---
+# Componentes com rótulos
+
+Além dos básicos listados no último slide, também existem componentes mais
+exóticos que podem ser úteis. A `wday()`, por exemplo, retorna o dia da semana.
+
+```{r}
+day("2001-02-03")
+```
+
+Tanto ela quanto a `month()` têm o argumento `label` para exibir um rótulo ao
+invés de um número. Ademais, o `abbr` controla se será exibida a abreviação
+desta string.
+
+```{r}
+month("2001-02-03", label = TRUE, abbr = FALSE, locale = "pt_BR")
+```
+
+---
+# Arredondando componentes
+
+Usando os nomes dos componentes podemos arredondar datas. Para isso temos a
+`floor_date()` (arredondar para baixo), a `ceiling_date()` (arredondar para
+cima) e a `round_date()` (arredondar normalmente).
+
+```{r}
+data_hora <- dmy_hms("03/02/2001 04:05:06")
+floor_date(data_hora, unit = "hour")
+```
+
+Meses são mais complicados e precisamos usar `rollforward()` ou
+`rollbackward()`.
+
+```{r}
+rollforward(data_hora)
+```
+
+---
+# Operações aritméticas
+
+Com os operadores matemáticos normais também somos capazes de calcular
+distâncias entre datas.
+
+```{r}
+dif <- dmy("01/02/2003") - dmy("03/02/2001")
+dif
+```
+
+Podemos transformar um objeto de diferença temporal em qualquer unidade que
+queiramos usando as funções no plural.
+
+```{r}
+as.period(dif) / minutes(1)
+```
+
+---
+# Fusos
+
+É mais raro precisar lidar com fusos horários porque normalmente não precisamos
+desse nível de detalhe, mas o lubridate permite lidar com isso também.
+
+```{r}
+londres <- as_datetime("2001-02-03 04:05:06", tz = "Europe/London")
+sp <- as_datetime("2001-02-03 01:05:06", tz = "America/Sao_Paulo")
+londres == sp
+```
+
+São Paulo não deveria estar 3 horas atrás de Londres? Podemos verificar se é um
+problema de horário de verão com a função `dst()`.
+
+```{r}
+dst(sp)
+```
+
+---
+# Convertendo fusos
+
+Para descobrir qual era a hora em um certo fuso, podemos usar `with_tz()`.
+
+```{r}
+with_tz(londres, tz = "America/Sao_Paulo")
+```
+
+Com ela também conseguimos ver que existe uma diferença entre o fuso de Londres
+no verão e o fuso universal UTC!
+
+```{r}
+verao <- as_datetime("2021-04-15 02:00:00", tz = "Europe/London")
+with_tz(verao, tz = "UTC")
+```
+
+Para uma lista com os nomes de todos os fusos, consultar `OlsonNames()`.
+
+---
+# Formatos de saída
+
+Para exibir datas em um formato mais amigável, podemos usar a função `format()`
+do R base.
+
+```{r}
+strftime("2001-02-03", format = "%d/%m/%Y")
+strftime("2001-02-03 04:05:06", format = "%H:%M de %d/%m/%Y")
+```
+
+O `format` recebe uma string com **códigos de especificação** que serão
+substituídos pelo componente correspondente. Os mais importantes são: `%Y` =
+ano, `%m` = mês (número), `%B` = mês (nome), `%d` = dia, `%H` = hora, `%M` =
+minuto, `%S` = segundo.
+
+---
+# Rodada bônus!
+
+Como não existe o dia 31/02, o lubridate simplesmente considera a operação
+abaixo inválida e retorna `NA`! Isso geralmente acontece com `months()`, então
+temos que tomar cuidado com ela.
+
+```{r, warning = FALSE}
+dmy("31/01/2001") + months(1)
+```
+
+Para resolver isso, precisamos usar a `add_with_rollback()`. Essa função leva em
+conta o comprimentos dos meses e retorna o último dia válido de fevereiro.
+
+```{r}
+add_with_rollback(dmy("31/01/2001"), months(1))
+```
+
+---
+class: middle, center, inverse
+# forcats
+
+---
+# Motivação
+
+No R, um dos tipos de dado mais importante é o fator. Assim como datas, fatores
+parecem strings, mas eles se comportam de um jeito completamente diferente.
+
+Fator é o tipo de dado que o R usa para armazenar variáveis categóricas. A
+diferença entre uma variável categórica (fator) e uma variável textual (string)
+é que a primeira tem níveis bem definidos. Em um formulário, um campo de
+múltipla escolha vira um fator e um campo de resposta aberta vira uma string.
+
+Mas por que diferenciar as duas? Apesar de não parecer, fatores podem facilitar
+muito a vida, tanto na hora de fazer uma modelagem estatística quanto na hora de
+criar uma visualização dos dados.
+
+Eles armazenam, além dos níveis, a ordem relativa entre eles; essa combinação de
+duas informações é muito poderosa se usada corretamente. Mas como funciona isso?
+Como é possível ter mais de um tipo de dado em uma única variável?
+
+---
+# Números com nomes
+
+Voltemos brevemente ao lubridate. Quando extraímos o mês de uma data, vimos uma
+mensagem sobre os **níveis** da variável.
+
+```{r}
+mes <- month("2001-02-03", label = TRUE, locale = "pt_BR")
+mes
+```
+
+Os níveis registram todas as categorias que a variável pode assumir. Eles também
+armazenam a ordem relativa entre elas, pois internamente todas viram números.
+
+```{r}
+as.numeric(mes)
+```
+
+---
+# Propriedades dos fatores
+
+Nós podemos consultar todos os níveis de um fator mesmo que nosso vetor não
+tenha cada um deles. Essa informação é sempre carregada com ele.
+
+```{r}
+levels(mes)
+```
+
+
+O fato de sempre termos acesso a todos os níveis permite comparações que seriam
+impossíveis com qualquer outro tipo de dado.
+
+```{r}
+mes < "Abr"
+```
+
+Agora vamos aprender a trabalhar com fatores e usar seus poderes a nosso
+favor...
+
+---
+class: middle, center
+
+```{r, echo = FALSE, out.width="90%", fig.align='center'}
+knitr::include_graphics("img/03_datas_fatores/forcats.png")
+```
+
+[Ilustração por @allison_horst](https://twitter.com/allison_horst)
+
+---
+# O pacote forcats
+
+O pacote forcats nos permite trabalhar com fatores de maneira consistente. A
+função `fct()` cria um fator a partir de um vetor de strings.
+
+```{r}
+fct(c("P", "M", "G"))
+```
+
+Ela permite especificar níveis que inclusive não aparecem no vetor inicial.
+
+```{r}
+fct(c("P", "M", "G"), levels = c("PP", "P", "M", "G", "GG"))
+```
+
+---
+# Garantias do forcats
+
+A função `fct()`, além de criar fatores como no slide anterior, nos garante duas
+propriedades: **ordenação** por primeira aparição e **concatenação**
+consistente.
+
+```{r}
+# Se não especificarmos os níveis, a ordem deles é a de aparição
+fct(c("C", "B", "A"))
+```
+
+```{r, error = TRUE}
+# Podemos juntar dois fatores e ficamos com a união dos níveis
+fct_c(fct(c("A", "B", "C")), fct(c("D", "E")))
+```
+
+---
+# Qualidade das casas
+
+```{r, echo = FALSE}
+casas <- dados::casas |>
+  rename(
+    q = geral_qualidade,
+    v = vizinhanca
+  ) |>
+  filter(!q %in% c("muito ruim", "Muito excelente", "regular", "muito boa"))
+
+meu_plot <- function(dados, var) {
+  dados |>
+    ggplot(aes(n, {{var}})) +
+    geom_col() +
+    theme_minimal() +
+    theme(text = element_text(size = 16))
+}
+```
+
+.pull-left[
+
+Vamos aprender sobre as Principais funções do forcats na prática. O primeiro
+exemplo é um gráfico comparando o número de casas em cada padrão de qualidade
+`q`.
+
+```{r, q, eval = FALSE}
+casas |>
+  count(q) |> # dplyr
+  meu_plot(q)
+```
+
+Sem fatores, o gráfico fica sem foco e não conseguimos comparar nada com
+facilidade. As barras são ordenadas alfabeticamente de baixo para cima.
+
+]
+
+.pull-right[
+```{r, q, echo = FALSE}
+```
+]
+
+---
+# fct()
+
+.pull-left[
+O primeiro passo é definir a ordem dos níveis com `fct()`.
+
+```{r, q_fct, eval = FALSE}
+niveis <- c(
+  "ruim", "abaixo da média",
+  "média", "acima da média",
+  "boa", "excelente"
+)
+
+casas |>
+  count(q) |>
+  mutate(q = fct(q, niveis)) |> #<<
+  meu_plot(q)
+```
+
+E se eu quiser inverter as barras...
+
+]
+
+.pull-right[
+```{r, q_fct, echo = FALSE}
+```
+]
+
+---
+# fct_rev()
+
+.pull-left[
+
+Podemos inverter a ordem dos níveis depois de criar o fator com `fct_rev()`.
+
+```{r, q_fct_rev, eval = FALSE}
+casas |>
+  count(q) |>
+  mutate(
+    q = q |>
+      fct(niveis) |>
+      fct_rev() #<<
+  ) |>
+  meu_plot(q)
+```
+
+Note como as funções do forcats são "pipeáveis" porque o primeiro argumento
+delas é sempre o fator.
+
+]
+
+.pull-right[
+```{r, q_fct_rev, echo = FALSE}
+```
+]
+
+---
+# Vizinhanças das casas
+
+.pull-left[
+
+Vamos pensar agora em uma variável categórica que não tenha uma ordenação
+intrínseca. O segundo exemplo é um gráfico comparando o número de casas em cada
+vizinhança `v`.
+
+```{r, v, eval = FALSE}
+casas |>
+  count(v) |>
+  meu_plot(v)
+```
+
+A primeira coisa que chama a atenção é o número de vizinhanças. Precisamos
+agrupar as vizinhanças menores em um único nível para abrir espaço para o resto.
+
+]
+
+.pull-right[
+```{r, v, echo = FALSE}
+```
+]
+
+---
+# fct\_lump\_*()
+
+.pull-left[
+
+A `fct_lump()` mantém os maiores níveis (15 neste caso), agrupa os outros em
+`other` e cria o fator! Ela também tem irmãs com comportamentos parecidos.
+
+```{r, v_fct_lump, eval = FALSE}
+casas |>
+  mutate(v = fct_lump(v, 15)) |> #<<
+  count(v) |>
+  meu_plot(v)
+```
+
+Agora vamos resolver a ordem das barras. Queremos ordená-las pelo número de
+casas em cada grupo, ou seja, pela coluna `n` criada na `count()`.
+
+]
+
+.pull-right[
+```{r, v_fct_lump, echo = FALSE}
+```
+]
+
+---
+# fct_reorder()
+
+.pull-left[
+
+A `fct_reorder()` recebe um outro vetor ou coluna e reordena os níveis de acordo
+com os seus valores.
+
+```{r, v_fct_reorder, eval = FALSE}
+casas |>
+  mutate(v = fct_lump(v, 15)) |>
+  count(v) |>
+  mutate(
+    v = v |>
+      fct_reorder(n) #<<
+  ) |>
+  meu_plot(v)
+```
+
+Mas agora a `other` precisa de destaque.
+
+]
+
+.pull-right[
+```{r, v_fct_reorder, echo = FALSE}
+```
+]
+
+---
+# fct_relevel()
+
+.pull-left[
+
+A `fct_relevel()` traz um ou mais níveis para o começo da ordem.
+
+```{r, v_fct_relevel, eval = FALSE}
+casas |>
+  mutate(v = fct_lump(v, 15)) |>
+  count(v) |>
+  mutate(
+    v = v |>
+      fct_reorder(n) |>
+      fct_relevel("Other") #<<
+  ) |>
+  meu_plot(v)
+```
+
+Agora só falta arrumar o `South &...`, que atrapalha o tamanho das barras.
+
+]
+
+.pull-right[
+```{r, v_fct_relevel, echo = FALSE}
+```
+]
+
+---
+# fct_recode()
+
+.pull-left[
+
+A `fct_recode()` recebe expressões na forma `"nome novo" = "nome antigo"` e
+renomeia os fatores.
+
+```{r, v_fct_recode, eval = FALSE}
+casas |>
+  mutate(v = fct_lump(v, 15)) |>
+  count(v) |>
+  mutate(
+    v = v |>
+      fct_reorder(n) |>
+      fct_relevel("Other") |>
+      fct_recode("Uni" = "South & West of Iowa State University") #<<
+  ) |>
+  meu_plot(v)
+```
+
+]
+
+.pull-right[
+```{r, v_fct_recode, echo = FALSE}
+```
+]
+
+---
+# Rodada bônus!
+
+Fatores ordenados (criados com `ordered()`) têm uma ordem rígida e os seus
+níveis são equidistantes um do outro: o primeiro nível é "menos que" o segundo
+pela mesma quantia que o segundo nível é "menos que" o terceiro e assim por
+diante.
+
+```{r}
+ordered(c("A", "B", "C"))
+```
+
+Na prática, não há quase nenhuma diferença entre os fatores ordenados e os não
+ordenados. Exceto pela paleta de cor padrão que o ggplot2
+[escolhe](https://r4ds.hadley.nz/factors.html#sec-ordered-factors), os dois se
+comportam da mesma forma.
+
+---
+class: middle, center, inverse
+# Fim

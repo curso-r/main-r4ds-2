@@ -20,13 +20,16 @@ Ler e fazer os exercícios sobre stringr: https://livro.curso-r.com/7-4-o-pacote
 
 # Aula 3 -----------------------
 
-# Aula 4 -----------------------
-
 ## lubridate
+
 Ler e fazer os exercícios sobre lubridate: https://livro.curso-r.com/7-5-o-pacote-lubridate.html
 
 ## forcats
+
 Ler e fazer os exercícios sobre forcats: https://livro.curso-r.com/7-6-forcats.html
+
+# Aula 4 -----------------------
+
 
 # Aula 5 -----------------------
 
