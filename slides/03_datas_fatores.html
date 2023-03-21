@@ -63,15 +63,15 @@ desde então. No caso, ela começa no **ano-novo de 1970 em Londres** e essa
 referência é absoluta: não importa o seu fuso ou país, o ano-novo londrino é o
 marco zero para todos.
 
-&gt; Já se passaram `1679090192` segundos desde que Londres
+&gt; Já se passaram `1679409947` segundos desde que Londres
 &gt; comemorou o ano-novo de 1970.
 
 Agora só precisamos de um formato universal para representar a Era Unix de
 maneira mais amigável. Chamamos esse padrão de ISO 8601 e ele ordena os
-componentes da data do menor para o maior.
+componentes da data do maior para a menor.
 
-&gt; Agora estamos em 17/03/23 18:56:32 em São Paulo, mas
-&gt; no ISO 8601 escreveríamos isso como `2023-03-17 21:56:32 UTC`.
+&gt; Agora estamos em 21/03/23 11:45:47 em São Paulo, mas
+&gt; no ISO 8601 escreveríamos isso como `2023-03-21 14:45:47 UTC`.
 
 Para converter do formato brasileiro para o universal, vamos precisar do
 lubridate.
@@ -96,7 +96,7 @@ today()
 ```
 
 ```
-#&gt; [1] "2023-03-17"
+#&gt; [1] "2023-03-21"
 ```
 
 ```r
@@ -104,7 +104,7 @@ now()
 ```
 
 ```
-#&gt; [1] "2023-03-17 18:56:32 -03"
+#&gt; [1] "2023-03-21 11:45:48 -03"
 ```
 
 O `-03` indica que eu estou 3 horas atrás do fuso universal (chamado UTC). No
@@ -178,7 +178,7 @@ extenso.
 
 
 ```r
-# No Windows: locale = "Portuguese_Brazil.1252"
+# No Windows antigo: locale = "Portuguese_Brazil.1252"
 dmy("3 de fevereiro de 2001", locale = "pt_BR")
 ```
 
@@ -187,7 +187,7 @@ dmy("3 de fevereiro de 2001", locale = "pt_BR")
 ```
 
 ```r
-# No Windows: locale = "English"
+# No Windows antigo: locale = "English"
 mdy("February 3rd, 2001", locale = "en_US")
 ```
 
@@ -197,6 +197,37 @@ mdy("February 3rd, 2001", locale = "en_US")
 
 Existem formatos mais exóticos (como o do Excel), mas estes podem geralmente ser
 convertidos usando a função `janitor::convert_to_date()`.
+
+---
+# Pegadinhas em conversões
+
+Por causa das inconsistências em como lidamos com datas, algumas conversões são
+ambíguas. Anos sem século, por exemplo, podem ficar em 2000 ou em 1900:
+
+
+```r
+dmy("03/02/68") # De 00 a 68 -&gt; 2000
+```
+
+```
+#&gt; [1] "2068-02-03"
+```
+
+```r
+dmy("03/02/69") # De 69 a 99 -&gt; 1900
+```
+
+```
+#&gt; [1] "1969-02-03"
+```
+
+```r
+dmy("03/02/0068") # Anos do século I
+```
+
+```
+#&gt; [1] "0068-02-03"
+```
 
 ---
 # Componentes
@@ -234,11 +265,11 @@ exóticos que podem ser úteis. A `wday()`, por exemplo, retorna o dia da semana
 
 
 ```r
-day("2001-02-03")
+wday("2001-02-03")
 ```
 
 ```
-#&gt; [1] 3
+#&gt; [1] 7
 ```
 
 Tanto ela quanto a `month()` têm o argumento `label` para exibir um rótulo ao
@@ -373,7 +404,7 @@ Para uma lista com os nomes de todos os fusos, consultar `OlsonNames()`.
 ---
 # Formatos de saída
 
-Para exibir datas em um formato mais amigável, podemos usar a função `format()`
+Para exibir datas em um formato mais amigável, podemos usar a função `strftime()`
 do R base.
 
 
@@ -565,7 +596,7 @@ fct(c("C", "B", "A"))
 
 ```r
 # Podemos juntar dois fatores e ficamos com a união dos níveis
-fct_c(fct(c("A", "B", "C")), fct(c("D", "E")))
+c(fct(c("A", "B", "C")), fct(c("D", "E")))
 ```
 
 ```
@@ -574,13 +605,36 @@ fct_c(fct(c("A", "B", "C")), fct(c("D", "E")))
 ```
 
 ---
+# Preparo para o resto da aula
+
+
+```r
+install.packages("dados") # Instalar o pacote antes!
+```
+
+
+```r
+casas &lt;- dados::casas |&gt;
+  rename(q = geral_qualidade, v = vizinhanca) |&gt;
+  filter(!q %in% c(
+    "muito ruim", "Muito excelente", "regular", "muito boa"
+  ))
+
+meu_plot &lt;- function(dados, var) {
+  dados |&gt;
+    ggplot(aes(n, {{var}})) +
+    geom_col() +
+    theme_minimal() +
+    theme(text = element_text(size = 16))
+}
+```
+
+---
 # Qualidade das casas
-
-
 
 .pull-left[
 
-Vamos aprender sobre as Principais funções do forcats na prática. O primeiro
+Vamos aprender sobre as principais funções do forcats na prática. O primeiro
 exemplo é um gráfico comparando o número de casas em cada padrão de qualidade
 `q`.
 

@@ -60,7 +60,7 @@ marco zero para todos.
 
 Agora só precisamos de um formato universal para representar a Era Unix de
 maneira mais amigável. Chamamos esse padrão de ISO 8601 e ele ordena os
-componentes da data do menor para o maior.
+componentes da data do maior para a menor.
 
 > Agora estamos em `r format(lubridate::now(), "%d/%m/%y %T")` em São Paulo, mas
 > no ISO 8601 escreveríamos isso como ``r lubridate::now(tzone = "UTC")` UTC`.
@@ -139,14 +139,26 @@ As funções demonstradas no slide anterior funcionam até para datas escritas p
 extenso.
 
 ```{r}
-# No Windows: locale = "Portuguese_Brazil.1252"
+# No Windows antigo: locale = "Portuguese_Brazil.1252"
 dmy("3 de fevereiro de 2001", locale = "pt_BR")
-# No Windows: locale = "English"
+# No Windows antigo: locale = "English"
 mdy("February 3rd, 2001", locale = "en_US")
 ```
 
 Existem formatos mais exóticos (como o do Excel), mas estes podem geralmente ser
 convertidos usando a função `janitor::convert_to_date()`.
+
+---
+# Pegadinhas em conversões
+
+Por causa das inconsistências em como lidamos com datas, algumas conversões são
+ambíguas. Anos sem século, por exemplo, podem ficar em 2000 ou em 1900:
+
+```{r}
+dmy("03/02/68") # De 00 a 68 -> 2000
+dmy("03/02/69") # De 69 a 99 -> 1900
+dmy("03/02/0068") # Anos do século I
+```
 
 ---
 # Componentes
@@ -173,7 +185,7 @@ Além dos básicos listados no último slide, também existem componentes mais
 exóticos que podem ser úteis. A `wday()`, por exemplo, retorna o dia da semana.
 
 ```{r}
-day("2001-02-03")
+wday("2001-02-03")
 ```
 
 Tanto ela quanto a `month()` têm o argumento `label` para exibir um rótulo ao
@@ -262,7 +274,7 @@ Para uma lista com os nomes de todos os fusos, consultar `OlsonNames()`.
 ---
 # Formatos de saída
 
-Para exibir datas em um formato mais amigável, podemos usar a função `format()`
+Para exibir datas em um formato mais amigável, podemos usar a função `strftime()`
 do R base.
 
 ```{r}
@@ -394,19 +406,22 @@ fct(c("C", "B", "A"))
 
 ```{r, error = TRUE}
 # Podemos juntar dois fatores e ficamos com a união dos níveis
-fct_c(fct(c("A", "B", "C")), fct(c("D", "E")))
+c(fct(c("A", "B", "C")), fct(c("D", "E")))
 ```
 
 ---
-# Qualidade das casas
+# Preparo para o resto da aula
 
-```{r, echo = FALSE}
+```{r, eval = FALSE}
+install.packages("dados") # Instalar o pacote antes!
+```
+
+```{r}
 casas <- dados::casas |>
-  rename(
-    q = geral_qualidade,
-    v = vizinhanca
-  ) |>
-  filter(!q %in% c("muito ruim", "Muito excelente", "regular", "muito boa"))
+  rename(q = geral_qualidade, v = vizinhanca) |>
+  filter(!q %in% c(
+    "muito ruim", "Muito excelente", "regular", "muito boa"
+  ))
 
 meu_plot <- function(dados, var) {
   dados |>
@@ -417,9 +432,12 @@ meu_plot <- function(dados, var) {
 }
 ```
 
+---
+# Qualidade das casas
+
 .pull-left[
 
-Vamos aprender sobre as Principais funções do forcats na prática. O primeiro
+Vamos aprender sobre as principais funções do forcats na prática. O primeiro
 exemplo é um gráfico comparando o número de casas em cada padrão de qualidade
 `q`.
 
