@@ -30,6 +30,13 @@ Ler e fazer os exercícios sobre forcats: https://livro.curso-r.com/7-6-forcats.
 
 # Aula 4 -----------------------
 
+## Controle de fluxo
+
+Ler e fazer os exercícios sobre controle de fluxo: https://livro.curso-r.com/3-12-controle-de-fluxo.html
+
+## Funções
+
+Ler e fazer os exercícios sobre funções: https://livro.curso-r.com/3-3-objetosFuncoes.html
 
 # Aula 5 -----------------------
 

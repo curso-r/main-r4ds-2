@@ -15,6 +15,8 @@ Aula, Tema,      Descrição,                                  Link
 3,    lubridate, Códigos de especificação,                   https://rdrr.io/r/base/strptime.html
 3,    forcats,   Colinha do forcats,                         https://raw.githubusercontent.com/rstudio/cheatsheets/main/factors.pdf
 3,    forcats,   Livro da Curso-R: capítulo sobre forcats,   https://livro.curso-r.com/7-6-forcats.html
+4,    controle,  Livro da Curso-R: capítulo sobre controle,  https://livro.curso-r.com/3-12-controle-de-fluxo.html
+4,    funções,   Livro da Curso-R: capítulo sobre funções,   https://livro.curso-r.com/3-3-objetosFuncoes.html
 5, purrr, A Magia de purrr, https://lente.dev/posts/magica-purrr/
 5, purrr, Webinar de purrr avançado, https://www.youtube.com/watch?v=vb1lD9_AFcU
 5, purrr, Exemplos com purrr, https://lente.dev/advanced-purrr.pdf
