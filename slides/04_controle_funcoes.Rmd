@@ -14,6 +14,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(dplyr)
 knitr::opts_chunk$set(comment = "#>")
 options(dplyr.print_min = 5, dplyr.print_max = 5, dplyr.width = 70)
 ```
@@ -443,10 +444,6 @@ for (x in 1:5) {
 O dplyr tem funções que nos permitem colocar controle de fluxo dentro de um
 `mutate()`. A `if_else()` emula um `if` e um `else`, enquanto a `case_when()`
 emula um `if` e vários `else if`s. Ambas iteram nas entradas como um `for`.
-
-```{r, echo = FALSE}
-library(dplyr)
-```
 
 ```{r}
 x <- c(-1, 1, 2, 4, 6)
