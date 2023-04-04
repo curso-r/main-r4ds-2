@@ -547,8 +547,8 @@ separados por vírgula e podem ou não ter **valores padrões**.
 soma4 <- function(arg1, arg2, arg3, arg4 = 4) {
   arg1 + arg2 + arg3 + arg4
 }
-tres <- 1 + 1 + 1
-soma4(1, 1 + 1, tres)
+tres <- 3
+soma4(1, 4 / 2, tres)
 ```
 
 Um argumento pode receber um valor, um resultado ou um objeto. Um argumento com
