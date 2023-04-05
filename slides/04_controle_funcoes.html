@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.20/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -634,6 +634,8 @@ O dplyr tem funções que nos permitem colocar controle de fluxo dentro de um
 emula um `if` e vários `else if`s. Ambas iteram nas entradas como um `for`.
 
 
+
+
 ```r
 x &lt;- c(-1, 1, 2, 4, 6)
 if_else(x &gt; 0, "positivo", "negativo")
@@ -817,7 +819,7 @@ soma3(arg3 = 3, arg2 = 2, arg1 = 1) # Fora de ordem (incomum)
 
 A primeira grande novidade sobre funções são os **dots** (formalmente chamados
 de "ellipsis"). O usuário pode passar um número qualquer de argumentos e todos
-serão capturados juntos em uma lista.
+serão capturados juntos em uma lista (mais sobre elas na próxima aula).
 
 
 ```r

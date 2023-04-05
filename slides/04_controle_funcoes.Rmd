@@ -445,6 +445,10 @@ O dplyr tem funções que nos permitem colocar controle de fluxo dentro de um
 `mutate()`. A `if_else()` emula um `if` e um `else`, enquanto a `case_when()`
 emula um `if` e vários `else if`s. Ambas iteram nas entradas como um `for`.
 
+```{r, include = FALSE}
+library(dplyr)
+```
+
 ```{r}
 x <- c(-1, 1, 2, 4, 6)
 if_else(x > 0, "positivo", "negativo")
@@ -575,7 +579,7 @@ soma3(arg3 = 3, arg2 = 2, arg1 = 1) # Fora de ordem (incomum)
 
 A primeira grande novidade sobre funções são os **dots** (formalmente chamados
 de "ellipsis"). O usuário pode passar um número qualquer de argumentos e todos
-serão capturados juntos em uma lista.
+serão capturados juntos em uma lista (mais sobre elas na próxima aula).
 
 ```{r}
 lista_dots <- function(...) {
