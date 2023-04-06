@@ -41,7 +41,8 @@ Ler e fazer os exercícios sobre funções: https://livro.curso-r.com/3-3-objeto
 # Aula 5 -----------------------
 
 ## purrr
-...
+
+Ler e fazer os exercícios sobre purrr: https://livro.curso-r.com/10-5-exerc%C3%ADcios-23.html
 
 # Aula 6 -----------------------
 
