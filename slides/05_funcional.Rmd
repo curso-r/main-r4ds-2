@@ -154,8 +154,8 @@ l <- list(
 Vamos pensar em listas como ruas. Quando usarmos `[i]` obteremos um trecho da
 rua e quando usarmos `[[i]]` obteremos a família da casa correspondente.
 
-Nesta metáfora, uma sub-lista é um condomínio fechado e um vetor é uma casa com
-vários moradores.
+Seguindo a lógica da metáfora, um vetor é uma casa com vários moradores e uma
+sub-lista é uma vila.
 
 ```{r, echo = FALSE}
 knitr::include_graphics("img/05_funcional/l.png")
@@ -187,7 +187,7 @@ knitr::include_graphics("img/05_funcional/l[-1].png")
 ```
 
 ---
-# Indexação: família 1
+# Indexação: família da casa 1
 
 ```{r, eval = FALSE}
 l[[1]]
@@ -200,7 +200,7 @@ knitr::include_graphics("img/05_funcional/l[[1]].png")
 ```
 
 ---
-# Indexação: família 2
+# Indexação: família da casa 2
 
 ```{r, eval = FALSE}
 l[[2]]
@@ -213,7 +213,7 @@ knitr::include_graphics("img/05_funcional/l[[2]].png")
 ```
 
 ---
-# Indexação: condomínio fechado
+# Indexação: vila
 
 ```{r, eval = FALSE}
 l[[3]]
@@ -226,7 +226,7 @@ knitr::include_graphics("img/05_funcional/l[[3]].png")
 ```
 
 ---
-# Indexação: casa 1 do condomínio fechado
+# Indexação: casa 1 da vila
 
 ```{r, eval = FALSE}
 l[[3]][1]
@@ -239,7 +239,7 @@ knitr::include_graphics("img/05_funcional/l[[3]][1].png")
 ```
 
 ---
-# Indexação: família 1 do condomínio fechado
+# Indexação: família da casa 1 da vila
 
 ```{r, eval = FALSE}
 l[[3]][[1]]
@@ -467,9 +467,9 @@ outra função como argumento!
 
 ```{r}
 map2_vec(
-  list(c(1, 1, 2, 3, 3, 3), c("a", "b", "c", "c")),
-  list(3, "c"),
-  \(l, v) str_c("São ", sum(l == v), "/", length(l), " '", v, "'s")
+  list(1:2, 1:3, 1:4),
+  c(3, 2, 6),
+  \(vec, lim) length(vec) > lim
 )
 ```
 
