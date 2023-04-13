@@ -20,11 +20,8 @@ Aula, Tema,      Descrição,                                  Link
 5,    purrr,     Webinar de purrr avançado,                  https://www.youtube.com/watch?v=vb1lD9_AFcU
 5,    purrr,     Colinha do purrr,                           https://raw.githubusercontent.com/rstudio/cheatsheets/main/purrr.pdf
 5,    purrr,     Livro da Curso-R: capítulo sobre purrr,     https://livro.curso-r.com/10-funcionais.html
-6, rlang, Anúncio do rlang 0.4, https://www.tidyverse.org/blog/2019/06/rlang-0-4-0/
-6, rlang, Interpolação no rlang, https://www.tidyverse.org/blog/2020/02/glue-strings-and-tidy-eval/
-6, Manual, Programando com o dplyr, https://dplyr.tidyverse.org/articles/programming.html
-6, Aprofundamento, Metaprogramação, https://adv-r.hadley.nz/metaprogramming.html
-6, rlang, rlang para Filhotes, https://blog.curso-r.com/posts/2021-07-27-rlang-para-filhotes
-6, Trabalho final, Post no blog: dicas para criar tabelas, https://blog.curso-r.com/posts/2020-12-03-dicas-relatorios-r4ds1_tabelas/
-6, Trabalho final, Post no blog: dicas de relatórios, https://blog.curso-r.com/posts/2021-03-15-dicas-relatorios-r4ds1_relatorios/
-6, rmarkdown, Colinha de rmarkdown, https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet
+6,    rlang,     Livro da Curso-R: capítulo sobre rlang,     https://livro.curso-r.com/11-1-nse.html
+6,    rlang,     Interpolação no rlang,                      https://www.tidyverse.org/blog/2020/02/glue-strings-and-tidy-eval/
+6,    TCC,       Dicas para criar tabelas,                   https://blog.curso-r.com/posts/2020-12-03-dicas-relatorios-r4ds1_tabelas/
+6,    TCC,       Dicas de relatórios,                        https://blog.curso-r.com/posts/2021-03-15-dicas-relatorios-r4ds1_relatorios/
+6,    TCC,       Colinha do rmarkdown,                       https://raw.githubusercontent.com/rstudio/cheatsheets/main/rmarkdown.pdf

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R para Ciência de Dados 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs-2.20/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# R para Ciência de Dados 2
+]
+.subtitle[
+## Metaprogramação
+]
+.author[
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+]
+
+---
+
+
+
+
+class: middle, center
+# Iniciar gravação!
+
+---
+class: middle, center, inverse
+# rlang
+
+---
+# Motivação
+
+Todos os pacotes que abordamos neste curso são do tidyverse, então faz sentido
+querermos realizar nossas análises usando seus princípios. Funções cujo primeiro
+argumento é um data frame e operações pipeáveis são apenas o começo.
+
+Uma das características mais marcantes do tidyverse é a possibilidade de
+trabalhar com colunas como se elas fossem objetos comuns, criados fora da
+função. Basta pensar na `mutate()`: como ela sabe que `mpg` é uma coluna da
+tabela e não um objeto externo com o mesmo nome?
+
+Existe uma ferramenta especial que nos permite fazer esse tipo de mágica: a
+metaprogramação. Usamos essa funcionalidade desde a primeira vez que escrevemos
+o comando `library()`, mas o seu funcionamento ainda é um mistério para a
+maioria.
+
+O pacote rlang é quem permite que meros mortais escrevam funções que usam
+metaprogramação (como as do tidyverse), mas antes precisamos entender o básico
+de como esse novo mundo funciona...
+
+---
+# Metaprogramação
+
+**Metaprogramação** é a ideia de que o código pode ser inspecionado e modificado
+programaticamente. No R, _non-standard evaluation_ é a propriedade dos
+argumentos que nos permite usar metaprogramação.
+
+
+```r
+tidyverse
+```
+
+```
+#&gt; Error in eval(expr, envir, enclos): object 'tidyverse' not found
+```
+
+Se tentarmos executar `tidyverse` direto, recebemos um erro porque este objeto
+não existe. Em contrapartida, dentro da `library()`, o R consegue ler o código
+que nós escrevemos e agir em cima dessa informação antes de gerar um erro.
+
+
+```r
+library(tidyverse) # Já carrega o rlang
+```
+
+Ou seja, o R deixa de apenas executar os nossos comandos e passa a ter a
+capacidade de interpretar e trabalhar com eles.
+
+---
+# A metáfora da bomba
+
+Para entender melhor o que aconteceu no slide passado, vamos pensar em uma
+bomba: `stop("BOOM")`. Se o R (em qualquer momento) executar essa expressão, ele
+retornará um erro.
+
+
+```r
+stop("BOOM") # Equivalente a executar `tidyverse` diretamente
+```
+
+```
+#&gt; Error in eval(expr, envir, enclos): BOOM
+```
+
+Abaixo temos duas funções para as quais vamos passar a nossa bomba. A primeira,
+chamada `ignorar()`, não faz nada com o argumento `bomba` e simplesmente retorna
+`NULL`. Já a segunda, chamada `executar()`, retorna a `bomba` diretamente.
+
+
+```r
+ignorar &lt;- function(bomba) NULL
+executar &lt;- function(bomba) bomba
+```
+
+O que vai acontecer quando passarmos a bomba para cada uma das funções?
+
+---
+# A metáfora da bomba: resposta
+
+A avaliação padrão do R é **preguiçosa**, ou seja, os argumentos de uma função
+só são avaliados se alguma coisa encosta neles. Sendo assim, a bomba só
+"explode" na função que efetivamente faz alguma coisa com ela.
+
+
+```r
+ignorar(stop("BOOM"))
+```
+
+```
+#&gt; NULL
+```
+
+
+```r
+executar(stop("BOOM"))
+```
+
+```
+#&gt; Error in executar(stop("BOOM")): BOOM
+```
+
+Para replicar o comportamento da `library()` e das funções do tidyverse, vamos
+precisar de um jeito de (seletivamente) ignorar a avaliação de certos argumentos
+mesmo que eles sejam usados dentro da função...
+
+---
+# O pacote rlang
+
+Se quisermos usar metaprogramação em nossas funções como o tidyverse, vamos
+empregar o pacote rlang. Ele implementa uma versão da metaprogramação chamada
+_tidy evaluation_ ou **tidy eval**.
+
+
+```r
+expr(stop("BOOM")) # Bomba desarmada
+```
+
+```
+#&gt; stop("BOOM")
+```
+
+Essa implementação é mais simples do que a metaprogramação padrão do R. A tidy
+eval resolve vários problemas complicados por trás dos panos para que fiquemos
+só com a parte legal.
+
+Vamos aprender como o pacote funciona através de um exemplo. Usando a função
+`summarise()`, vamos criar uma função `summarise_mean()` que tira a média de uma
+coluna fornecida pelo(a) usuário(a). Para critérios ilustrativos, vamos usar a
+tabela `mtcars` que está disponível no R.
+
+---
+# Desarmando argumentos
+
+Por que o código abaixo não funciona? O problema é que a nossa função
+`summarise_mean()` não está "desarmando" o `col`: o dplyr sabe o que fazer com
+`cyl`, mas o R está tentando executá-la antes de que ela chegue na
+`summarise()`. Precisamos de uma maneira de fazer o R ignorar `col` até que ele
+chegue no seu destino.
+
+
+```r
+summarise_mean &lt;- function(df, col) {
+  summarise(df, media = mean(col))
+}
+mtcars |&gt;
+  summarise_mean(cyl)
+```
+
+```
+#&gt; Error in `summarise()`:
+#&gt; ℹ In argument: `media = mean(col)`.
+#&gt; Caused by error in `mean()`:
+#&gt; ! object 'cyl' not found
+```
+
+---
+# Embracing
+
+O operador de **embracing** (também chamado de curly-curly ou chave-chave) faz o
+trabalho de "proteger" um argumento da avaliação padrão do R. Para usá-lo basta
+envolver o argumento em `{{ }}`.
+
+
+```r
+summarise_mean &lt;- function(df, col) {
+  summarise(df, media = mean({{ col }}))
+}
+mtcars |&gt;
+  summarise_mean(cyl)
+```
+
+```
+#&gt;    media
+#&gt; 1 6.1875
+```
+
+É importante notar que o chave-chave é parte do tidy eval e, portanto, só
+funciona dentro do tidyverse. Usar metaprogramação fora do tidyverse é um
+pesadelo e foge do tema desta aula.
+
+---
+# Injetando nomes
+
+Por que o código abaixo não funciona? Aqui nosso objetivo é manter o nome da
+coluna depois da `summarise()`, mas obtemos um erro mesmo usando o chave-chave
+como indicado no slide anterior. O problema é que o operador de igual espera um
+objeto do lado esquerdo e não uma expressão envolta por chaves.
+
+
+```r
+summarise_mean &lt;- function(df, col) {
+  summarise(df, {{ col }} = mean({{ col }}))
+}
+mtcars |&gt;
+  summarise_mean(cyl)
+```
+
+```
+#&gt; Error: &lt;text&gt;:2:27: unexpected '='
+#&gt; 1: summarise_mean &lt;- function(df, col) {
+#&gt; 2:   summarise(df, {{ col }} =
+#&gt;                              ^
+```
+
+---
+# Walrus
+
+O operador de **walrus** (também chamado de morsa) faz o trabalho de permitir
+chave-chaves do lado esquerdo de uma expressão com tidy eval. Para usá-lo basta
+substituir o igual por `:=` quando precisarmos injetar alguma coisa que vai
+virar o nome de uma coluna.
+
+
+```r
+summarise_mean &lt;- function(df, col) {
+  summarise(df, {{ col }} := mean({{ col }}))
+}
+mtcars |&gt;
+  summarise_mean(cyl)
+```
+
+```
+#&gt;      cyl
+#&gt; 1 6.1875
+```
+
+Obs.: O time que desenvolve o rlang quer acabar com o operador morsa porque ele
+é um pouco confuso. Para saber mais, veja o progresso
+[aqui](https://github.com/r-lib/rlang/issues/1296).
+
+---
+# Indireção
+
+Por que o código abaixo não funciona? Às vezes queremos poder passar strings com
+o nome de colunas para certas funções, mas o tidyverse não lida bem com elas.
+Essa é uma tarefa comum no shiny, onde as seleções sempre retornam como strings.
+
+Apesar de a string injetada funcionar perfeitamente no lado esquerdo da
+expressão (cortesia do operador morsa), o lado direito fica errado porque
+estamos na verdade tirando a média da string `"cyl"`.
+
+
+```r
+summarise_mean &lt;- function(df, col) {
+  summarise(df, {{ col }} := mean({{ col }}))
+}
+mtcars |&gt;
+  summarise_mean("cyl")
+```
+
+```
+#&gt;   cyl
+#&gt; 1  NA
+```
+
+---
+# .data
+
+O pronome `.data` é uma funcionalidade do tidy eval que nos permite acessar,
+dentro das funções do tidyverse, a tabela que foi passada de argumento. Sendo
+assim, podemos usar `[[]]` normalmente para pegar uma coluna da tabela usando
+seu nome.
+
+
+```r
+summarise_mean &lt;- function(df, col) {
+  summarise(df, {{ col }} := mean(.data[[col]]))
+}
+mtcars |&gt;
+  summarise_mean("cyl")
+```
+
+```
+#&gt;      cyl
+#&gt; 1 6.1875
+```
+
+Na prática, o `.data[[col]]` é traduzido internamente para `df[["cyl"]]`. Como
+este comando não tem nada para desarmar, tudo volta a funcionar.
+
+---
+# Desarmando expressões
+
+Por que o código abaixo não funciona? Às vezes queremos permitir que o(a)
+usuário(a) especifique expressões completas que precisamos desarmar, mas o
+chave-chave não funciona para isso. Também não temos uma maneira de passar um
+número arbitrário de expressões.
+
+
+```r
+summarise_expr &lt;- function(df, expr1, expr2) {
+  summarise(df, {{ expr1 }}, {{ expr2 }})
+}
+mtcars |&gt;
+  summarise_expr(
+    cyl = mean(cyl),
+    gear = mean(gear)
+  )
+```
+
+```
+#&gt; Error in summarise_expr(mtcars, cyl = mean(cyl), gear = mean(gear)): unused arguments (cyl = mean(cyl), gear = mean(gear))
+```
+
+---
+# Dots
+
+Os **dots** (também chamado de ellipsis ou elipse), que vimos na aula de
+funções, resolve nosso problema aqui perfeitamente. Funções que aceitam dots
+como argumento não dependem de nenhum tipo de desarme.
+
+
+```r
+summarise_expr &lt;- function(df, ...) {
+  summarise(df, ...)
+}
+mtcars |&gt;
+  summarise_expr(
+    cyl = mean(cyl),
+    gear = mean(gear)
+  )
+```
+
+```
+#&gt;      cyl   gear
+#&gt; 1 6.1875 3.6875
+```
+
+---
+# Rodada bônus!
+
+O tema de metaprogramação é longo e complexo. Aqui vimos somente os operadores
+principais, que nos permitem criar funções com os verbos do tidyverse.
+
+| Situação                | Sintaxe             |
+| :---------------------- | :------------------ |
+| Normal                  | `x = y`             |
+| Objeto do lado direito  | `x = {{ arg }}`     |
+| Objeto do lado esquerdo | `{{ arg }} := y`    |
+| String do lado direito  | `x := .data[[arg]]` |
+| String do lado esquerdo | `{{ arg }} := y`    |
+
+
+Existe mais uma pilha de conceitos que precisaríamos aprender para criar uma
+função com tidy eval do zero. Hoje vimos desarme, injeção e indireção, mas isso
+é só a ponta do iceberg! A própria documentação do rlang não faz a menor questão
+de ser consistente com os termos e ao longo do tempo eles foram mudando muito.
+
+---
+class: middle, center, inverse
+# Fim
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
