@@ -24,8 +24,8 @@ Inscreva-se no curso: https://loja.curso-r.com/
 
 ```{r, echo = FALSE}
 params$curso |>
-  stringr::str_c('org%3Acurso-r+in%3Aname+"', ... = _, '"&per_page=100') |>
-  gh::gh("/search/repositories?q={query}", query = _) |>
+  stringr::str_c('org:curso-r in:name "', ... = _, '"') |>
+  gh::gh("/search/repositories?q={query}", query = _, per_page = 100) |>
   purrr::pluck("items") |>
   purrr::map_chr("name") |>
   tibble::tibble(repo = _) |>
@@ -53,9 +53,9 @@ params$curso |>
 
 6 aulas (18h) com os temas:
 
-  - Manipulação de dados avançada
-  - Pacote stringr
-  - Pacote lubridate, pacote forcats
-  - Controle de fluxo (`if`, `while` e `for`)
-  - Pacote purrr
-  - Non-standard evaluation
+  - Manipulação de dados
+  - Strings e regex
+  - Datas e fatores
+  - Controle de fluxo e funções
+  - Programação funcional
+  - Metaprogramação

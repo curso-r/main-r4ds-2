@@ -17,6 +17,7 @@ abaixo**.
 
 | Turma            | Material                                                                   | GitHub                                                                       |
 |:-----------------|:---------------------------------------------------------------------------|:-----------------------------------------------------------------------------|
+| Agosto de 2023   | [curso-r.github.io/202308-r4ds-2](https://curso-r.github.io/202308-r4ds-2) | [github.com/curso-r/202308-r4ds-2](https://github.com/curso-r/202308-r4ds-2) |
 | Março de 2023    | [curso-r.github.io/202303-r4ds-2](https://curso-r.github.io/202303-r4ds-2) | [github.com/curso-r/202303-r4ds-2](https://github.com/curso-r/202303-r4ds-2) |
 | Outubro de 2022  | [curso-r.github.io/202210-r4ds-2](https://curso-r.github.io/202210-r4ds-2) | [github.com/curso-r/202210-r4ds-2](https://github.com/curso-r/202210-r4ds-2) |
 | Julho de 2022    | [curso-r.github.io/202207-r4ds-2](https://curso-r.github.io/202207-r4ds-2) | [github.com/curso-r/202207-r4ds-2](https://github.com/curso-r/202207-r4ds-2) |
@@ -31,9 +32,9 @@ abaixo**.
 
 6 aulas (18h) com os temas:
 
-- Manipulação de dados avançada
-- Pacote stringr
-- Pacote lubridate, pacote forcats
-- Controle de fluxo (`if`, `while` e `for`)
-- Pacote purrr
-- Non-standard evaluation
+- Manipulação de dados
+- Strings e regex
+- Datas e fatores
+- Controle de fluxo e funções
+- Programação funcional
+- Metaprogramação
