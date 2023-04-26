@@ -14,9 +14,9 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-library(magrittr)
-knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = "#>")
-options(dplyr.print_min = 5, dplyr.print_max = 5)
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(comment = "#>")
+options(dplyr.print_min = 5, dplyr.print_max = 5, dplyr.width = 70)
 ```
 
 class: middle, center
@@ -213,7 +213,7 @@ Apesar de a string injetada funcionar perfeitamente no lado esquerdo da
 expressão (cortesia do operador morsa), o lado direito fica errado porque
 estamos na verdade tirando a média da string `"cyl"`.
 
-```{r}
+```{r, warning = FALSE}
 summarise_mean <- function(df, col) {
   summarise(df, {{ col }} := mean({{ col }}))
 }

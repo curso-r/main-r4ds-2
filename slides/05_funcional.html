@@ -4,7 +4,7 @@
     <title>R para Ciência de Dados 2</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <script src="libs/header-attrs-2.20/header-attrs.js"></script>
+    <script src="libs/header-attrs/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -69,10 +69,10 @@ list(1, 2, 3)
 ```
 #&gt; [[1]]
 #&gt; [1] 1
-#&gt;
+#&gt; 
 #&gt; [[2]]
 #&gt; [1] 2
-#&gt;
+#&gt; 
 #&gt; [[3]]
 #&gt; [1] 3
 ```
@@ -114,10 +114,10 @@ list(um = 1, dois = 2, tres = 3)
 ```
 #&gt; $um
 #&gt; [1] 1
-#&gt;
+#&gt; 
 #&gt; $dois
 #&gt; [1] 2
-#&gt;
+#&gt; 
 #&gt; $tres
 #&gt; [1] 3
 ```
@@ -160,10 +160,10 @@ list(TRUE, 123, "ABC")
 ```
 #&gt; [[1]]
 #&gt; [1] TRUE
-#&gt;
+#&gt; 
 #&gt; [[2]]
 #&gt; [1] 123
-#&gt;
+#&gt; 
 #&gt; [[3]]
 #&gt; [1] "ABC"
 ```
@@ -331,8 +331,8 @@ as_tibble(list(
 
 ```
 #&gt; # A tibble: 2 × 4
-#&gt;   col1   col2 col3  col4
-#&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;list&gt;
+#&gt;   col1   col2 col3  col4     
+#&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;list&gt;   
 #&gt; 1 a         1 TRUE  &lt;dbl [2]&gt;
 #&gt; 2 b         2 FALSE &lt;dbl [1]&gt;
 ```
@@ -436,10 +436,10 @@ map(l, length)
 ```
 #&gt; $objeto
 #&gt; [1] 1
-#&gt;
+#&gt; 
 #&gt; $vetor
 #&gt; [1] 3
-#&gt;
+#&gt; 
 #&gt; $lista
 #&gt; [1] 2
 ```
@@ -463,10 +463,10 @@ map(l, longo)
 ```
 #&gt; $objeto
 #&gt; [1] FALSE
-#&gt;
+#&gt; 
 #&gt; $vetor
 #&gt; [1] TRUE
-#&gt;
+#&gt; 
 #&gt; $lista
 #&gt; [1] TRUE
 ```
@@ -505,10 +505,10 @@ map(l, media)
 ```
 #&gt; $objeto
 #&gt; [1] "Erro"
-#&gt;
+#&gt; 
 #&gt; $vetor
 #&gt; [1] 2
-#&gt;
+#&gt; 
 #&gt; $lista
 #&gt; [1] "Erro"
 ```
@@ -586,10 +586,10 @@ map2(l, names(l), comprimento)
 ```
 #&gt; $objeto
 #&gt; [1] "objeto tem 1 elemento(s)"
-#&gt;
+#&gt; 
 #&gt; $vetor
 #&gt; [1] "vetor tem 3 elemento(s)"
-#&gt;
+#&gt; 
 #&gt; $lista
 #&gt; [1] "lista tem 2 elemento(s)"
 ```
@@ -611,10 +611,10 @@ pmap(list(l, map(l, class), names(l)), tipo)
 ```
 #&gt; $objeto
 #&gt; [1] "objeto é character (tamanho 1)"
-#&gt;
+#&gt; 
 #&gt; $vetor
 #&gt; [1] "vetor é numeric (tamanho 3)"
-#&gt;
+#&gt; 
 #&gt; $lista
 #&gt; [1] "lista é list (tamanho 2)"
 ```
@@ -661,8 +661,8 @@ df
 
 ```
 #&gt; # A tibble: 3 × 2
-#&gt;   nome   cor
-#&gt;   &lt;chr&gt;  &lt;list&gt;
+#&gt;   nome   cor      
+#&gt;   &lt;chr&gt;  &lt;list&gt;   
 #&gt; 1 Bacon  &lt;chr [2]&gt;
 #&gt; 2 Dexter &lt;chr [1]&gt;
 #&gt; 3 Zip    &lt;chr [1]&gt;
@@ -683,8 +683,8 @@ df |&gt;
 
 ```
 #&gt; # A tibble: 3 × 3
-#&gt;   nome   cor       frase
-#&gt;   &lt;chr&gt;  &lt;list&gt;    &lt;list&gt;
+#&gt;   nome   cor       frase    
+#&gt;   &lt;chr&gt;  &lt;list&gt;    &lt;list&gt;   
 #&gt; 1 Bacon  &lt;chr [2]&gt; &lt;chr [2]&gt;
 #&gt; 2 Dexter &lt;chr [1]&gt; &lt;chr [1]&gt;
 #&gt; 3 Zip    &lt;chr [1]&gt; &lt;chr [1]&gt;
@@ -709,10 +709,10 @@ df |&gt;
 
 ```
 #&gt; # A tibble: 4 × 3
-#&gt;   nome   cor      frase
-#&gt;   &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;
-#&gt; 1 Bacon  branco   Bacon é branco
-#&gt; 2 Bacon  marrom   Bacon é marrom
+#&gt;   nome   cor      frase            
+#&gt;   &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;            
+#&gt; 1 Bacon  branco   Bacon é branco   
+#&gt; 2 Bacon  marrom   Bacon é marrom   
 #&gt; 3 Dexter caramelo Dexter é caramelo
 #&gt; 4 Zip    branco   Zip é branco
 ```
@@ -733,8 +733,8 @@ df |&gt;
 
 ```
 #&gt; # A tibble: 3 × 2
-#&gt;   nome   info
-#&gt;   &lt;chr&gt;  &lt;list&gt;
+#&gt;   nome   info            
+#&gt;   &lt;chr&gt;  &lt;list&gt;          
 #&gt; 1 Bacon  &lt;tibble [2 × 2]&gt;
 #&gt; 2 Dexter &lt;tibble [1 × 2]&gt;
 #&gt; 3 Zip    &lt;tibble [1 × 2]&gt;
