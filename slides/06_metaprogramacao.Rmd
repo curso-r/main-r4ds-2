@@ -283,13 +283,13 @@ mtcars |>
 O tema de metaprogramação é longo e complexo. Aqui vimos somente os operadores
 principais, que nos permitem criar funções com os verbos do tidyverse.
 
-| Situação                | Sintaxe             |
-| :---------------------- | :------------------ |
-| Normal                  | `x = y`             |
-| Objeto do lado direito  | `x = {{ arg }}`     |
-| Objeto do lado esquerdo | `{{ arg }} := y`    |
-| String do lado direito  | `x := .data[[arg]]` |
-| String do lado esquerdo | `{{ arg }} := y`    |
+| Situação                | Sintaxe            |
+| :---------------------- | :----------------- |
+| Normal                  | `x = y`            |
+| Objeto do lado direito  | `x = {{ arg }}`    |
+| Objeto do lado esquerdo | `{{ arg }} := y`   |
+| String do lado direito  | `x = .data[[arg]]` |
+| String do lado esquerdo | `{{ arg }} := y`   |
 
 
 Existe mais uma pilha de conceitos que precisaríamos aprender para criar uma
